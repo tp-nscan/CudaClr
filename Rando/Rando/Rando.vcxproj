@@ -16,10 +16,9 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Rando.h" />
-    <ClInclude Include="Utils.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Utils.cpp" />
+    <ClCompile Include="..\..\Common\ClrUtils.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{8DFEA144-D1EA-4158-A37B-F60007D89A77}</ProjectGuid>
