@@ -27,7 +27,7 @@ namespace CuArray.Test
             var aa = new CudaArray();
             System.IntPtr devData = new System.IntPtr();
             var retlist = new int[(int)arrayLen];
-
+             
             try
             {
                 var res = aa.ResetDevice();

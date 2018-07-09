@@ -1,3 +1,4 @@
+#pragma once
 #include "cuda_runtime.h"
 #include "device_launch_parameters.h"
 #include <stdio.h>
@@ -24,4 +25,4 @@ extern "C" __declspec(dllexport) BSTR
 //The curandGeneratePoisson() function is used to generate Poisson - distributed integer 
 //values based on a Poisson distribution with the given lambda.
 extern "C" __declspec(dllexport) BSTR
-	DllMakePoissonRands(int *devPtr, void *genPtr, unsigned int numRands, double lambda);
+	DllMakePoissonRands(unsigned int *devPtr, void *genPtr, unsigned int numRands, double lambda);
