@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Collections.Immutable;
 using CuArrayClr;
 using CublasClr;
+using Cublas.Net;
 
 namespace Cublas.Test
 {
@@ -17,17 +19,21 @@ namespace Cublas.Test
         static string TestRowMajToColMaj()
         {
 
-            var dataA = GpuMatrixUtils.AA();
-            var transf = GpuMatrixUtils.RowMajorToColMajor(dataA, 3, 2);
+            //var dataA = GpuMatrixUtils.AA();
+            //var transf = GpuMatrixUtils.RowMajorToColMajor(dataA, 3, 2);
 
             return String.Empty;
         }
 
         static string TestGpuMatrix()
         {
-            var data = CublasClr.GpuMatrixUtils.MakeColumnMajor(rows: 5, cols: 3);
+            var data = MatrixUtils.MakeIdentiPoke(rows: 5, cols: 3);
             GpuMatrix gpuSetup;
-            var res = GpuMatrixOps.SetupGpuMatrix(out gpuSetup, data, rows: 5, cols: 3);
+            var res = GpuMatrixOps.SetupGpuMatrix(out gpuSetup, 
+                new Matrix<float>(_rows: 5, _cols: 3, 
+                                  host_data: ImmutableArray.Create(data), 
+                                  matrixFormat: MatrixFormat.Column_Major));
+
             GpuMatrix gpuReturned;
             res = res + GpuMatrixOps.CopyToHost(out gpuReturned, gpuSetup);
             GpuMatrix gpuCleared;
@@ -81,17 +87,30 @@ namespace Cublas.Test
             var aa = new CudaArray();
             var res = aa.ResetDevice();
 
-            var dataA = GpuMatrixUtils.MakeIdentity(rows: ah, cols: aw);
+            var dataA = MatrixUtils.MakeIdentity(rows: ah, cols: aw);
             GpuMatrix gpuA;
-            res = res + GpuMatrixOps.SetupGpuMatrix(out gpuA, dataA, rows: ah, cols: aw);
+            res = res + GpuMatrixOps.SetupGpuMatrix(
+                        out gpuA,
+                        new Matrix<float>(_rows: ah, _cols: aw,
+                              host_data: ImmutableArray.Create(dataA),
+                              matrixFormat: MatrixFormat.Column_Major));
 
-            var dataB = GpuMatrixUtils.MakeIdentiPoke(rows: bh, cols: bw);
+ 
+            var dataB = MatrixUtils.MakeIdentiPoke(rows: bh, cols: bw);
             GpuMatrix gpuB;
-            res = res + GpuMatrixOps.SetupGpuMatrix(out gpuB, dataB, rows: bh, cols: bw);
+            res = res + GpuMatrixOps.SetupGpuMatrix(
+                        out gpuB,
+                        new Matrix<float>(_rows: bh, _cols: bw,
+                              host_data: ImmutableArray.Create(dataB),
+                              matrixFormat: MatrixFormat.Column_Major));
 
-            var dataC = GpuMatrixUtils.MakeZeroes(rows: bh, cols: bw);
+            var dataC = MatrixUtils.MakeZeroes(rows: bh, cols: bw);
             GpuMatrix gpuC;
-            res = res + GpuMatrixOps.SetupGpuMatrix(out gpuC, dataC, rows: ch, cols: cw);
+            res = res + GpuMatrixOps.SetupGpuMatrix(
+                        out gpuC,
+                        new Matrix<float>(_rows: ch, _cols: cw,
+                              host_data: ImmutableArray.Create(dataC),
+                              matrixFormat: MatrixFormat.Column_Major));
 
             IntPtr cublasHandle = new IntPtr();
             res = res + cuby.MakeCublasHandle(ref cublasHandle);
@@ -106,10 +125,10 @@ namespace Cublas.Test
             res = res + GpuMatrixOps.CopyToHost(out gpuSynched, gpuProd);
 
             var cpuRes = new float[ah * bw];
-            GpuMatrixUtils.MatrixMult(C: cpuRes, A: dataA, B: dataB, wA: aw, hA: ah, wB: bw);
+            MatrixUtils.RowMajorMatrixMult(C: cpuRes, A: dataA, B: dataB, wA: aw, hA: ah, wB: bw);
 
             var cpuRes2 = new float[bh * aw];
-            GpuMatrixUtils.MatrixMult(C: cpuRes2, A: dataB, B: dataA, wA: bw, hA: bh, wB: aw);
+            MatrixUtils.RowMajorMatrixMult(C: cpuRes2, A: dataB, B: dataA, wA: bw, hA: bh, wB: aw);
 
             return res;
         }
@@ -127,17 +146,31 @@ namespace Cublas.Test
             GpuMatrix gpuB;
             GpuMatrix gpuC;
 
-            var dataA = GpuMatrixUtils.AA();
-            var dataB = GpuMatrixUtils.BB();
+            var dataA = MatrixUtils.AA();
+            var dataB = MatrixUtils.BB();
             var cRes = new float[ch * cw];
 
             var cuby = new CublasClr.Cublas();
             var aa = new CudaArray();
 
             var res = aa.ResetDevice();
-            res = res + GpuMatrixOps.SetupGpuMatrix(out gpuA, dataA, rows: ah, cols: aw);
-            res = res + GpuMatrixOps.SetupGpuMatrix(out gpuB, dataB, rows: bh, cols: bw);
-            res = res + GpuMatrixOps.SetupGpuMatrix(out gpuC, cRes, rows: ch, cols: cw);
+            res = res + GpuMatrixOps.SetupGpuMatrix(
+                        out gpuA,
+                        new Matrix<float>(_rows: ch, _cols: cw,
+                              host_data: ImmutableArray.Create(dataA),
+                              matrixFormat: MatrixFormat.Column_Major));
+            
+            res = res + GpuMatrixOps.SetupGpuMatrix(
+                        out gpuB,
+                        new Matrix<float>(_rows: bh, _cols: bw,
+                              host_data: ImmutableArray.Create(dataB),
+                              matrixFormat: MatrixFormat.Column_Major));
+            
+            res = res + GpuMatrixOps.SetupGpuMatrix(
+                        out gpuC,
+                        new Matrix<float>(_rows: ch, _cols: cw,
+                              host_data: ImmutableArray.Create(cRes),
+                              matrixFormat: MatrixFormat.Column_Major));
 
 
             IntPtr cublasHandle = new IntPtr();
@@ -158,40 +191,5 @@ namespace Cublas.Test
 
         }
 
-
-        static string TestMakeNormalRands()
-        {
-            string testName = "TestCopyIntsToDevice";
-            //var rdo = new RandoClr.Rando();
-            //var aa = new CudaArray();
-            //uint arrayLen = 1000;
-            //IntPtr devData = new IntPtr();
-            //var alist = Enumerable.Range(4, (int)arrayLen).ToArray();
-            //var retlist = Enumerable.Repeat(0, (int)arrayLen).ToArray();
-
-            try
-            {
-                //var res = aa.ResetDevice();
-                //res = res + aa.MallocIntsOnDevice(ref devData, arrayLen);
-                //res = res + aa.CopyIntsToDevice(alist, devData, arrayLen);
-                //res = res + aa.CopyIntsFromDevice(retlist, devData, arrayLen);
-
-                //res = res + aa.ReleaseDevicePtr(devData);
-                //if (res != String.Empty)
-                //{
-                //    return testName + " fail: " + res;
-                //}
-                return testName + " pass";
-            }
-            catch
-            {
-                return testName + " fail";
-            }
-            finally
-            {
-                //aa.ReleaseDevicePtr(devData);
-                //aa.ResetDevice();
-            }
-        }
     }
 }
