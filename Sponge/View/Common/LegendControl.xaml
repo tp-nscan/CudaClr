@@ -1,0 +1,48 @@
+﻿<UserControl x:Name="userControl" x:Class="Sponge.View.Common.LegendControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:common1="clr-namespace:Sponge.View.Common"
+             xmlns:common="clr-namespace:Sponge.ViewModel.Design.Common"
+             mc:Ignorable="d" 
+             d:DesignWidth="300"
+             d:DataContext="{d:DesignInstance Type=common:LegendVmD, IsDesignTimeCreatable=True}">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition/>
+            <ColumnDefinition Width="16*"/>
+            <ColumnDefinition/>
+        </Grid.ColumnDefinitions>
+
+        <common1:WbImage x:Name="wbImage"
+                    Grid.Column="1"
+                    Height="{Binding ImageHeight, ElementName=userControl}"
+                    PointerPosition ="{Binding WbImageVm.PointerPosition, Mode=TwoWay}"
+                    HorizontalAlignment="Stretch"
+                    VerticalAlignment="Stretch"
+                    ImageData="{Binding WbImageVm.ImageData}"
+                 />
+
+        <Canvas Grid.Row="0" Grid.Column="0">
+            <Canvas.Background>
+                <SolidColorBrush Color="{Binding MinColor}"/>
+            </Canvas.Background>
+        </Canvas>
+
+        <Canvas Grid.Row="0" Grid.Column="2">
+            <Canvas.Background>
+                <SolidColorBrush Color="{Binding MaxColor}"/>
+            </Canvas.Background>
+        </Canvas>
+
+        <TextBlock Grid.Column="0" Grid.Row="1" Text="{Binding MinVal}" HorizontalAlignment="Left"/>
+        <TextBlock Grid.Column="1" Grid.Row="1" Text="{Binding MidVal}" HorizontalAlignment="Center"/>
+        <TextBlock Grid.Column="2" Grid.Row="1" Text="{Binding MaxVal}" HorizontalAlignment="Right"/>
+
+    </Grid>
+</UserControl>

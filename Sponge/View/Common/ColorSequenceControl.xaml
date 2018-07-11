@@ -1,0 +1,37 @@
+﻿<UserControl x:Class="Sponge.View.Common.ColorSequenceControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:Sponge.View.Common"
+             mc:Ignorable="d" 
+             d:DesignWidth="300">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition />
+            <RowDefinition />
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition/>
+            <ColumnDefinition />
+            <ColumnDefinition/>
+            <ColumnDefinition Width="25"/>
+        </Grid.ColumnDefinitions>
+
+        <Canvas Grid.Column="0" Grid.RowSpan="3" Background="Red"/>
+        <Canvas Grid.Column="1" Grid.RowSpan="3" Background="Green"/>
+        <Canvas Grid.Column="2" Grid.RowSpan="3" Background="Blue"/>
+
+        <Slider Minimum="0" Maximum="1" Grid.Column="0" Grid.Row="0" Value="{Binding CRed}"/>
+        <Slider Minimum="0" Maximum="1" Grid.Column="1" Grid.Row="0" Value="{Binding CGreen}"/>
+        <Slider Minimum="0" Maximum="1" Grid.Column="2" Grid.Row="0" Value="{Binding CBlue}"/>
+
+        <Slider Minimum="0" Maximum="1" Grid.Column="0" Grid.Row="1" Value="{Binding WRed}"/>
+        <Slider Minimum="0" Maximum="1" Grid.Column="1" Grid.Row="1" Value="{Binding WGreen}"/>
+        <Slider Minimum="0" Maximum="1" Grid.Column="2" Grid.Row="1" Value="{Binding WBlue}"/>
+
+        <CheckBox Grid.Column="3" Grid.Row="1" IsChecked="{Binding Wrap}" Margin="10,0,0,0"/>
+        
+    </Grid>
+    
+</UserControl>
