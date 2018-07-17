@@ -62,7 +62,8 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ArrayGen.cs" />
+    <Compile Include="FloatArrayGen.cs" />
+    <Compile Include="IntArrayGen.cs" />
     <Compile Include="BitmapEx.cs" />
     <Compile Include="ColorSeq.cs" />
     <Compile Include="IntFuncs.cs" />

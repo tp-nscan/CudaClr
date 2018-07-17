@@ -109,16 +109,21 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="M2\Gol2.cs" />
+    <Compile Include="M2\IsingBits2.cs" />
+    <Compile Include="M2\IsingCt2.cs" />
     <Compile Include="ViewModel\Common\ColorSequenceVm.cs" />
     <Compile Include="ViewModel\Common\FuncTestVm.cs" />
     <Compile Include="ViewModel\Common\GraphLatticeVm.cs" />
     <Compile Include="ViewModel\Common\GraphTilesVm.cs" />
     <Compile Include="ViewModel\Common\GraphVm.cs" />
     <Compile Include="ViewModel\Common\IntRangeVm.cs" />
-    <Compile Include="ViewModel\Common\LegendVm.cs" />
+    <Compile Include="ViewModel\Common\LegendVmCont.cs" />
+    <Compile Include="ViewModel\Common\LegendVmClock.cs" />
     <Compile Include="ViewModel\Common\TileVm.cs" />
     <Compile Include="ViewModel\Common\UpdateBitsVm.cs" />
     <Compile Include="ViewModel\Common\UpdateClockVm.cs" />
+    <Compile Include="ViewModel\Common\UpdateContVm.cs" />
     <Compile Include="ViewModel\Design\Common\GraphLatticeVmD.cs" />
     <Compile Include="ViewModel\Design\Common\GraphTilesVmD.cs" />
     <Compile Include="ViewModel\Design\Common\GraphVmD.cs" />
@@ -277,6 +282,10 @@
     <ProjectReference Include="..\GridProcs\GridProcs.Clr\GridProcs.Clr.vcxproj">
       <Project>{9eab1722-29d0-42d8-b878-4de7007a5a10}</Project>
       <Name>GridProcs.Clr</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Rando\Rando.Clr\Rando.Clr.vcxproj">
+      <Project>{04fecffb-e742-4f81-ad84-747220abd9ff}</Project>
+      <Name>Rando.Clr</Name>
     </ProjectReference>
     <ProjectReference Include="..\Utils\Utils.csproj">
       <Project>{bd4c09ca-d85a-45fb-83f2-dcac6984418f}</Project>

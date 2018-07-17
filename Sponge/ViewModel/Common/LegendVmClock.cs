@@ -6,14 +6,14 @@ using FS;
 
 namespace Sponge.ViewModel.Common
 {
-    public class LegendVm : BindableBase
+    public class LegendVmClock : BindableBase
     {
-        public static LegendVm Standard()
+        public static LegendVmClock Standard()
         {
-            return new LegendVm("0.0", "0.5", "1.0", Colors.Pink, new Color[] {}, Colors.DeepPink );
+            return new LegendVmClock("0.0", "0.5", "1.0", Colors.Pink, new Color[] {}, Colors.DeepPink );
         }
 
-        public LegendVm(string minVal, string midVal, string maxVal, 
+        public LegendVmClock(string minVal, string midVal, string maxVal, 
             Color minColor, Color[] midColors, Color maxColor)
         {
             WbImageVm = new WbImageVm();

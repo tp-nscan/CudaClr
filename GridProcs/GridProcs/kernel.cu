@@ -54,6 +54,84 @@ __global__ void GolKernel(int *output, const int *input, const int span)
 	}
 }
 
+
+__global__ void Ca9iKernel(int *output, const int *input, const int span, float *rands)
+{
+	for (int i = threadIdx.y + blockDim.y*blockIdx.y; i < span; i += gridDim.y*blockDim.y)
+	{
+		for (int j = threadIdx.x + blockIdx.x*blockDim.x; j < span; j += blockDim.x*gridDim.x)
+		{
+			int offset = i * span + j;
+
+			int im = (i - 1 + span) % span;
+			int ip = (i + 1) % span;
+			int jm = (j - 1 + span) % span;
+			int jp = (j + 1) % span;
+
+			int topl = input[im * span + jm];
+			int top = input[im * span + j];
+			int topr = input[im * span + jp];
+			int l = input[i * span + jm];
+			int c = input[offset];
+			int r = input[i * span + jp];
+			int botl = input[ip * span + jm];
+			int bot = input[ip * span + j];
+			int botr = input[ip * span + jp];
+
+			int sum = topl + top + topr + l + r + botl + bot + botr;
+
+			if (c == 0)
+			{
+				output[offset] = (sum == 3) ? 1 : 0;
+			}
+			else
+			{
+				output[offset] = ((sum == 2) || (sum == 3)) ? 1 : 0;
+			}
+		}
+	}
+}
+
+
+__global__ void Ca9fKernel(float *output, const float *input, float *rands, const int span, float step_size, float noise)
+{
+	for (int i = threadIdx.y + blockDim.y*blockIdx.y; i < span; i += gridDim.y*blockDim.y)
+	{
+		for (int j = threadIdx.x + blockIdx.x*blockDim.x; j < span; j += blockDim.x*gridDim.x)
+		{
+			int offset = i * span + j;
+
+			int im = (i - 1 + span) % span;
+			int ip = (i + 1) % span;
+			int jm = (j - 1 + span) % span;
+			int jp = (j + 1) % span;
+
+			float topl = input[im * span + jm];
+			float top = input[im * span + j];
+			float topr = input[im * span + jp];
+			float l = input[i * span + jm];
+			float c = input[offset];
+			float r = input[i * span + jp];
+			float botl = input[ip * span + jm];
+			float bot = input[ip * span + j];
+			float botr = input[ip * span + jp];
+
+			float sum = c +  (topl + top + topr + l + r + botl + bot + botr + rands[offset] * noise) * step_size;
+
+			if (sum > 1.0f)
+			{
+				sum = 1.0f;
+			}
+			if (sum < -1.0f)
+			{
+				sum = -1.0f;
+			}
+			output[offset] = sum;
+		}
+	}
+}
+
+
 //int main()
 //{
 //    const int arraySize = 5;

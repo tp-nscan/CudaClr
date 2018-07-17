@@ -3,7 +3,7 @@ using System.Linq;
 
 namespace Utils
 {
-    public static class ArrayGen
+    public static class IntArrayGen
     {
         public static int[] Zippy(int span)
         {

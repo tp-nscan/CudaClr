@@ -8,9 +8,8 @@
         mc:Ignorable="d"
         Title="MainWindow" Height="1200" Width="1200">
     <Grid>
-        <common:FuncTestControl x:Name="FuncTestControl" />
-        <!--<common:UpdateClockControl x:Name="UpdateClockControl" />-->
+        <!--<common:FuncTestControl x:Name="FuncTestControl" />-->
+        <common:UpdateClockControl x:Name="UpdateClockControl" />
         <!--<common:UpdateBitsControl x:Name="UpdateBitsControl" />-->
-        
     </Grid>
 </Window>

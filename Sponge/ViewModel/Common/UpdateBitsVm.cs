@@ -1,5 +1,4 @@
-﻿using System;
-using System.Diagnostics;
+﻿using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
@@ -7,7 +6,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Threading;
 using Sponge.Common;
-using Sponge.Model;
+using Sponge.M2;
 using FS;
 using Utils;
 
@@ -15,30 +14,25 @@ namespace Sponge.ViewModel.Common
 {
     public class UpdateBitsVm : BindableBase
     {
-        //public const int Modulus = 16384;
-        public const int Modulus = 1024;
-
-        public UpdateBitsVm(int colorCount = Modulus, uint gridSpan = 1536)
+        public UpdateBitsVm(int colorCount = 1, uint gridSpan = 1024)
         {
             ColorCount = colorCount;
             GridSpan = gridSpan;
-            GpuSteps = 100;
-            StepSize = 0.2;
-            Noise = 0.05;
+            GpuSteps = 1;
 
             InitGridValues();
         }
 
         void InitGridValues()
         {
-            //GridValues = ArrayGen.Dot(span: GridSpan,  modulus: Modulus);
-            //GridValues = ArrayGen.Spot(span: GridSpan, spotSz: 245, modulus: Modulus);
-            GridValues = ArrayGen.RandInts3(seed: 123, span: GridSpan, blockSize:512, fracOnes: 0.04);
-            //GridValues = ArrayGen.MultiRing(modD: 8, outerD: 128, span: GridSpan, modulus: Modulus);
+            //GridValues = IntArrayGen.Dot(span: GridSpan,  modulus: Modulus);
+            //GridValues = IntArrayGen.Spot(span: GridSpan, spotSz: 245, modulus: Modulus);
 
-            //GridValues = ArrayGen.RandInts(123, GridSpan, 0, Modulus);
+            GridValues = IntArrayGen.RandInts3(seed: 123, span: GridSpan, blockSize:16, fracOnes: 0.28);
 
-            //GridValues = ArrayGen.Uniform(GridSpan * GridSpan, Modulus/2);
+            //GridValues = IntArrayGen.MultiRing(modD: 8, outerD: 128, span: GridSpan, modulus: Modulus);
+            //GridValues = IntArrayGen.RandInts(123, GridSpan, 0, Modulus);
+            //GridValues = IntArrayGen.Uniform(GridSpan * GridSpan, Modulus/2);
 
             GraphLatticeVm = new GraphLatticeVm(
                                 new R<uint>(0, GridSpan, 0, GridSpan),
@@ -47,7 +41,8 @@ namespace Sponge.ViewModel.Common
 
             //CaProcs.Init(inputs: GridValues, span: GridSpan, modulus: Modulus);
             //ResIntProcs.Init(inputsXy: GridValues, inputsCa: GridValues, span: GridSpan, modulus: Modulus);
-            GolProcs.Init(inputs: GridValues, span:GridSpan);
+            //Gol2.Init(inputs: GridValues, span:GridSpan);
+            IsingBits2.Init(inputs: GridValues, span: GridSpan);
         }
 
         public int ColorCount { get; }
@@ -145,29 +140,10 @@ namespace Sponge.ViewModel.Common
 
         #endregion
 
-        int[] Proc()
+        string Proc(int[] gridVals)
         {
-
-            return GolProcs.Update(
-                        steps: GpuSteps,
-                        stepSize: StepSize);
-
-            //return CaProcs.Update(
-            //        steps: GpuSteps,
-            //        stepSize: StepSize,
-            //        noise: Noise);
-
-            //return ResIntProcs.Update(
-            //        steps: GpuSteps,
-            //        stepSize: StepSize,
-            //        noise: Noise);
-
-            //return PoincareProcs.Update(
-            //            inputsXy: GridValues,
-            //            span: GridSpan,
-            //            steps: GpuSteps,
-            //            modulus: Modulus
-            //    );
+           // return Gol2.Update(gridVals, GpuSteps);
+            return IsingBits2.Update(gridVals, GpuSteps);
         }
 
         #region StepCommand
@@ -190,7 +166,7 @@ namespace Sponge.ViewModel.Common
             {
                 _stopwatch.Reset();
                 _stopwatch.Start();
-                GridValues = Proc();
+                var str = Proc(GridValues);
             },
             _cancellationTokenSource.Token);
 
@@ -216,14 +192,16 @@ namespace Sponge.ViewModel.Common
             _isRunning = true;
             CommandManager.InvalidateRequerySuggested();
 
+            string res = string.Empty;
+
             await Task.Run(() =>
             {
                 _stopwatch.Start();
 
-                for (var i = 0; _isRunning; i++)
+                for (var i = 0; (_isRunning & string.IsNullOrEmpty(res)); i++)
                 {
 
-                    GridValues = GridValues = Proc();
+                    res = Proc(GridValues);
 
                     if (_graphLatticeVm != null)
                     {

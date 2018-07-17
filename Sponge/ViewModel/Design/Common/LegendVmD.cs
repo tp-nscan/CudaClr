@@ -5,7 +5,7 @@ using Utils;
 
 namespace Sponge.ViewModel.Design.Common
 {
-    public class LegendVmD : LegendVm
+    public class LegendVmD : LegendVmClock
     {
         public LegendVmD() : base("minVal", "midVal", "maxVal", Colors.Pink,
             TestColors2(), Colors.DeepPink)

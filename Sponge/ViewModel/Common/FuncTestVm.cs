@@ -71,26 +71,30 @@ namespace Sponge.ViewModel.Common
             uint span = 32;
             uint arrayLen = span* span;
 
-            var aP0 = ArrayGen.RandInts3(seed: 123, span: span, blockSize: span/2, fracOnes: 0.4);
+            var aP0 = IntArrayGen.RandInts3(seed: 123, span: span, blockSize: span/2, fracOnes: 0.4);
             var aP1 = Enumerable.Repeat<uint>(0, (int)arrayLen).ToArray();
             var aa = new CudaArray();
             var gp = new GridProcs();
             IntPtr caPlane0 = new IntPtr();
             IntPtr caPlane1 = new IntPtr();
 
-            var retlist = new int[(int)arrayLen];
+            var retlist0 = new int[(int)arrayLen];
+            var retlist1 = new int[(int)arrayLen];
 
             try
             {
                 var res = aa.ResetDevice();
                 res = res + aa.MallocIntsOnDevice(ref caPlane0, arrayLen);
                 res = res + aa.CopyIntsToDevice(aP0, caPlane0, arrayLen);
-                res = res + aa.CopyIntsFromDevice(retlist, caPlane0, arrayLen);
+                res = res + aa.MallocIntsOnDevice(ref caPlane1, arrayLen);
+                res = res + gp.RunGolK(caPlane1, caPlane0, span);
+                res = res + aa.CopyIntsFromDevice(retlist0, caPlane0, arrayLen);
+                res = res + aa.CopyIntsFromDevice(retlist1, caPlane1, arrayLen);
 
-                if (!aP0.SequenceEqual(retlist))
-                {
-                   var s = "fail: sequences do not match";
-                }
+                //if (!aP0.SequenceEqual(retlist))
+                //{
+                //   var s = "fail: sequences do not match";
+                //}
 
                 if (res != String.Empty)
                 {

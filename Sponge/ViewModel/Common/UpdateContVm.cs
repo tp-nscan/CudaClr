@@ -10,23 +10,25 @@ using Sponge.Common;
 using Sponge.Model;
 using FS;
 using Utils;
+using Sponge.M2;
 
 namespace Sponge.ViewModel.Common
 {
-    public class UpdateClockVm : BindableBase
+    public class UpdateContVm : BindableBase
     {
         //public const int Modulus = 16384;
         public const int Modulus = 1025;
+        public const int Seed = 195;
 
-        public UpdateClockVm(int colorCount = Modulus, uint gridSpan = 512)
+        public UpdateContVm(int colorCount = Modulus, uint gridSpan = 512)
         {
             ColorCount = colorCount;
             GridSpan = gridSpan;
             GpuSteps = 100;
             StepSize = 0.2;
-            Noise = 0.05;
+            Noise = 1.0;
             _colorSequenceVm = new ColorSequenceVm(ColorCount);
-            _legendVm = LegendVmClock.Standard();
+            _legendVm = LegendVmCont.Standard();
             _colorSequenceVm.OnColorsChanged.Subscribe(HandleNewColors);
             _colorSequenceVm.SendColorsChanged();
 
@@ -37,12 +39,10 @@ namespace Sponge.ViewModel.Common
         {
             //GridValues = ArrayGen.Dot(span: GridSpan,  modulus: Modulus);
             //GridValues = ArrayGen.Spot(span: GridSpan, spotSz: 245, modulus: Modulus);
-            //GridValues = ArrayGen.DoubleRing(span: GridSpan, innerD: 80, midD: 155, outerD:240, modulus: Modulus);
+            GridValues = FloatArrayGen.SignedUnitUniformRands(span: (int)GridSpan, seed: Seed);
             //GridValues = ArrayGen.RandInts(123, GridSpan, 0, 256);
             //GridValues = ArrayGen.MultiRing(modD: 8, outerD: 128, span: GridSpan, modulus: Modulus);
-
             //GridValues = ArrayGen.RandInts(123, GridSpan, 0, Modulus);
-
             //GridValues = ArrayGen.Uniform(GridSpan * GridSpan, Modulus/2);
 
             GraphLatticeVm = new GraphLatticeVm(
@@ -50,10 +50,7 @@ namespace Sponge.ViewModel.Common
                                 "Title D", "TitleX D", "TitleY D");
 
             _graphLatticeVm.SetUpdater(DrawGridCell);
-
-           // CaProcs.Init(inputs: GridValues, span: GridSpan, modulus: Modulus);
-            //ResIntProcs.Init(inputsXy: GridValues, inputsCa:GridValues, span: GridSpan, modulus: Modulus);
-            //PoincareProcs.Init(inputs: GridValues, span:GridSpan, modulus:Modulus);
+            IsingCt2.Init(inputs: GridValues, span: GridSpan);
         }
 
         public int ColorCount { get; }
@@ -76,8 +73,8 @@ namespace Sponge.ViewModel.Common
             }
         }
 
-        private LegendVmClock _legendVm;
-        public LegendVmClock LegendVm
+        private LegendVmCont _legendVm;
+        public LegendVmCont LegendVm
         {
             get { return _legendVm; }
             set
@@ -156,7 +153,7 @@ namespace Sponge.ViewModel.Common
             }
         }
 
-        public int[] GridValues { get; private set; }
+        public float[] GridValues { get; private set; }
 
         private object DrawGridCell(P2<int> dataLoc, R<double> imagePatch)
         {
@@ -177,22 +174,13 @@ namespace Sponge.ViewModel.Common
 
         #endregion
 
-        int[] Proc()
+        string Proc(float[] gridvals)
         {
-
-            return CaProcs.Update(
+            return IsingCt2.Update(
+                    results: gridvals,
                     steps: GpuSteps,
-                    stepSize: StepSize,
-                    noise: Noise);
-
-            //return ResIntProcs.Update(
-            //        steps: GpuSteps,
-            //        stepSize: StepSize,
-            //        noise: Noise);
-
-            //return PoincareProcs.Update(
-            //            steps: GpuSteps
-            //    );
+                    stepSize: (float)StepSize,
+                    noise: (float)Noise);
         }
 
         #region StepCommand
@@ -215,7 +203,7 @@ namespace Sponge.ViewModel.Common
             {
                 _stopwatch.Reset();
                 _stopwatch.Start();
-                GridValues = Proc();
+                var str = Proc(GridValues);
             },
             _cancellationTokenSource.Token);
 
@@ -247,7 +235,7 @@ namespace Sponge.ViewModel.Common
 
                 for (var i = 0; _isRunning; i++)
                 {
-                    GridValues = Proc();
+                    var str = Proc(GridValues);
 
                     if (_graphLatticeVm != null)
                     {

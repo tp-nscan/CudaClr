@@ -6,19 +6,25 @@ namespace Sponge
     {
         private const int PicSpan = 1000;
 
-        private readonly FuncTestVm _funcTestVm;
-        //private readonly UpdateBitsVm _updateGridVm;
-        //private readonly UpdateClockVm _updateGridVm;
+        //private readonly FuncTestVm _funcTestVm;
+        //private readonly UpdateBitsVm _updateBitsVm;
+        //private readonly UpdateClockVm _updateClockVm;
+        private readonly UpdateContVm _updateContVm;
+
 
         public MainWindow()
         {
             InitializeComponent();
-            FuncTestControl.DataContext = _funcTestVm = new FuncTestVm();
-            //_updateGridVm = new UpdateClockVm();
+            //FuncTestControl.DataContext = _funcTestVm = new FuncTestVm();
+            //_updateClockVm = new UpdateClockVm();
             //UpdateClockControl.DataContext = _updateGridVm;
 
-            //_updateGridVm = new UpdateBitsVm();
-            //UpdateBitsControl.DataContext = _updateGridVm;
+            //_updateBitsVm = new UpdateBitsVm();
+            //UpdateBitsControl.DataContext = _updateBitsVm;
+
+
+            _updateContVm = new UpdateContVm();
+            UpdateClockControl.DataContext = _updateContVm;
 
         }
 

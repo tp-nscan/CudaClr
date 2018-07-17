@@ -13,6 +13,12 @@ int *IntArray(int length, int first = 0, int step = 0)
 	return av;
 }
 
+bool CompIntArrays(int *a, int *b, int length)
+{
+	for (int i = 0; i < length; i++)
+	{
+		if (a[i] != b[i]) return false;
+	}
 	return true;
 }
 
