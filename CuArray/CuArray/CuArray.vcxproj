@@ -58,6 +58,11 @@
     <CudaCompile>
       <TargetMachinePlatform>64</TargetMachinePlatform>
     </CudaCompile>
+    <PostBuildEvent>
+      <Command>xcopy "$(SolutionDir)$(PlatformName)\$(ConfigurationName)\$(TargetFileName)" "$(SolutionDir)$(TargetName)\$(TargetName).Clr\$(PlatformName)\$(ConfigurationName)\" /Y
+xcopy "$(SolutionDir)$(PlatformName)\$(ConfigurationName)\$(TargetName).lib" "$(SolutionDir)$(TargetName)\$(TargetName).Clr\$(PlatformName)\$(ConfigurationName)\" /Y
+xcopy "$(SolutionDir)$(PlatformName)\$(ConfigurationName)\$(TargetFileName)" "$(SolutionDir)Sponge\bin\$(PlatformName)\$(ConfigurationName)\" /Y</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>

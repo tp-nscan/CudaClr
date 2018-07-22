@@ -134,8 +134,7 @@ extern "C" __declspec(dllexport) BSTR DllMakeRandomInts(unsigned int *devPtr, un
 }
 
 
-extern "C" __declspec(dllexport) BSTR
-	DllMakeUniformRands(float *devPtr, unsigned int numRands)
+extern "C" __declspec(dllexport) BSTR DllMakeUniformRands(float *devPtr, unsigned int numRands)
 {
 	std::string funcName = "DllMakeUniformRands";
 	try
@@ -201,6 +200,7 @@ extern "C" __declspec(dllexport) BSTR DllMakeLogNormalRands(float *devPtr, unsig
 	}
 }
 
+
 extern "C" __declspec(dllexport) BSTR DllMakePoissonRands(unsigned int *devPtr, unsigned int numRands, double lambda)
 {
 	std::string funcName = "DllMakePoissonRands";
@@ -219,3 +219,24 @@ extern "C" __declspec(dllexport) BSTR DllMakePoissonRands(unsigned int *devPtr, 
 		return RuntimeErrBSTR(err, funcName);
 	}
 }
+
+
+extern "C" __declspec(dllexport) BSTR DllMakeUniformDoubleRands(double *devPtr, unsigned int numRands)
+{
+	std::string funcName = "DllMakeUniformDoubleRands";
+	try
+	{
+		curandStatus_t curandStatus = curandGenerateUniformDouble(_curandGenerator, devPtr, numRands);
+		if (curandStatus != CURAND_STATUS_SUCCESS) {
+			return CurandStatusBSTR(curandStatus, funcName);
+		}
+		return BSTR();
+	}
+	catch (std::runtime_error &e)
+	{
+		std::string err = e.what();
+		return RuntimeErrBSTR(err, funcName);
+	}
+}
+
+

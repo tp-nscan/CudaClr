@@ -19,13 +19,13 @@ namespace Sponge.ViewModel.Design.Common
                 }
             }
 
-            SetUpdater(UpDato);
+            SetUpdater(UpDato, _testArray);
         }
 
         private readonly float[] _testArray;
         private static readonly Sz2<uint> DataSz2 = new Sz2<uint>(25, 25);
 
-        private object UpDato(P2<int> dataLoc, R<double> imagePatch)
+        private object UpDato(P2<int> dataLoc, R<double> imagePatch, object data)
         {
             var offset = dataLoc.X + dataLoc.Y * DataSz2.X;
             var color = ColorSets.GetLegColor(ColorSets.RedBlueSFLeg, _testArray[offset]);

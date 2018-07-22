@@ -110,8 +110,12 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="M2\Gol2.cs" />
+    <Compile Include="M2\IntGrid.cs" />
     <Compile Include="M2\IsingBits2.cs" />
+    <Compile Include="M2\IsingBits2a.cs" />
     <Compile Include="M2\IsingCt2.cs" />
+    <Compile Include="M2\ProcResult.cs" />
+    <Compile Include="M2\SK_Ising2d.cs" />
     <Compile Include="ViewModel\Common\ColorSequenceVm.cs" />
     <Compile Include="ViewModel\Common\FuncTestVm.cs" />
     <Compile Include="ViewModel\Common\GraphLatticeVm.cs" />
@@ -121,9 +125,11 @@
     <Compile Include="ViewModel\Common\LegendVmCont.cs" />
     <Compile Include="ViewModel\Common\LegendVmClock.cs" />
     <Compile Include="ViewModel\Common\TileVm.cs" />
+    <Compile Include="ViewModel\Common\UpdateBinVm.cs" />
     <Compile Include="ViewModel\Common\UpdateBitsVm.cs" />
     <Compile Include="ViewModel\Common\UpdateClockVm.cs" />
     <Compile Include="ViewModel\Common\UpdateContVm.cs" />
+    <Compile Include="ViewModel\Common\UpdateVm.cs" />
     <Compile Include="ViewModel\Design\Common\GraphLatticeVmD.cs" />
     <Compile Include="ViewModel\Design\Common\GraphTilesVmD.cs" />
     <Compile Include="ViewModel\Design\Common\GraphVmD.cs" />
@@ -151,6 +157,9 @@
     <Compile Include="View\Common\LegendControl.xaml.cs">
       <DependentUpon>LegendControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="View\Common\ProcBinControl.xaml.cs">
+      <DependentUpon>ProcBinControl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="View\Common\TilesControl.xaml.cs">
       <DependentUpon>TilesControl.xaml</DependentUpon>
     </Compile>
@@ -159,6 +168,9 @@
     </Compile>
     <Compile Include="View\Common\UpdateClockControl.xaml.cs">
       <DependentUpon>UpdateClockControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\Common\UpdateControl.xaml.cs">
+      <DependentUpon>UpdateControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\Common\WbImage.xaml.cs">
       <DependentUpon>WbImage.xaml</DependentUpon>
@@ -211,6 +223,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Page Include="View\Common\ProcBinControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="View\Common\TilesControl.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -222,6 +238,10 @@
     <Page Include="View\Common\UpdateClockControl.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="View\Common\UpdateControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="View\Common\WbImage.xaml">
       <Generator>MSBuild:Compile</Generator>

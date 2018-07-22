@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reactive.Subjects;
 using System.Windows.Media;
 using Sponge.Common;
 using FS;
@@ -9,7 +10,10 @@ namespace Sponge.ViewModel.Common
 {
     public class GraphLatticeVm : BindableBase
     {
-        public GraphLatticeVm(R<uint> latticeBounds, string title= "Title", string titleX = "TitleX", string titleY = "TitleY")
+        private readonly Subject<GraphLatticeVm> _rangeChanged = new Subject<GraphLatticeVm>();
+        public IObservable<GraphLatticeVm> OnRangeChanged => _rangeChanged;
+
+        public GraphLatticeVm(R<uint> latticeBounds, string title="Title", string titleX = "TitleX", string titleY = "TitleY")
         {
             _wbImageVm = new WbImageVm();
             _imageSize = new Sz2<double>(1.0, 1.0);
@@ -35,22 +39,22 @@ namespace Sponge.ViewModel.Common
             MaxX.MinVal = MinX.CurVal + 1;
             MinY.MaxVal = MaxY.CurVal - 1;
             MaxY.MinVal = MinY.CurVal + 1;
-            Update();
+            _rangeChanged.OnNext(this);
         }
 
-        private Func<P2<int>, R<double>, object> _cellUpdater;
-        public Func<P2<int>, R<double>, object> GetCellUpdater()
+        private Func<P2<int>, R<double>, object, object> _cellUpdater;
+        public Func<P2<int>, R<double>, object, object> GetCellUpdater()
         {
             return _cellUpdater;
         }
 
-        public void SetUpdater(Func<P2<int>, R<double>, object> value)
+        public void SetUpdater(Func<P2<int>, R<double>, object, object> cellUpdater, object data)
         {
-            _cellUpdater = value;
-            if(WbImageVm != null) Update();
+            _cellUpdater = cellUpdater;
+            if(data != null) Update(data);
         }
 
-        public void Update()
+        public void Update(object data)
         {
             var results = new List<RV<float, Color>>();
             var cellSize = new Sz2<double>
@@ -65,12 +69,13 @@ namespace Sponge.ViewModel.Common
                 {
                     results.Add( (RV<float, Color>)
                         _cellUpdater(new P2<int>(x: i, y: j),
-                                    new R<double>(
+                                     new R<double>(
                                             minX: i * cellSize.X,
                                             maxX: (i + 1) * cellSize.X,
                                             minY: j * cellSize.Y,
                                             maxY: (j + 1) * cellSize.Y
-                                           )));
+                                           ),
+                                     data));
                 }
             }
 
@@ -165,6 +170,7 @@ namespace Sponge.ViewModel.Common
             set
             {
                 SetProperty(ref _imageSize, value);
+                _rangeChanged.OnNext(this);
             }
         }
     }

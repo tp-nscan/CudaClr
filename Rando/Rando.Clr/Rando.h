@@ -15,6 +15,6 @@ extern "C" __declspec(dllimport) BSTR DllMakeNormalRands(float *devPtr, unsigned
 
 extern "C" __declspec(dllimport) BSTR DllMakeLogNormalRands(float *devPtr, unsigned int numRands, float mean, float stdev);
 
-//The curandGeneratePoisson() function is used to generate Poisson - distributed integer 
-//values based on a Poisson distribution with the given lambda.
 extern "C" __declspec(dllimport) BSTR DllMakePoissonRands(unsigned int *devPtr, unsigned int numRands, double lambda);
+
+extern "C" __declspec(dllimport) BSTR DllMakeUniformDoubleRands(double *devPtr, unsigned int numRands);

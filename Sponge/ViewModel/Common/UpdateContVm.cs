@@ -49,7 +49,7 @@ namespace Sponge.ViewModel.Common
                                 new R<uint>(0, GridSpan, 0, GridSpan),
                                 "Title D", "TitleX D", "TitleY D");
 
-            _graphLatticeVm.SetUpdater(DrawGridCell);
+            _graphLatticeVm.SetUpdater(DrawGridCell, GridValues);
             IsingCt2.Init(inputs: GridValues, span: GridSpan);
         }
 
@@ -60,7 +60,7 @@ namespace Sponge.ViewModel.Common
         void HandleNewColors(Color[] c)
         {
             _legendVm.MidColors = c;
-            _graphLatticeVm?.Update();
+            _graphLatticeVm?.Update(GridValues);
         }
 
         private ColorSequenceVm _colorSequenceVm;
@@ -155,7 +155,7 @@ namespace Sponge.ViewModel.Common
 
         public float[] GridValues { get; private set; }
 
-        private object DrawGridCell(P2<int> dataLoc, R<double> imagePatch)
+        private object DrawGridCell(P2<int> dataLoc, R<double> imagePatch, object data)
         {
             var offset = dataLoc.X + dataLoc.Y * GridSpan;
             var color = LegendVm.ColorVal(GridValues[offset]);
@@ -187,10 +187,8 @@ namespace Sponge.ViewModel.Common
 
         private RelayCommand _stepCommand;
 
-        public ICommand StepCommand => _stepCommand ?? (_stepCommand = new RelayCommand(
-            DoStep,
-            CanStart
-            ));
+        public ICommand StepCommand => _stepCommand ?? (
+            _stepCommand = new RelayCommand(DoStep, CanStart));
 
 
         private async void DoStep()
@@ -218,10 +216,8 @@ namespace Sponge.ViewModel.Common
 
         private RelayCommand _startCommand;
 
-        public ICommand StartCommand => _startCommand ?? (_startCommand = new RelayCommand(
-            DoStart,
-            CanStart
-            ));
+        public ICommand StartCommand => _startCommand ?? (
+            _startCommand = new RelayCommand(DoStart, CanStart));
 
         private async void DoStart()
         {
@@ -262,7 +258,7 @@ namespace Sponge.ViewModel.Common
         void UpdateUI(double time, int more_steps)
         {
             Step += more_steps;
-            _graphLatticeVm.Update();
+            _graphLatticeVm.Update(GridValues);
             Time = time;
         }
 
@@ -296,10 +292,8 @@ namespace Sponge.ViewModel.Common
 
         private RelayCommand _resetCommand;
 
-        public ICommand ResetCommand => _resetCommand ?? (_resetCommand = new RelayCommand(
-            DoReset,
-            CanReset
-            ));
+        public ICommand ResetCommand => _resetCommand ?? (
+            _resetCommand = new RelayCommand(DoReset, CanReset));
 
 
         private void DoReset()

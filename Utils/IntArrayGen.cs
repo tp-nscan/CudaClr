@@ -5,6 +5,12 @@ namespace Utils
 {
     public static class IntArrayGen
     {
+        public static int[] ToIntBits(this int[] source)
+        {
+            return source.Select(i => (i > 0.5) ? 1 : -1).ToArray();
+        }
+
+
         public static int[] Zippy(int span)
         {
             return Enumerable.Range(0, span * span)

@@ -5,6 +5,7 @@ using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Threading;
+using System.Linq;
 using Sponge.Common;
 using Sponge.M2;
 using FS;
@@ -28,7 +29,8 @@ namespace Sponge.ViewModel.Common
             //GridValues = IntArrayGen.Dot(span: GridSpan,  modulus: Modulus);
             //GridValues = IntArrayGen.Spot(span: GridSpan, spotSz: 245, modulus: Modulus);
 
-            GridValues = IntArrayGen.RandInts3(seed: 123, span: GridSpan, blockSize:16, fracOnes: 0.28);
+            GridValues = IntArrayGen.RandInts3(seed: 123, span: GridSpan, blockSize:128, fracOnes: 0.98)
+                                .Select(i=> (i <0.5) ? -1 : 1).ToArray();
 
             //GridValues = IntArrayGen.MultiRing(modD: 8, outerD: 128, span: GridSpan, modulus: Modulus);
             //GridValues = IntArrayGen.RandInts(123, GridSpan, 0, Modulus);
@@ -37,7 +39,7 @@ namespace Sponge.ViewModel.Common
             GraphLatticeVm = new GraphLatticeVm(
                                 new R<uint>(0, GridSpan, 0, GridSpan),
                                 "Title D", "TitleX D", "TitleY D");
-            _graphLatticeVm.SetUpdater(DrawGridCell);
+            _graphLatticeVm.SetUpdater(DrawGridCell, GridValues);
 
             //CaProcs.Init(inputs: GridValues, span: GridSpan, modulus: Modulus);
             //ResIntProcs.Init(inputsXy: GridValues, inputsCa: GridValues, span: GridSpan, modulus: Modulus);
@@ -121,10 +123,22 @@ namespace Sponge.ViewModel.Common
 
         public int[] GridValues { get; private set; }
 
-        private object DrawGridCell(P2<int> dataLoc, R<double> imagePatch)
+        private object DrawGridCell(P2<int> dataLoc, R<double> imagePatch, object data)
         {
+            Color color;
             var offset = dataLoc.X + dataLoc.Y * GridSpan;
-            var color = (GridValues[offset] == 0) ? Colors.White : Colors.Black;
+            if (GridValues[offset] < -0.5)
+            {
+                color = Colors.White;
+            }
+            else if (GridValues[offset] > 0.5)
+            {
+                color = Colors.Black;
+            }
+            else
+            {
+                color = Colors.Red;
+            }
             return new RV<float, Color>(
                 minX: (float)imagePatch.MinX, 
                 maxX: (float)imagePatch.MaxX, 
@@ -135,6 +149,7 @@ namespace Sponge.ViewModel.Common
 
 
         #region local vars
+
         private CancellationTokenSource _cancellationTokenSource = new CancellationTokenSource();
         private readonly Stopwatch _stopwatch = new Stopwatch();
 
@@ -150,10 +165,8 @@ namespace Sponge.ViewModel.Common
 
         private RelayCommand _stepCommand;
 
-        public ICommand StepCommand => _stepCommand ?? (_stepCommand = new RelayCommand(
-            DoStep,
-            CanStart
-            ));
+        public ICommand StepCommand => _stepCommand ?? (
+            _stepCommand = new RelayCommand(DoStep, CanStart));
 
 
         private async void DoStep()
@@ -181,10 +194,8 @@ namespace Sponge.ViewModel.Common
 
         private RelayCommand _startCommand;
 
-        public ICommand StartCommand => _startCommand ?? (_startCommand = new RelayCommand(
-            DoStart,
-            CanStart
-            ));
+        public ICommand StartCommand => _startCommand ?? (
+            _startCommand = new RelayCommand( DoStart, CanStart));
 
         private async void DoStart()
         {
@@ -200,7 +211,6 @@ namespace Sponge.ViewModel.Common
 
                 for (var i = 0; (_isRunning & string.IsNullOrEmpty(res)); i++)
                 {
-
                     res = Proc(GridValues);
 
                     if (_graphLatticeVm != null)
@@ -228,7 +238,7 @@ namespace Sponge.ViewModel.Common
         void UpdateUI(double time, int more_steps)
         {
             Step += more_steps;
-            _graphLatticeVm.Update();
+            _graphLatticeVm.Update(GridValues);
             Time = time;
         }
 
@@ -262,10 +272,8 @@ namespace Sponge.ViewModel.Common
 
         private RelayCommand _resetCommand;
 
-        public ICommand ResetCommand => _resetCommand ?? (_resetCommand = new RelayCommand(
-            DoReset,
-            CanReset
-            ));
+        public ICommand ResetCommand => _resetCommand ?? (
+            _resetCommand = new RelayCommand(DoReset, CanReset));
 
 
         private void DoReset()
