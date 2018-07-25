@@ -149,7 +149,7 @@ namespace Sponge.ViewModel.Common
         protected virtual void UpdateUI(ProcResult<T> result)
         {
             TotalSteps += result.StepsCompleted;
-            Time += result.StepsCompleted;
+            Time += (result.TimeInMs / 1000);
             ErrorMsg = result.ErrorMsg;
         }
 

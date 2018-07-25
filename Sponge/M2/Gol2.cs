@@ -42,7 +42,7 @@ namespace Sponge.M2
             {
                 if (_backwards)
                 {
-                    strRet = _gridProcs.RunGolK(d_In, d_Out, _span);
+                    strRet = _gridProcs.RunGolKernel(d_In, d_Out, _span);
                     if(! String.IsNullOrEmpty(strRet))
                     {
                         return strRet;
@@ -50,7 +50,7 @@ namespace Sponge.M2
                 }
                 else
                 {
-                    strRet = _gridProcs.RunGolK(d_Out, d_In, _span);
+                    strRet = _gridProcs.RunGolKernel(d_Out, d_In, _span);
                     if (! String.IsNullOrEmpty(strRet))
                     {
                         return strRet;

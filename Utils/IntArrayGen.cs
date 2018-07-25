@@ -19,31 +19,31 @@ namespace Utils
         }
 
 
-        public static int IntDistFromCenter(int index, int span)
+        public static uint IntDistFromCenter(uint index, uint span)
         {
             var cv = span/2;
             var xv = index%span;
             var yv = (index - xv) / span;
-            return (int) Math.Sqrt((xv - cv) * (xv - cv) + (yv - cv) * (yv - cv));
+            return (uint) Math.Sqrt((xv - cv) * (xv - cv) + (yv - cv) * (yv - cv));
         }
 
-        public static int[] BullsEye(int span)
+        public static int[] BullsEye(uint span)
         {
             var outputs = new int[span * span];
 
-            for (var i = 0; i < span; i++)
+            for (uint i = 0; i < span; i++)
             {
-                for (var j = 0; j < span; j++)
+                for (uint j = 0; j < span; j++)
                 {
-                    var index = i * span + j;
-                    outputs[index] = IntDistFromCenter(index: index, span: span) % 256;
+                    uint index = i * span + j;
+                    outputs[index] = (int)IntDistFromCenter(index: index, span: span) % 256;
                 }
             }
             return outputs;
         }
 
 
-        public static int[] Dot(int span, int modulus)
+        public static int[] Dot(uint span, int modulus)
         {
             var outputs = new int[span * span];
 
@@ -53,7 +53,7 @@ namespace Utils
         }
 
 
-        public static int[] Uniform(int len, int value)
+        public static int[] Uniform(uint len, int value)
         {
             var outputs = new int[len];
             for (var i = 0; i < len; i++)
@@ -64,13 +64,13 @@ namespace Utils
         }
 
 
-        public static int[] Spot(int spotSz, int span, int modulus)
+        public static int[] Spot(uint spotSz, uint span, int modulus)
         {
             var outputs = new int[span * span];
 
-            for (var i = 0; i < span; i++)
+            for (uint i = 0; i < span; i++)
             {
-                for (var j = 0; j < span; j++)
+                for (uint j = 0; j < span; j++)
                 {
                     var index = i * span + j;
                     var dist = IntDistFromCenter(index: index, span: span);
@@ -82,13 +82,13 @@ namespace Utils
         }
 
 
-        public static int[] Ring(int innerD, int outerD, int span, int modulus)
+        public static int[] Ring(int innerD, int outerD, uint span, int modulus)
         {
             var outputs = new int[span * span];
 
-            for (var i = 0; i < span; i++)
+            for (uint i = 0; i < span; i++)
             {
-                for (var j = 0; j < span; j++)
+                for (uint j = 0; j < span; j++)
                 {
                     var index = i * span + j;
                     var dist = IntDistFromCenter(index: index, span: span);
@@ -99,13 +99,13 @@ namespace Utils
             return outputs;
         }
 
-        public static int[] DoubleRing(int innerD, int midD, int outerD, int span, int modulus)
+        public static int[] DoubleRing(int innerD, int midD, int outerD, uint span, int modulus)
         {
             var outputs = new int[span * span];
 
-            for (var i = 0; i < span; i++)
+            for (uint i = 0; i < span; i++)
             {
-                for (var j = 0; j < span; j++)
+                for (uint j = 0; j < span; j++)
                 {
                     var index = i * span + j;
                     var dist = IntDistFromCenter(index: index, span: span);
@@ -116,24 +116,25 @@ namespace Utils
             return outputs;
         }
 
-        public static int[] MultiRing(int modD, int outerD, int span, int modulus)
+        public static int[] MultiRing(int modD, int outerD, uint span, uint modulus)
         {
             var outputs = new int[span * span];
 
-            for (var i = 0; i < span; i++)
+            for (uint i = 0; i < span; i++)
             {
-                for (var j = 0; j < span; j++)
+                for (uint j = 0; j < span; j++)
                 {
                     var index = i * span + j;
                     var dist = IntDistFromCenter(index: index, span: span);
                     //outputs[index] = ((dist > innerD) && (dist < outerD)) ? modulus /2 : modulus -1;
-                    outputs[index] = (((dist % modD) < 4) && (dist < outerD)) ? 0 : modulus / 2;
+
+                    outputs[index] = ((((int)dist % modD) < 4) && ((int)dist < outerD)) ? 0 : (int)(modulus / 2);
                 }
             }
             return outputs;
         }
 
-        public static int[] RandInts(int seed, int span, int min, int max)
+        public static int[] RandInts(int seed, uint span, int min, int max)
         {
             var range = max - min;
             var randy = new Random(seed);
@@ -147,7 +148,7 @@ namespace Utils
         }
 
 
-        public static int[] RandInts2(int seed, int arrayLen, double fracOnes)
+        public static int[] RandInts2(int seed, uint arrayLen, double fracOnes)
         {
             var randy = new Random(seed);
             var outputs = new int[arrayLen];
@@ -181,7 +182,7 @@ namespace Utils
             return outputs;
         }
 
-        public static int[] Copy(int[] array, int len)
+        public static int[] Copy(int[] array, uint len)
         {
             var iRet = new int[len];
             for (var i = 0; i < len; i++)
@@ -191,7 +192,7 @@ namespace Utils
             return iRet;
         }
 
-        public static void CopyTo(int[] dest, int[] src, int len)
+        public static void CopyTo(int[] dest, int[] src, uint len)
         {
             for (var i = 0; i < len; i++)
             {

@@ -20,3 +20,5 @@ const char* CurandStatusToChars(curandStatus_t status);
 BSTR CublasStatusBSTR(cublasStatus_t cuda_status, std::string func_name);
 
 const char* CublasStatusToChars(cublasStatus_t status);
+
+unsigned int SqrtPow2Lb(unsigned int rhs);

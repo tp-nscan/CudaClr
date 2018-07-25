@@ -67,3 +67,18 @@ int *Rnd0or1(int arraySize, float fracOnes)
 	}
 	return temp;
 }
+
+unsigned int SqrtPow2Lb(unsigned int rhs)
+{
+	int fRet = 1;
+	int nv = fRet;
+	while (true)
+	{
+		nv = fRet * 2;
+		if (nv * nv > rhs)
+		{
+			return fRet;
+		}
+		fRet = nv;
+	}
+}

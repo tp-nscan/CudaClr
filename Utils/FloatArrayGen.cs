@@ -16,15 +16,15 @@ namespace Utils
             return (float)Math.Sqrt((xv - cv) * (xv - cv) + (yv - cv) * (yv - cv));
         }
 
-        public static float[] DoubleRing(int innerD, int midD, int outerD, int span, int modulus)
+        public static float[] DoubleRing(int innerD, int midD, int outerD, uint span, int modulus)
         {
             var outputs = new float[span * span];
 
-            for (var i = 0; i < span; i++)
+            for (uint i = 0; i < span; i++)
             {
-                for (var j = 0; j < span; j++)
+                for (uint j = 0; j < span; j++)
                 {
-                    var index = i * span + j;
+                    uint index = i * span + j;
                     var dist = IntArrayGen.IntDistFromCenter(index: index, span: span);
                     outputs[index] = ((dist < innerD) || ((dist > midD) && (dist < outerD))) ? 0.8f : 0.0f;
                 }

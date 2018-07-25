@@ -111,13 +111,11 @@
     </ApplicationDefinition>
     <Compile Include="M2\Gol2.cs" />
     <Compile Include="M2\IntGrid.cs" />
-    <Compile Include="M2\IsingBits2.cs" />
-    <Compile Include="M2\IsingBits2a.cs" />
-    <Compile Include="M2\IsingCt2.cs" />
+    <Compile Include="M2\IsingBitsMono.cs" />
+    <Compile Include="M2\IsingBitsDual.cs" />
     <Compile Include="M2\ProcResult.cs" />
     <Compile Include="M2\SK_Ising2d.cs" />
     <Compile Include="ViewModel\Common\ColorSequenceVm.cs" />
-    <Compile Include="ViewModel\Common\FuncTestVm.cs" />
     <Compile Include="ViewModel\Common\GraphLatticeVm.cs" />
     <Compile Include="ViewModel\Common\GraphTilesVm.cs" />
     <Compile Include="ViewModel\Common\GraphVm.cs" />
@@ -126,9 +124,7 @@
     <Compile Include="ViewModel\Common\LegendVmClock.cs" />
     <Compile Include="ViewModel\Common\TileVm.cs" />
     <Compile Include="ViewModel\Common\UpdateBinVm.cs" />
-    <Compile Include="ViewModel\Common\UpdateBitsVm.cs" />
     <Compile Include="ViewModel\Common\UpdateClockVm.cs" />
-    <Compile Include="ViewModel\Common\UpdateContVm.cs" />
     <Compile Include="ViewModel\Common\UpdateVm.cs" />
     <Compile Include="ViewModel\Design\Common\GraphLatticeVmD.cs" />
     <Compile Include="ViewModel\Design\Common\GraphTilesVmD.cs" />

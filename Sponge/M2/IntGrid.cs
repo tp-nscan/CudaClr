@@ -57,11 +57,12 @@ namespace Sponge.M2
 
         public static SimGrid<int> TestInt2()
         {
+            uint span = 256;
             return new SimGrid<int>(
                 name: "TestInt",
-                width: 1024,
-                height: 1024,
-                data: Utils.IntArrayGen.RandInts2(1233, 1024 * 1024, 0.53).ToIntBits());
+                width: span,
+                height: span,
+                data: Utils.IntArrayGen.RandInts2(1233, span * span, 0.53).ToIntBits());
         }
     }
 

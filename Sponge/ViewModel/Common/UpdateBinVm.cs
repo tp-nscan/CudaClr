@@ -26,16 +26,17 @@ namespace Sponge.ViewModel.Common
             GraphLatticeVm.SetUpdater(DrawGridCell, simGrid);
             //GraphLatticeVm.OnRangeChanged.Subscribe(v => v.Update(Data));
             StepsPerUpdate = 1;
-            // IsingBits2a.Init(inputs: simGrid.Data, span: simGrid.Width);
             Beta = 0.5f;
-            IsingBits2.Init(inputs: simGrid.Data, span: simGrid.Width);
+
+            //IsingBitsMono.Init(inputs: simGrid.Data, span: simGrid.Width);
+            IsingBitsDual.Init(inputs: simGrid.Data, span: simGrid.Width);
         }
 
         protected override ProcResult<SimGrid<int>> Proc(SimGrid<int> state, int steps)
         {
-            //return IsingBits2a.Update(steps, temp:1.0f);
+            //return IsingBitsMono.Update3(steps, temp: Beta);
 
-            return IsingBits2.Update3(steps, temp: Beta);
+            return IsingBitsDual.UpdateG(steps, temp: Beta);
         }
 
         protected override void UpdateUI(ProcResult<SimGrid<int>> result)

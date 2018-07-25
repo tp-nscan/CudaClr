@@ -85,7 +85,7 @@ xcopy "$(SolutionDir)$(PlatformName)\$(ConfigurationName)\$(TargetFileName)" "$(
   <ItemGroup>
     <CudaCompile Include="..\..\Common\Utils.cu" />
     <CudaCompile Include="GridProcs.cu" />
-    <CudaCompile Include="kernel.cu" />
+    <CudaCompile Include="GridProcsKernel.cu" />
     <CudaCompile Include="main.cu" />
   </ItemGroup>
   <ItemGroup>

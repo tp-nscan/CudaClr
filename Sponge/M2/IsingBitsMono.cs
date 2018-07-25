@@ -6,7 +6,7 @@ using System.Diagnostics;
 
 namespace Sponge.M2
 {
-    public class IsingBits2
+    public class IsingBitsMono
     {
         private const int SEED = 123;
         private static IntPtr d_rands;
@@ -43,37 +43,11 @@ namespace Sponge.M2
             return strRet; 
         }
 
-        public static string Update(int[] results, int steps)
+        public static ProcResult<SimGrid<int>> Update(int steps)
         {
-            var strRet = String.Empty;
+            double t2 = (1.0 / (1.0 + Math.Exp(2 * _temp)));
+            double t4 = (1.0 / (1.0 + Math.Exp(4 * _temp)));
 
-            for (var s = 0; s < steps; s++)
-            {
-                if (_phase == 0)
-                {
-                    strRet = strRet + _randoProcs.MakeNormalRands(d_rands, _area, mean: 0.0f, stdev: 0.5f);
-                    _phase = 1;
-                }
-                else { _phase = 0; }
-
-                strRet = strRet + _gridProcs.RunAltIsingKernel(d_grid, d_rands, temp: _temp, span: _span, alt: _phase);
-                // strRet = strRet + _gridProcs.RunAltKernel(d_floats, _span, _phase);
-            }
-
-            strRet = strRet + _cudaArray.CopyIntsFromDevice(results, d_rands, _area);
-           // strRet = strRet + _cudaArray.CopyIntsFromDevice(results, d_grid, _area);
-
-            if (! string.IsNullOrEmpty(strRet))
-            {
-                var s = "S";
-            }
-
-            return strRet;
-        }
-
-
-        public static ProcResult<SimGrid<int>> Update2(int steps)
-        {
             var strRet = String.Empty;
             _stopwatch.Reset();
             _stopwatch.Start();
@@ -87,7 +61,7 @@ namespace Sponge.M2
                 }
                 else { _phase = 0; }
 
-                strRet = strRet + _gridProcs.RunAltIsingKernel(d_grid, d_rands, temp: _temp, span: _span, alt: _phase);
+                strRet = strRet + _gridProcs.RunIsingKernel(d_grid, d_rands, span: _span, alt: _phase, t2: (float)t2, t4:(float)t4);
                 // strRet = strRet + _gridProcs.RunAltKernel(d_floats, _span, _phase);
             }
             int[] res = new int[_area];
@@ -108,9 +82,7 @@ namespace Sponge.M2
 
         public static ProcResult<SimGrid<int>> Update3(int steps, float temp)
         {
-            double t1 = (1.0 / (1.0 + Math.Exp(temp)));
             double t2 = (1.0 / (1.0 + Math.Exp(2*temp)));
-            double t3 = (1.0 / (1.0 + Math.Exp(3*temp)));
             double t4 = (1.0 / (1.0 + Math.Exp(4*temp)));
 
             var strRet = String.Empty;
@@ -128,7 +100,7 @@ namespace Sponge.M2
 
                 strRet = strRet + _gridProcs.RunIsingKernel(
                     d_grid, d_rands, span: _span, alt: _phase, 
-                    t1:(float)t1, t2: (float)t2, t3: (float)t3, t4: (float)t4);
+                    t2: (float)t2, t4: (float)t4);
                
             }
             int[] res = new int[_area];
@@ -146,28 +118,6 @@ namespace Sponge.M2
                                                 steps: steps,
                                                 time: _stopwatch.ElapsedMilliseconds / 1000.0);
         }
-
-
-        //public static string Update(int[] results, int steps)
-        //{
-        //    var strRet = String.Empty;
-        //    for (int i = 0; i < steps; i++)
-        //    {
-        //        strRet = _randoProcs.MakeUniformRands(d_floats, _area);
-        //    }
-
-        //    float[] res = new float[_area];
-        //    strRet = _cudaArray.CopyFloatsFromDevice(res, d_floats, _area);
-
-        //    for(var i=0; i<_area; i++)
-        //    {
-        //        results[i] = (res[i] > 0.5f) ? 1 : 0;
-        //    }
-
-        //    return strRet;
-        //}
-
-
 
     }
 }
