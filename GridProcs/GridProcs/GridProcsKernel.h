@@ -16,6 +16,8 @@ __global__ void IsingKernel(int *dataOut, int *dataIn, float *rands, unsigned in
 
 __global__ void IsingKernelPlusEnergy(int *dataOut, int *energyOut, int *dataIn, float *rands, unsigned int span, int alt, float t2, float t4);
 
+__global__ void IsingKernelVariableTemp(int *dataOut, int *energyOut, int *dataIn, float *rands, unsigned int span, int alt, float t2, float t4, bool flip);
+
 __global__ void LinearReduceKernel(int *d_out, const int *d_in, unsigned int length);
 
 __global__ void BlockReduce_16_Kernel(int *d_out, const int *d_in);

@@ -1,26 +1,27 @@
 ﻿using System;
-using System.Diagnostics;
+using System.Reactive.Subjects;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
-using System.Windows.Media;
 using System.Windows.Threading;
 using Sponge.Common;
-using Sponge.M2;
-using FS;
-using Utils;
+using Sponge.Model;
 
 namespace Sponge.ViewModel.Common
 {
-    public abstract class UpdateVm<T> : BindableBase
+    public class UpdateVm : BindableBase
     {
-        protected UpdateVm(T data)
+        private readonly Subject<ProcResult> _updateUI 
+            = new Subject<ProcResult>();
+        public IObservable<ProcResult> OnUpdateUI => _updateUI;
+
+        public UpdateVm(Func<int, ProcResult> proc)
         {
-            Data = data;
+            Proc = proc;
         }
 
-        public T Data { get; private set; }
+        public Func<int, ProcResult> Proc { get; private set; }
 
         string _errorMsg;
         public string ErrorMsg
@@ -71,11 +72,11 @@ namespace Sponge.ViewModel.Common
 
         #region local vars
 
-        private CancellationTokenSource _cancellationTokenSource = new CancellationTokenSource();
+        private CancellationTokenSource _cancellationTokenSource 
+            = new CancellationTokenSource();
 
         #endregion
-
-        protected abstract ProcResult<T> Proc(T state, int steps);
+  
 
         #region StepCommand
 
@@ -90,10 +91,10 @@ namespace Sponge.ViewModel.Common
             _cancellationTokenSource = new CancellationTokenSource();
             IsRunning = true;
             CommandManager.InvalidateRequerySuggested();
-            
+
             await Task.Run(() =>
             {
-                var res = Proc(Data, StepsPerUpdate);
+                var res = Proc(StepsPerUpdate);
                 Application.Current.Dispatcher.Invoke
                     (
                         () => UpdateUI(res),
@@ -127,7 +128,7 @@ namespace Sponge.ViewModel.Common
             {
                 for (var i = 0; (IsRunning & string.IsNullOrEmpty(errorMsg)); i++)
                 {
-                    var res = Proc(Data, StepsPerUpdate);
+                    var res = Proc(StepsPerUpdate);
                     errorMsg = res.ErrorMsg;
                     Application.Current.Dispatcher.Invoke
                         (
@@ -146,11 +147,12 @@ namespace Sponge.ViewModel.Common
             _cancellationTokenSource.Token);
         }
 
-        protected virtual void UpdateUI(ProcResult<T> result)
+        void UpdateUI(ProcResult result)
         {
             TotalSteps += result.StepsCompleted;
             Time += (result.TimeInMs / 1000);
             ErrorMsg = result.ErrorMsg;
+            _updateUI.OnNext(result);
         }
 
         private bool CanStart()

@@ -59,7 +59,7 @@ namespace Sponge.ViewModel.Common
             var results = new List<RV<float, Color>>();
             var cellSize = new Sz2<double>
              (
-                x:ImageSize.X/(MaxX.CurVal - MinX.CurVal),
+                x: ImageSize.X/(MaxX.CurVal - MinX.CurVal),
                 y: ImageSize.X / (MaxY.CurVal - MinY.CurVal)
               );
 

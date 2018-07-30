@@ -1,14 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 
-namespace Sponge.M2
+namespace Sponge.Model
 {
-    public class ProcResult<T>
+    public class ProcResult
     {
-        public ProcResult(T data, string err, int steps, double time)
+        public ProcResult(Dictionary<string, object> data, string err, 
+            int steps, double time)
         {
             Data = data;
             ErrorMsg = err;
@@ -16,10 +13,11 @@ namespace Sponge.M2
             TimeInMs = time;
         }
 
-        public T Data { get; private set; }
+        public Dictionary<string, object> Data { get; private set; }
         public string ErrorMsg { get; private set; }
         public int StepsCompleted { get; private set; }
         public double TimeInMs { get; private set; }
 
     }
+
 }

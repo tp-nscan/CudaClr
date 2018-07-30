@@ -3,7 +3,7 @@ using CuArrayClr;
 using GridProcsClr;
 using RandoClr;
 
-namespace Sponge.M2
+namespace Sponge.Model
 {
     public class SK_Ising2d
     {

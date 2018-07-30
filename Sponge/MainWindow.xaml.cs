@@ -1,5 +1,5 @@
 ﻿using Sponge.ViewModel.Common;
-using Sponge.M2;
+using Sponge.Model;
 
 namespace Sponge
 {
@@ -8,10 +8,11 @@ namespace Sponge
         private const int PicSpan = 1000;
 
         //private readonly FuncTestVm _funcTestVm;
-       // private readonly UpdateBitsVm _updateBitsVm;
+        //private readonly UpdateBitsVm _updateBitsVm;
         //private readonly UpdateClockVm _updateClockVm;
         //private readonly UpdateContVm _updateContVm;
-        private readonly UpdateBinVm _updateBinVm;
+        //private readonly UpdateGraphLatticeVm _updateGraphLatticeVm;
+        private readonly UpdateIsing2dVm _updateGraphVm;
 
         public MainWindow()
         {
@@ -23,7 +24,9 @@ namespace Sponge
             //UpdateBitsControl.DataContext = _updateBitsVm= new UpdateBitsVm();
             //_updateContVm = new UpdateContVm();
             //UpdateClockControl.DataContext = _updateContVm = new UpdateContVm();
-            ProcBinControl.DataContext = _updateBinVm = new UpdateBinVm(SimGridSamples.TestInt2());
+            //UpdateGraphLatticeControl.DataContext = _updateGraphLatticeVm = new UpdateGraphLatticeVm(SimGridSamples.TestInt2());
+            UpdateIsingControl.DataContext = _updateGraphVm = new UpdateIsing2dVm(SimGridSamples.TestInt2());
+
         }
 
     }

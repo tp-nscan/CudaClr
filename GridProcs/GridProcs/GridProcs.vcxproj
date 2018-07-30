@@ -90,7 +90,7 @@ xcopy "$(SolutionDir)$(PlatformName)\$(ConfigurationName)\$(TargetFileName)" "$(
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GridProcs.h" />
-    <ClInclude Include="kernel.h" />
+    <ClInclude Include="GridProcsKernel.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\Common\ClrUtils.cpp" />

@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.Windows.Media;
 using Sponge.Common;
 using FS;
@@ -44,6 +45,35 @@ namespace Sponge.ViewModel.Common
             MaxStrY = GraphData.yLabeler.Invoke(WbImageVm.ImageData.boundingRect.MaxY);
         }
 
+        public void SetRects(
+                        R<float> boundingRect,
+                        IEnumerable<RV<float, Color>> filledRects
+                    )
+        {
+                SetData(
+                            boundingRect: boundingRect,
+                            plotPoints: Enumerable.Empty<P2V<float, Color>>(),
+                            plotLines: Enumerable.Empty<LS2V<float, Color>>(),
+                            filledRects: filledRects,
+                            openRects: Enumerable.Empty<RV<float, Color>>()
+                        );
+        }
+
+        public void SetPoints(
+                R<float> boundingRect,
+                IEnumerable<P2V<float, Color>> plotPoints
+            )
+        {
+            SetData(
+                        boundingRect: boundingRect,
+                        plotPoints: plotPoints,
+                        plotLines: Enumerable.Empty<LS2V<float, Color>>(),
+                        filledRects: Enumerable.Empty<RV<float, Color>>(),
+                        openRects: Enumerable.Empty<RV<float, Color>>()
+                    );
+        }
+
+
         public void SetData(
             R<float> boundingRect,
             IEnumerable<P2V<float, Color>> plotPoints,
@@ -61,8 +91,9 @@ namespace Sponge.ViewModel.Common
              );
 
             MinStrX = GraphData.xLabeler.Invoke(WbImageVm.ImageData.boundingRect.MinX);
-            MinStrY = GraphData.yLabeler.Invoke(WbImageVm.ImageData.boundingRect.MinY);
             MaxStrX = GraphData.xLabeler.Invoke(WbImageVm.ImageData.boundingRect.MaxX);
+
+            MinStrY = GraphData.yLabeler.Invoke(WbImageVm.ImageData.boundingRect.MinY);
             MaxStrY = GraphData.yLabeler.Invoke(WbImageVm.ImageData.boundingRect.MaxY);
         }
 

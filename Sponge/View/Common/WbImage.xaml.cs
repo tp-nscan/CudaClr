@@ -71,7 +71,7 @@ namespace Sponge.View.Common
 
             RootImage.Source = _writeableBmp;
 
-            using (_writeableBmp.GetBitmapContext())
+            using (var bmc = _writeableBmp.GetBitmapContext())
             {
                 XFactor = ActualWidth / ImageData.boundingRect.Width();
                 YFactor = ActualHeight / ImageData.boundingRect.Height();
@@ -110,18 +110,33 @@ namespace Sponge.View.Common
                         plotLine.V
                         );
                 }
-
-
                 foreach (var plotPoint in ImageData.plotPoints)
                 {
-                    _writeableBmp.FillRectangle(
-                        XWindow(plotPoint.X, minX),
-                        YWindow(plotPoint.Y, ActualHeight, minY),
-                        XWindow(plotPoint.X + 1, minX),
-                        YWindow(plotPoint.Y + 1, ActualHeight, minY),
-                        plotPoint.V
+
+
+                    bmc.WriteableBitmap.SetPixel(
+                            x: XWindow(plotPoint.X, minX),
+                            y: YWindow(plotPoint.Y, ActualHeight, minY),
+                            color: plotPoint.V
+
                         );
+                        //_writeableBmp.SetPixel(
+                        //    x: XWindow(plotPoint.X, minX),
+                        //    y: YWindow(plotPoint.Y, ActualHeight, minY),
+                        //    color: plotPoint.V
+                        //);
                 }
+
+                //foreach (var plotPoint in ImageData.plotPoints)
+                //{
+                //    _writeableBmp.FillRectangle(
+                //        XWindow(plotPoint.X, minX),
+                //        YWindow(plotPoint.Y, ActualHeight, minY),
+                //        XWindow(plotPoint.X + 1, minX),
+                //        YWindow(plotPoint.Y + 1, ActualHeight, minY),
+                //        plotPoint.V
+                //        );
+                //}
 
 
             } // Invalidates on exit of using block

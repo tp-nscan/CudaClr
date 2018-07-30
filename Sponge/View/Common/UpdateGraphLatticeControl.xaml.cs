@@ -1,8 +1,9 @@
 ﻿namespace Sponge.View.Common
 {
-    public partial class FuncTestControl
+
+    public partial class UpdateGraphLatticeControl
     {
-        public FuncTestControl()
+        public UpdateGraphLatticeControl()
         {
             InitializeComponent();
         }

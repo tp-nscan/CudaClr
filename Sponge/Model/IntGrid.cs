@@ -1,6 +1,6 @@
 ﻿using Utils;
 
-namespace Sponge.M2
+namespace Sponge.Model
 {
     public class SimGrid<T>
     {

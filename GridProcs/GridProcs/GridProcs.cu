@@ -5,7 +5,7 @@
 #include <stdexcept>
 #include <sstream>
 #include <string>
-#include "kernel.h"
+#include "GridProcsKernel.h"
 #include "..\..\Common\ClrUtils.h"
 
 
@@ -81,8 +81,7 @@ extern "C" __declspec(dllexport) BSTR DllRunMetroIsingKernel(int *data, float *r
 }
 
 
-extern "C" __declspec(dllexport) BSTR DllRunMetroIsingKernelCopy
-	(int *dataOut, int *dataIn, float *rands, float temp, unsigned int span, int alt)
+extern "C" __declspec(dllexport) BSTR DllRunMetroIsingKernelCopy(int *dataOut, int *dataIn, float *rands, float temp, unsigned int span, int alt)
 {
 	std::string funcName = "DllRunMetroIsingKernelCopy";
 	try
@@ -100,15 +99,15 @@ extern "C" __declspec(dllexport) BSTR DllRunMetroIsingKernelCopy
 }
 
 
-
 extern "C" __declspec(dllexport) BSTR DllRunIsingKernel(int *dataOut, int *dataIn, float *rands, unsigned int span, int alt, float t2, float t4)
 {
 	std::string funcName = "DllRunIsingKernel";
 	try
 	{
-		int bt = SqrtPow2Lb(span);
-		dim3 b = dim3(bt, bt);
-		IsingKernel<<<b, b>>>(dataOut, dataIn, rands, span, alt, t2, t4);
+		int td = SqrtPow2Lb(span);
+		dim3 t = dim3(td, td);
+		dim3 b = dim3(span / td, span / td);
+		IsingKernel<<<b, t>>>(dataOut, dataIn, rands, span, alt, t2, t4);
 		return BSTR();
 	}
 	catch (std::runtime_error &e)
@@ -124,9 +123,29 @@ extern "C" __declspec(dllexport) BSTR DllRunIsingKernelPlusEnergy(int *dataOut, 
 	std::string funcName = "DllRunIsingKernelPlusEnergy";
 	try
 	{
-		int bt = SqrtPow2Lb(span);
-		dim3 b = dim3(bt, bt);
-		IsingKernelPlusEnergy <<<b, b>>>(dataOut, energyOut, dataIn, rands, span, alt, t2, t4);
+		int td = SqrtPow2Lb(span);
+		dim3 t = dim3(td, td);
+		dim3 b = dim3(span / td, span / td);
+		IsingKernelPlusEnergy <<<b, t>>>(dataOut, energyOut, dataIn, rands, span, alt, t2, t4);
+		return BSTR();
+	}
+	catch (std::runtime_error &e)
+	{
+		std::string err = e.what();
+		return RuntimeErrBSTR(err, funcName);
+	}
+}
+
+
+extern "C" __declspec(dllexport) BSTR DllRunIsingKernelVariableTemp(int *dataOut, int *energyOut, int *dataIn, float *rands, unsigned int span, int alt, float t2, float t4, bool flip)
+{
+	std::string funcName = "DllRunIsingKernelVariableTemp";
+	try
+	{
+		int td = SqrtPow2Lb(span);
+		dim3 t = dim3(td, td);
+		dim3 b = dim3(span / td, span / td);
+		IsingKernelVariableTemp<< <b, t >> >(dataOut, energyOut, dataIn, rands, span, alt, t2, t4, flip);
 		return BSTR();
 	}
 	catch (std::runtime_error &e)
@@ -158,7 +177,9 @@ extern "C" __declspec(dllexport) BSTR DllRunBlockReduce_16_Kernel(int *d_out, co
 	std::string funcName = "DllRunBlockReduce_16";
 	try
 	{
-		BlockReduce_16_Kernel <<<span*span / 256, 256 >>>(d_out, d_in);
+		dim3 b = dim3(span / 16, span / 16);
+		dim3 t = dim3(16, 16);
+		BlockReduce_16_Kernel <<<b, t>>>(d_out, d_in);
 		return BSTR();
 	}
 	catch (std::runtime_error &e)
@@ -174,7 +195,9 @@ extern "C" __declspec(dllexport) BSTR DllRunBlockReduce_32_Kernel(int *d_out, co
 	std::string funcName = "DllRunBlockReduce_32";
 	try
 	{
-		BlockReduce_16_Kernel <<<span*span / 1024, 1024 >> >(d_out, d_in);
+		dim3 b = dim3(span/32, span/32);
+		dim3 t = dim3(32, 32);
+		BlockReduce_32_Kernel <<<b, t >> >(d_out, d_in);
 
 		return BSTR();
 	}

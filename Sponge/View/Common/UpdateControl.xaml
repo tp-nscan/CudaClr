@@ -15,7 +15,9 @@
             <TextBlock Margin="0,5,0,0">Total Steps</TextBlock>
             <TextBlock Text="{Binding TotalSteps}" FontSize="16" FontWeight="Bold"/>
             <TextBlock Margin="0,5,0,0">Time</TextBlock>
-            <TextBlock Text="{Binding Time}" FontSize="16" FontWeight="Bold"/>
+            <Viewbox Stretch="Uniform" Height="22">
+                <TextBlock Text="{Binding Time, StringFormat=N2}" FontSize="16" FontWeight="Bold" Height="22"/>
+            </Viewbox>
 
             <TextBlock Margin="0,5,0,0">Steps / Update</TextBlock>
             <TextBox Text="{Binding StepsPerUpdate}"/>

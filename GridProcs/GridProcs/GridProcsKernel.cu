@@ -1,7 +1,7 @@
 #include "cuda_runtime.h"
 #include "device_launch_parameters.h"
 #include <stdio.h>
-#include "kernel.h"
+#include "GridProcsKernel.h"
 
 
 //int main()
@@ -225,6 +225,7 @@ __global__ void IsingKernel(int *dataOut, int *dataIn, float *rands, unsigned in
 	}
 }
 
+
 __global__ void IsingKernelPlusEnergy(int *dataOut, int *energyOut, int *dataIn, float *rands, unsigned int span, int alt, float t2, float t4)
 {
 	for (int i = threadIdx.y + blockDim.y*blockIdx.y; i < span; i += gridDim.y*blockDim.y)
@@ -270,6 +271,68 @@ __global__ void IsingKernelPlusEnergy(int *dataOut, int *energyOut, int *dataIn,
 				res = -c;
 			}
 			else if ((q = 4) && (rr < t4))
+			{
+				res = -c;
+			}
+			dataOut[offset] = res;
+		}
+	}
+}
+
+
+__global__ void IsingKernelVariableTemp(int *dataOut, int *energyOut, int *dataIn, float *rands, unsigned int span, int alt, float t2, float t4, bool flip)
+{
+	float temp2 = t2;
+	float temp4 = t4;
+	if (flip)
+	{
+		temp2 = t4;
+		temp4 = t2;
+	}
+
+	for (int i = threadIdx.y + blockDim.y*blockIdx.y; i < span; i += gridDim.y*blockDim.y)
+	{
+		for (int j = threadIdx.x + blockIdx.x*blockDim.x; j < span; j += blockDim.x*gridDim.x)
+		{
+			int offset = i * span + j;
+			int c = dataIn[offset];
+
+			int im = (i - 1 + span) % span;
+			int ip = (i + 1) % span;
+			int jm = (j - 1 + span) % span;
+			int jp = (j + 1) % span;
+
+			int top = dataIn[im * span + j];
+			int l = dataIn[i * span + jm];
+			int r = dataIn[i * span + jp];
+			int bot = dataIn[ip * span + j];
+
+
+			int q = (top + l + r + bot) * c;
+			energyOut[offset] = q;
+
+			if (((i + j + alt) % 2) == 0)
+			{
+				dataOut[offset] = c;
+				return;
+			}
+
+			float rr = rands[offset];
+
+			int res = c;
+			if (q < 0)
+			{
+				res = -c;
+			}
+			else if ((q = 0) && (rr < 0.5))
+			{
+				res = -c;
+			}
+			else if ((q = 2) && (rr < temp2))
+			{
+				res = -c;
+			}
+			else if ((q = 4) && (rr < temp4))
 			{
 				res = -c;
 			}

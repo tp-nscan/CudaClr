@@ -109,12 +109,11 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="M2\Gol2.cs" />
-    <Compile Include="M2\IntGrid.cs" />
-    <Compile Include="M2\IsingBitsMono.cs" />
-    <Compile Include="M2\IsingBitsDual.cs" />
-    <Compile Include="M2\ProcResult.cs" />
-    <Compile Include="M2\SK_Ising2d.cs" />
+    <Compile Include="Model\Gol2.cs" />
+    <Compile Include="Model\IntGrid.cs" />
+    <Compile Include="Model\IsingBitsDual.cs" />
+    <Compile Include="Model\ProcResult.cs" />
+    <Compile Include="Model\SK_Ising2d.cs" />
     <Compile Include="ViewModel\Common\ColorSequenceVm.cs" />
     <Compile Include="ViewModel\Common\GraphLatticeVm.cs" />
     <Compile Include="ViewModel\Common\GraphTilesVm.cs" />
@@ -123,8 +122,7 @@
     <Compile Include="ViewModel\Common\LegendVmCont.cs" />
     <Compile Include="ViewModel\Common\LegendVmClock.cs" />
     <Compile Include="ViewModel\Common\TileVm.cs" />
-    <Compile Include="ViewModel\Common\UpdateBinVm.cs" />
-    <Compile Include="ViewModel\Common\UpdateClockVm.cs" />
+    <Compile Include="ViewModel\Common\UpdateIsing2dVm.cs" />
     <Compile Include="ViewModel\Common\UpdateVm.cs" />
     <Compile Include="ViewModel\Design\Common\GraphLatticeVmD.cs" />
     <Compile Include="ViewModel\Design\Common\GraphTilesVmD.cs" />
@@ -134,9 +132,6 @@
     <Compile Include="ViewModel\Design\Common\WbImageVm.cs" />
     <Compile Include="View\Common\ColorSequenceControl.xaml.cs">
       <DependentUpon>ColorSequenceControl.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="View\Common\FuncTestControl.xaml.cs">
-      <DependentUpon>FuncTestControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\Common\GraphControl.xaml.cs">
       <DependentUpon>GraphControl.xaml</DependentUpon>
@@ -153,8 +148,11 @@
     <Compile Include="View\Common\LegendControl.xaml.cs">
       <DependentUpon>LegendControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="View\Common\ProcBinControl.xaml.cs">
-      <DependentUpon>ProcBinControl.xaml</DependentUpon>
+    <Compile Include="View\Common\UpdateIsingControl.xaml.cs">
+      <DependentUpon>UpdateIsingControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\Common\UpdateGraphLatticeControl.xaml.cs">
+      <DependentUpon>UpdateGraphLatticeControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\Common\TilesControl.xaml.cs">
       <DependentUpon>TilesControl.xaml</DependentUpon>
@@ -195,10 +193,6 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="View\Common\FuncTestControl.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Page Include="View\Common\GraphControl.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -219,7 +213,11 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="View\Common\ProcBinControl.xaml">
+    <Page Include="View\Common\UpdateIsingControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\Common\UpdateGraphLatticeControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -245,13 +243,6 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Model\CaProcs.cs" />
-    <Compile Include="Model\GolProcs.cs" />
-    <Compile Include="Model\IsingProcs.cs" />
-    <Compile Include="Model\MandyProc.cs" />
-    <Compile Include="Model\PoincareProcs.cs" />
-    <Compile Include="Model\RandProcs.cs" />
-    <Compile Include="Model\ResIntProcs.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
