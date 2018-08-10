@@ -1,4 +1,6 @@
-﻿using Utils;
+﻿using System.Collections;
+using System.Linq;
+using Utils;
 
 namespace Sponge.Model
 {
@@ -46,24 +48,33 @@ namespace Sponge.Model
 
     public static class SimGridSamples
     {
-        public static SimGrid<int> TestInt()
+        public static SimGrid<int> SquareRingBits(uint span)
         {
-            return new SimGrid<int>(
-                name: "TestInt",
-                width: 128,
-                height: 128,
-                data: Utils.IntArrayGen.Ring(20, 46, 128, 24).ToIntBits());
-        }
-
-        public static SimGrid<int> TestInt2()
-        {
-            uint span = 256;
             return new SimGrid<int>(
                 name: "TestInt",
                 width: span,
                 height: span,
-                data: Utils.IntArrayGen.RandInts2(1233, span * span, 0.53).ToIntBits());
+                data: Utils.IntArrayGen.Ring(span/6, span/3, span, 2).ToIntBits());
         }
+
+        public static SimGrid<int> SquareRandBits(uint span, int seed)
+        {
+            return new SimGrid<int>(
+                name: "TestInt",
+                width: span,
+                height: span,
+                data: Utils.IntArrayGen.RandInts2(seed, span * span, 0.5).ToIntBits());
+        }
+
+        public static SimGrid<int> UniformVals(uint span, int val)
+        {
+            return new SimGrid<int>(
+                name: "TestInt",
+                width: span,
+                height: span,
+                data: Enumerable.Repeat(val, (int)(span* span)).ToArray());
+        }
+
     }
 
 }

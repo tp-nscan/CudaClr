@@ -8,11 +8,11 @@
         mc:Ignorable="d"
         Title="MainWindow" Height="1200" Width="1200">
     <Grid>
-
         <common:UpdateIsingControl x:Name="UpdateIsingControl"/>
-        <!--<common:UpdateGraphLatticeControl x:Name="UpdateGraphLatticeControl"/>-->
-        <!--<common:FuncTestControl x:Name="FuncTestControl" />-->
-        <!--<common:UpdateClockControl x:Name="UpdateClockControl" />-->
+        <!--<common:UpdateGridControl x:Name="UpdateGridControl"/>-->
+        <!--<common:UpdateIsingDualTempControl x:Name="UpdateIsingDualTempControl"/>-->
+        <!--<common:UpdateDualIsingControl x:Name="UpdateDualIsingControl"/>-->
+        <!--<common:UpdateIsingControl x:Name="UpdateIsingControl"/>-->
         <!--<common:UpdateBitsControl x:Name="UpdateBitsControl" />-->
     </Grid>
 </Window>

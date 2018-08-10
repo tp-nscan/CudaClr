@@ -1,4 +1,4 @@
-﻿<UserControl x:Class="Sponge.View.Common.UpdateGraphLatticeControl"
+﻿<UserControl x:Class="Sponge.View.Common.UpdateGridControl"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
@@ -14,8 +14,10 @@
             <ColumnDefinition/>
         </Grid.ColumnDefinitions>
 
-        <StackPanel> 
-            <local:UpdateControl/>
+        <StackPanel>
+            
+            <local:UpdateControl DataContext="{Binding UpdateVm}"/>
+
             <TextBlock Margin="0,5,0,0">Beta</TextBlock>
             <TextBox Text="{Binding Beta}" FontSize="16" FontWeight="Bold"/>
             <TextBlock Margin="0,5,0,0">Energy</TextBlock>

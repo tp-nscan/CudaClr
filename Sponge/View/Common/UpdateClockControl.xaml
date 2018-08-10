@@ -25,25 +25,18 @@
             Grid.Row="1" Grid.Column="1" Margin="0,5,0,0"/>
 
         <StackPanel Grid.Row="2">
-            <Button Command="{Binding StepCommand}" FontSize="16">step</Button>
-            <Button Command="{Binding StartCommand}" FontSize="16">start</Button>
-            <Button Command="{Binding StopCommand}" FontSize="16">stop</Button>
-            <Button Command="{Binding ResetCommand}" FontSize="16">reset</Button>
-            <TextBlock Margin="0,5,0,0">Step</TextBlock>
-            <TextBlock Text="{Binding Step}" FontSize="16" FontWeight="Bold"/>
-            
-            <TextBlock Margin="0,5,0,0">Time</TextBlock>
-            <TextBlock Text="{Binding Time}" FontSize="16" FontWeight="Bold"/>
-            
-            <TextBlock Margin="0,5,0,0">GpuSteps</TextBlock>
-            <TextBox Text="{Binding GpuSteps}"/>
+            <common:UpdateControl DataContext="{Binding UpdateVm}"/>
 
-            <TextBlock Margin="0,5,0,0">Step Size</TextBlock>
-            <TextBox Text="{Binding StepSize}" />
-            
-            <TextBlock Margin="0,5,0,0">Noise</TextBlock>
-            <TextBox Text="{Binding Noise}"/>
-            
+            <TextBlock Margin="0,5,0,0">Beta</TextBlock>
+            <Viewbox Stretch="Uniform" Height="22">
+                <TextBox Text="{Binding Beta, StringFormat=N5}" FontSize="16" FontWeight="Bold" Height="22"/>
+            </Viewbox>
+
+            <TextBlock Margin="0,5,0,0">Energy</TextBlock>
+            <Viewbox Stretch="Uniform" Height="22">
+                <TextBlock Text="{Binding Energy, StringFormat=N5}" FontSize="16" FontWeight="Bold" Height="22"/>
+            </Viewbox>
+
         </StackPanel>
 
         <common:GraphLatticeControl x:Name="GraphLatticeControl" DataContext="{Binding GraphLatticeVm}"

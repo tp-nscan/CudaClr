@@ -33,7 +33,7 @@
     <PlatformToolset>v141</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
-    <ConfigurationType>Application</ConfigurationType>
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>MultiByte</CharacterSet>
@@ -62,14 +62,16 @@
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Console</SubSystem>
-      <AdditionalDependencies>cublas.lib;curand.lib;cudart_static.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>cublas.lib;curand.lib;cudart_static.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib</AdditionalDependencies>
     </Link>
     <CudaCompile>
       <TargetMachinePlatform>64</TargetMachinePlatform>
       <Include>c:\ProgramData\NVIDIA Corporation\CUDA Samples\v9.2\common\inc\</Include>
     </CudaCompile>
     <PostBuildEvent>
-      <Command>xcopy "$(SolutionDir)$(PlatformName)\$(ConfigurationName)\Cublas.dll" "$(SolutionDir)Cublas.Test\bin\$(PlatformName)\$(ConfigurationName)\" /Y</Command>
+      <Command>xcopy "$(SolutionDir)$(PlatformName)\$(ConfigurationName)\$(TargetFileName)" "$(SolutionDir)$(TargetName)\$(TargetName).Clr\$(PlatformName)\$(ConfigurationName)\" /Y
+xcopy "$(SolutionDir)$(PlatformName)\$(ConfigurationName)\$(TargetName).lib" "$(SolutionDir)$(TargetName)\$(TargetName).Clr\$(PlatformName)\$(ConfigurationName)\" /Y
+xcopy "$(SolutionDir)$(PlatformName)\$(ConfigurationName)\$(TargetFileName)" "$(SolutionDir)Sponge\bin\$(PlatformName)\$(ConfigurationName)\" /Y</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -85,11 +87,16 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <SubSystem>Console</SubSystem>
-      <AdditionalDependencies>cudart_static.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>cublas.lib;curand.lib;cudart_static.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib</AdditionalDependencies>
     </Link>
     <CudaCompile>
       <TargetMachinePlatform>64</TargetMachinePlatform>
     </CudaCompile>
+    <PostBuildEvent>
+      <Command>xcopy "$(SolutionDir)$(PlatformName)\$(ConfigurationName)\$(TargetFileName)" "$(SolutionDir)$(TargetName)\$(TargetName).Clr\$(PlatformName)\$(ConfigurationName)\" /Y
+xcopy "$(SolutionDir)$(PlatformName)\$(ConfigurationName)\$(TargetName).lib" "$(SolutionDir)$(TargetName)\$(TargetName).Clr\$(PlatformName)\$(ConfigurationName)\" /Y
+xcopy "$(SolutionDir)$(PlatformName)\$(ConfigurationName)\$(TargetFileName)" "$(SolutionDir)Sponge\bin\$(PlatformName)\$(ConfigurationName)\" /Y</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

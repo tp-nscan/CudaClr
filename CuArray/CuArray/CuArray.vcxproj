@@ -24,7 +24,7 @@
     <CLRSupport>false</CLRSupport>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
-    <ConfigurationType>Application</ConfigurationType>
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>MultiByte</CharacterSet>
@@ -82,12 +82,19 @@ xcopy "$(SolutionDir)$(PlatformName)\$(ConfigurationName)\$(TargetFileName)" "$(
     <CudaCompile>
       <TargetMachinePlatform>64</TargetMachinePlatform>
     </CudaCompile>
+    <PostBuildEvent>
+      <Command>xcopy "$(SolutionDir)$(PlatformName)\$(ConfigurationName)\$(TargetFileName)" "$(SolutionDir)$(TargetName)\$(TargetName).Clr\$(PlatformName)\$(ConfigurationName)\" /Y
+xcopy "$(SolutionDir)$(PlatformName)\$(ConfigurationName)\$(TargetName).lib" "$(SolutionDir)$(TargetName)\$(TargetName).Clr\$(PlatformName)\$(ConfigurationName)\" /Y
+xcopy "$(SolutionDir)$(PlatformName)\$(ConfigurationName)\$(TargetFileName)" "$(SolutionDir)Sponge\bin\$(PlatformName)\$(ConfigurationName)\" /Y</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="CuArray.h" />
+    <ClInclude Include="CuArrayKernels.h" />
   </ItemGroup>
   <ItemGroup>
     <CudaCompile Include="CuArray.cu" />
+    <CudaCompile Include="CuArrayKernels.cu" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\Common\ClrUtils.cpp" />

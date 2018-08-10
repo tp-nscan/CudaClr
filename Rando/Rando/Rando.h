@@ -14,7 +14,7 @@ extern "C" __declspec(dllexport) BSTR DllMakeGenerator32(int seed);
 
 extern "C" __declspec(dllexport) BSTR DllDestroyGenerator();
 
-extern "C" __declspec(dllexport) BSTR DllMakeRandomInts(int *devPtr, unsigned int numRands);
+extern "C" __declspec(dllexport) BSTR DllMakeRandomInts(unsigned int *devPtr, unsigned int numRands);
 
 extern "C" __declspec(dllexport) BSTR DllMakeUniformRands(float *devPtr, unsigned int numRands);
 

@@ -16,11 +16,11 @@ using System.Windows.Shapes;
 namespace Sponge.View.Common
 {
     /// <summary>
-    /// Interaction logic for UpdateBitsControl.xaml
+    /// Interaction logic for UpdateDualIsingControl.xaml
     /// </summary>
-    public partial class UpdateBitsControl : UserControl
+    public partial class UpdateDualIsingControl : UserControl
     {
-        public UpdateBitsControl()
+        public UpdateDualIsingControl()
         {
             InitializeComponent();
         }

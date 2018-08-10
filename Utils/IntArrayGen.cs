@@ -10,14 +10,12 @@ namespace Utils
             return source.Select(i => (i > 0.5) ? 1 : -1).ToArray();
         }
 
-
         public static int[] Zippy(int span)
         {
             return Enumerable.Range(0, span * span)
                              .Select(p => (p / span) % 256)
                              .ToArray();
         }
-
 
         public static uint IntDistFromCenter(uint index, uint span)
         {
@@ -42,7 +40,6 @@ namespace Utils
             return outputs;
         }
 
-
         public static int[] Dot(uint span, int modulus)
         {
             var outputs = new int[span * span];
@@ -51,7 +48,6 @@ namespace Utils
 
             return outputs;
         }
-
 
         public static int[] Uniform(uint len, int value)
         {
@@ -62,7 +58,6 @@ namespace Utils
             }
             return outputs;
         }
-
 
         public static int[] Spot(uint spotSz, uint span, int modulus)
         {
@@ -81,8 +76,7 @@ namespace Utils
             return outputs;
         }
 
-
-        public static int[] Ring(int innerD, int outerD, uint span, int modulus)
+        public static int[] Ring(uint innerD, uint outerD, uint span, int modulus)
         {
             var outputs = new int[span * span];
 
@@ -99,7 +93,7 @@ namespace Utils
             return outputs;
         }
 
-        public static int[] DoubleRing(int innerD, int midD, int outerD, uint span, int modulus)
+        public static int[] DoubleRing(uint innerD, uint midD, uint outerD, uint span, int modulus)
         {
             var outputs = new int[span * span];
 
@@ -116,7 +110,7 @@ namespace Utils
             return outputs;
         }
 
-        public static int[] MultiRing(int modD, int outerD, uint span, uint modulus)
+        public static int[] MultiRing(uint modD, uint outerD, uint span, uint modulus)
         {
             var outputs = new int[span * span];
 
@@ -147,6 +141,17 @@ namespace Utils
             return outputs;
         }
 
+        public static uint[] RandUInts(int seed, uint arrayLen)
+        {
+            var randy = new Random(seed);
+            var outputs = new uint[arrayLen];
+
+            for (var i = 0; i < arrayLen; i++)
+            {
+                outputs[i] = (uint)randy.Next();
+            }
+            return outputs;
+        }
 
         public static int[] RandInts2(int seed, uint arrayLen, double fracOnes)
         {

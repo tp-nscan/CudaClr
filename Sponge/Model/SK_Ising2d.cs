@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using CuArrayClr;
 using GridProcsClr;
 using RandoClr;
@@ -69,11 +70,21 @@ namespace Sponge.Model
         }
 
 
-        public static string Update(int[] results, int steps)
+        public static ProcResult Update(int[] results, int steps)
         {
             var strRet = String.Empty;
 
-            return strRet;
+
+            var dRet = new Dictionary<string, object>();
+
+            //dRet["Grid"] = new SimGrid<int>(name: "UpdateMetro",
+            //                                width: _span,
+            //                                height: _span,
+            //                                data: res);
+            return new ProcResult(data: dRet,
+                                   err: strRet,
+                                   steps: steps,
+                                   time: 0);
         }
 
 

@@ -4,35 +4,6 @@
 #include "GridProcsKernel.h"
 
 
-//int main()
-//{
-//    const int arraySize = 5;
-//    const int a[arraySize] = { 1, 2, 3, 4, 5 };
-//    const int b[arraySize] = { 10, 20, 30, 40, 50 };
-//    int c[arraySize] = { 0 };
-//
-//    // Add vectors in parallel.
-//    cudaError_t cudaStatus = addWithCuda(c, a, b, arraySize);
-//    if (cudaStatus != cudaSuccess) {
-//        fprintf(stderr, "addWithCuda failed!");
-//        return 1;
-//    }
-//
-//    printf("{1,2,3,4,5} + {10,20,30,40,50} = {%d,%d,%d,%d,%d}\n",
-//        c[0], c[1], c[2], c[3], c[4]);
-//
-//    // cudaDeviceReset must be called before exiting in order for profiling and
-//    // tracing tools such as Nsight and Visual Profiler to show complete traces.
-//    cudaStatus = cudaDeviceReset();
-//    if (cudaStatus != cudaSuccess) {
-//        fprintf(stderr, "cudaDeviceReset failed!");
-//        return 1;
-//    }
-//
-//    return 0;
-//}
-
-
 __global__ void GolKernel(int *output, int *input, unsigned int span)
 {
 	for (int i = threadIdx.y + blockDim.y*blockIdx.y; i < span; i += gridDim.y*blockDim.y)
@@ -109,35 +80,7 @@ __global__ void AltKernelCopy(int *dataOut, int *dataIn, unsigned int span, int 
 }
 
 
-__global__ void MetroIsingKernel(int *data, float *rands, float temp, unsigned int span, int alt)
-{
-	for (int i = threadIdx.y + blockDim.y*blockIdx.y; i < span; i += gridDim.y*blockDim.y)
-	{
-		int tw = (i + alt) % 2;
-
-		for (int j = threadIdx.x * 2 + tw + blockIdx.x*blockDim.x; j < span; j += blockDim.x*gridDim.x)
-		{
-			int offset = i * span + j;
-
-			int im = (i - 1 + span) % span;
-			int ip = (i + 1) % span;
-			int jm = (j - 1 + span) % span;
-			int jp = (j + 1) % span;
-
-			int top = data[im * span + j];
-			int l = data[i * span + jm];
-			int r = data[i * span + jp];
-			int bot = data[ip * span + j];
-
-			int q = (top + l + r + bot);
-			float tot = q + rands[i] * temp;
-			data[offset] = (tot > 0) ? 1 : -1;
-		}
-	}
-}
-
-
-__global__ void MetroIsingKernelCopy(int *dataOut, int *dataIn, float *rands, float temp, unsigned int span, int alt)
+__global__ void MetroIsingKernel(int *dataOut, int *dataIn, float *rands, float temp, unsigned int span, int alt)
 {
 	for (int i = threadIdx.y + blockDim.y*blockIdx.y; i < span; i += gridDim.y*blockDim.y)
 	{
@@ -203,30 +146,38 @@ __global__ void IsingKernel(int *dataOut, int *dataIn, float *rands, unsigned in
 			int q = (top + l + r + bot) * c;
 			float rr = rands[offset];
 
-			int res = c;
+			int goob = 0;
+			int res = 0;
 			if (q < 0)
 			{
 				res = -c;
 			}
-			else if ((q = 0) && (rr < 0.5))
+			else if ((q == 0) && (rr < 0.5))
 			{
 				res = -c;
 			}
-			else if ((q = 2) && (rr < t2))
+			else if ((q == 2) && (rr < t2))
 			{
 				res = -c;
 			}
-			else if ((q = 4) && (rr < t4))
+			else if ((q == 4) && (rr < t4))
 			{
 				res = -c;
 			}
+			else
+			{
+				res = c;
+			}
+
+			goob = res;
+
 			dataOut[offset] = res;
 		}
 	}
 }
 
 
-__global__ void IsingKernelPlusEnergy(int *dataOut, int *energyOut, int *dataIn, float *rands, unsigned int span, int alt, float t2, float t4)
+__global__ void IsingKernelEnergy(int *energyOut, int *dataIn, unsigned int span)
 {
 	for (int i = threadIdx.y + blockDim.y*blockIdx.y; i < span; i += gridDim.y*blockDim.y)
 	{
@@ -248,48 +199,13 @@ __global__ void IsingKernelPlusEnergy(int *dataOut, int *energyOut, int *dataIn,
 
 			int q = (top + l + r + bot) * c;
 			energyOut[offset] = q;
-
-			if (((i + j + alt) % 2) == 0)
-			{
-				dataOut[offset] = c;
-				return;
-			}
-
-			float rr = rands[offset];
-
-			int res = c;
-			if (q < 0)
-			{
-				res = -c;
-			}
-			else if ((q = 0) && (rr < 0.5))
-			{
-				res = -c;
-			}
-			else if ((q = 2) && (rr < t2))
-			{
-				res = -c;
-			}
-			else if ((q = 4) && (rr < t4))
-			{
-				res = -c;
-			}
-			dataOut[offset] = res;
 		}
 	}
 }
 
 
-__global__ void IsingKernelVariableTemp(int *dataOut, int *energyOut, int *dataIn, float *rands, unsigned int span, int alt, float t2, float t4, bool flip)
+__global__ void IsingKernelPlusEnergy(int *dataOut, int *energyOut, int *dataIn, float *rands, unsigned int span, int alt, float *tts)
 {
-	float temp2 = t2;
-	float temp4 = t4;
-	if (flip)
-	{
-		temp2 = t4;
-		temp4 = t2;
-	}
-
 	for (int i = threadIdx.y + blockDim.y*blockIdx.y; i < span; i += gridDim.y*blockDim.y)
 	{
 		for (int j = threadIdx.x + blockIdx.x*blockDim.x; j < span; j += blockDim.x*gridDim.x)
@@ -307,34 +223,17 @@ __global__ void IsingKernelVariableTemp(int *dataOut, int *energyOut, int *dataI
 			int r = dataIn[i * span + jp];
 			int bot = dataIn[ip * span + j];
 
-
 			int q = (top + l + r + bot) * c;
 			energyOut[offset] = q;
-
-			if (((i + j + alt) % 2) == 0)
-			{
-				dataOut[offset] = c;
-				return;
-			}
+			int phase = (i + j + alt) % 2;
 
 			float rr = rands[offset];
+			float thresh = tts[q + 4 + phase];
 
 			int res = c;
-			if (q < 0)
+			if (rr < thresh)
 			{
-				res = -c;
-			}
-			else if ((q = 0) && (rr < 0.5))
-			{
-				res = -c;
-			}
-			else if ((q = 2) && (rr < temp2))
-			{
-				res = -c;
-			}
-			else if ((q = 4) && (rr < temp4))
-			{
-				res = -c;
+				res = c * (-1);
 			}
 			dataOut[offset] = res;
 		}
@@ -342,103 +241,177 @@ __global__ void IsingKernelVariableTemp(int *dataOut, int *energyOut, int *dataI
 }
 
 
-__global__ void LinearReduceKernel(int *d_out, const int *d_in, unsigned int length)
+__global__ void k_RandBlockPick(int *dataOut, unsigned int *rands, unsigned int block_size)
 {
-	__shared__ float cache[512];
+	unsigned int blocks_per_span = gridDim.x * blockDim.x;
+	unsigned int span = blocks_per_span * block_size;
+	unsigned int block_row = threadIdx.y + blockIdx.y * blockDim.y;
+	unsigned int block_col = threadIdx.x + blockIdx.x * blockDim.x;
+	unsigned int indexIn = block_col + block_row * blocks_per_span;
 
-	int tid = threadIdx.x + blockIdx.x * blockDim.x;
-	int cacheIndex = threadIdx.x;
+	unsigned int block_mask = block_size - 1;
+	unsigned int randy = rands[indexIn] -1  ;
+	unsigned int randy2 = randy >> 8;
+	unsigned int in_block_row = randy & block_mask;
+	unsigned int in_block_col = randy2 & block_mask;
 
-	int cumer = 0;
-	while (tid < length)
+	dataOut[in_block_col + block_col * block_size + (in_block_row + block_row * block_size) * span] += 1;
+}
+
+
+__global__ void k_IsingRb(int *dataOut, int *energyOut, unsigned int *index_rands, float *temp_rands, unsigned int block_size, float t2, float t4)
+{
+	unsigned int blocks_per_span = gridDim.x * blockDim.x;
+	unsigned int span = blocks_per_span * block_size;
+	unsigned int block_row = threadIdx.y + blockIdx.y * blockDim.y;
+	unsigned int block_col = threadIdx.x + blockIdx.x * blockDim.x;
+	unsigned int indexIn = block_col + block_row * blocks_per_span;
+
+	unsigned int block_mask = block_size - 1;
+	unsigned int randy = index_rands[indexIn];
+	unsigned int randy2 = randy >> 8;
+	unsigned int in_block_row = randy & block_mask;
+	unsigned int in_block_col = randy2 & block_mask;
+
+	unsigned int row = in_block_row + block_row * block_size;
+	unsigned int col = in_block_col + block_col * block_size;
+	unsigned int index = col + row * span;
+
+
+	int c = dataOut[index];
+
+	unsigned int row_m = (row - 1 + span) % span;
+	unsigned int row_p = (row + 1) % span;
+	unsigned int col_m = (col - 1 + span) % span;
+	unsigned int col_p = (col + 1) % span;
+
+	unsigned int top = dataOut[row_m * span + col];
+	unsigned int l = dataOut[row * span + col_m];
+	unsigned int r = dataOut[row * span + col_p];
+	unsigned int bot = dataOut[row_p * span + col];
+
+	int q = (top + l + r + bot) * c;
+	energyOut[index] = q;
+
+	float rr = temp_rands[indexIn];
+
+	int res = 0;
+
+	if (rr > .5)
 	{
-		cumer += d_in[tid];
-		tid += blockDim.x * gridDim.x;
+		res = -1;
 	}
-	cache[cacheIndex] = cumer;
+	else {
 
-	__syncthreads();
-
-	int i = blockDim.x / 2;
-	while (i != 0)
-	{
-		if (cacheIndex < i)
-			cache[cacheIndex] += cache[cacheIndex + i];
-		__syncthreads();
-		i /= 2;
-	}
-
-	if (cacheIndex == 0)
-	{
-		for (int i = 0; i < blockDim.x; i++)
+		if (q == -4)
 		{
-			d_out[blockIdx.x] = cache[0];
+			res = (rr > t4) ? -c : c;
+		}
+		else if (q == -2)
+		{
+			res = (rr > t2) ? -c : c;
+		}
+		else if (q == 0)
+		{
+			res = (rr < 0.5) ? -c : c;
+		}
+		else if (q == 2)
+		{
+			res = (rr < t2) ? -c : c;
+		}
+		else if (q == 4)
+		{
+			res = (rr < t4) ? -c : c;
 		}
 	}
+	////if ((q == -4) && (rr > t4))
+	////{
+	////	res = -c;
+	////}
+	////else if ((q == -2) && (rr > t2))
+	////{
+	////	res = -c;
+	////}
+	//if (q < 0)
+	//{
+	//	res = -c;
+	//}
+	//else if ((q = 0) && (rr < 0.5))
+	//{
+	//	res = -c;
+	//}
+	//else if ((q = 2) && (rr < t2))
+	//{
+	//	res = -c;
+	//}
+	//else if ((q = 4) && (rr < t4))
+	//{
+	//	res = -c;
+	//}
+	dataOut[index] = res;
 }
 
 
-__global__ void BlockReduce_32_Kernel(int *d_out, const int *d_in)
+__global__ void k_IsingRb8(int *dataOut, int *energyOut, unsigned int *index_rands, float *temp_rands, unsigned int block_size, float t2, float t4)
 {
-	__shared__ float cache[1024];
+	unsigned int blocks_per_span = gridDim.x * blockDim.x;
+	unsigned int span = blocks_per_span * block_size;
+	unsigned int block_row = threadIdx.y + blockIdx.y * blockDim.y;
+	unsigned int block_col = threadIdx.x + blockIdx.x * blockDim.x;
+	unsigned int indexIn = block_col + block_row * blocks_per_span;
 
-	int cacheIndex = threadIdx.y + threadIdx.x * blockDim.x;
-	int span = gridDim.x * blockDim.x;
-	int rowIn = threadIdx.y + blockIdx.y * blockDim.y;
-	int colIn = threadIdx.x + blockIdx.x * blockDim.x;
-	int indexIn = rowIn + colIn * span;
-	int indexOut = blockIdx.y + blockIdx.x * gridDim.x;
+	unsigned int block_mask = block_size - 1;
+	unsigned int randy = index_rands[indexIn];
+	unsigned int randy2 = randy >> 8;
+	unsigned int in_block_row = randy & block_mask;
+	unsigned int in_block_col = randy2 & block_mask;
 
-	cache[cacheIndex] = d_in[indexIn];
+	unsigned int row = in_block_row + block_row * block_size;
+	unsigned int col = in_block_col + block_col * block_size;
+	unsigned int index = col + row * span;
 
-	__syncthreads();
 
-	int i = 512;
-	while (i != 0)
+	int c = dataOut[index];
+
+	unsigned int row_m = (row - 1 + span) % span;
+	unsigned int row_p = (row + 1) % span;
+	unsigned int col_m = (col - 1 + span) % span;
+	unsigned int col_p = (col + 1) % span;
+
+	unsigned int row_m2 = (row - 2 + span) % span;
+	unsigned int row_p2 = (row + 2) % span;
+	unsigned int col_m2 = (col - 2 + span) % span;
+	unsigned int col_p2 = (col + 2) % span;
+
+	unsigned int top = dataOut[row_m * span + col];
+	unsigned int l = dataOut[row * span + col_m];
+	unsigned int r = dataOut[row * span + col_p];
+	unsigned int bot = dataOut[row_p * span + col];
+
+	int q = (top + l + r + bot) * c;
+	energyOut[index] = q;
+
+	float rr = temp_rands[indexIn];
+
+	int res = c;
+	if (q < 0)
 	{
-		if (cacheIndex < i)
-			cache[cacheIndex] += cache[cacheIndex + i];
-		__syncthreads();
-		i /= 2;
+		res = -c;
 	}
-
-	if (cacheIndex == 0)
+	else if ((q = 0) && (rr < 0.5))
 	{
-		d_out[indexOut] = cache[0];
+		res = -c;
 	}
+	else if ((q = 2) && (rr < t2))
+	{
+		res = -c;
+	}
+	else if ((q = 4) && (rr < t4))
+	{
+		res = -c;
+	}
+	dataOut[index] = res;
 }
-
-
-__global__ void BlockReduce_16_Kernel(int *d_out, const int *d_in)
-{
-	__shared__ float cache[256];
-
-	int cacheIndex = threadIdx.y + threadIdx.x * blockDim.x;
-	int span = gridDim.x * blockDim.x;
-	int rowIn = threadIdx.y + blockIdx.y * blockDim.y;
-	int colIn = threadIdx.x + blockIdx.x * blockDim.x;
-	int indexIn = rowIn + colIn * span;
-	int indexOut = blockIdx.y + blockIdx.x * gridDim.x;
-
-	cache[cacheIndex] = d_in[indexIn];
-
-	__syncthreads();
-
-	int i = 128;
-	while (i != 0)
-	{
-		if (cacheIndex < i)
-			cache[cacheIndex] += cache[cacheIndex + i];
-		__syncthreads();
-		i /= 2;
-	}
-
-	if (cacheIndex == 0)
-	{
-		d_out[indexOut] = cache[0];
-	}
-}
-
 
 //****************************************************************************
 #define gSpan 16  // linear system size
@@ -484,3 +457,39 @@ __global__ void device_function_init_YK(double d_t, int* d_spin,
 	d_bond[index] = bond;
 	d_label[index] = index_min;
 }
+
+
+__global__ void k_Thermo(float *dataOut, float *dataIn, unsigned int span, int alt, float rate)
+{
+	for (int i = threadIdx.y + blockDim.y*blockIdx.y; i < span; i += gridDim.y*blockDim.y)
+	{
+		for (int j = threadIdx.x + blockIdx.x*blockDim.x; j < span; j += blockDim.x*gridDim.x)
+		{
+			int offset = i * span + j;
+			int c = dataIn[offset];
+
+			if (((i + j + alt) % 2) == 0)
+			{
+				dataOut[offset] = c;
+				return;
+			}
+
+			int im = (i - 1 + span) % span;
+			int ip = (i + 1) % span;
+			int jm = (j - 1 + span) % span;
+			int jp = (j + 1) % span;
+
+			float top = dataIn[im * span + j];
+			float l = dataIn[i * span + jm];
+			float r = dataIn[i * span + jp];
+			float bot = dataIn[ip * span + j];
+
+			float q = c + (top + l + r + bot) * rate;
+
+			if (q < -1.0) q = -1.0;
+			if (q > 1.0) q = 1.0;
+			dataOut[offset] = q;
+		}
+	}
+}
+

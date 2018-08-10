@@ -1,9 +1,9 @@
 ﻿namespace Sponge.View.Common
 {
 
-    public partial class UpdateGraphLatticeControl
+    public partial class UpdateGridControl
     {
-        public UpdateGraphLatticeControl()
+        public UpdateGridControl()
         {
             InitializeComponent();
         }

@@ -60,7 +60,7 @@ extern "C" __declspec(dllexport) BSTR DllMakeGenerator32(int seed)
 	std::string funcName = "DllMakeGenerator32";
 	try
 	{
-		curandStatus_t curandStatus = curandCreateGenerator(&_curandGenerator, CURAND_RNG_PSEUDO_MRG32K3A);
+		curandStatus_t curandStatus = curandCreateGenerator(&_curandGenerator, CURAND_RNG_PSEUDO_MTGP32);
 
 		if (curandStatus != CURAND_STATUS_SUCCESS) {
 			std::string ctx = funcName + ".curandCreateGenerator";
@@ -119,11 +119,18 @@ extern "C" __declspec(dllexport) BSTR DllMakeRandomInts(unsigned int *devPtr, un
 	std::string funcName = "DllMakeRandomInts";
 	try
 	{
-		curandStatus_t curandStatus = curandGenerateLongLong(_curandGenerator, (unsigned long long *)devPtr, numRands/4);
+		curandStatus_t curandStatus = curandGenerate(_curandGenerator, devPtr, numRands);
 
 		if (curandStatus != CURAND_STATUS_SUCCESS) {
 			return CurandStatusBSTR(curandStatus, funcName);
 		}
+
+		cudaError_t cudaStatus = cudaDeviceSynchronize();
+		if (cudaStatus != cudaSuccess) {
+			std::string ctx = funcName + ".cudaDeviceSynchronize_1";
+			return CudaStatusBSTR(cudaStatus, ctx);
+		}
+
 		return BSTR();
 	}
 	catch (std::runtime_error &e)

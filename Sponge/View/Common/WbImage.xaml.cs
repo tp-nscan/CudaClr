@@ -73,6 +73,8 @@ namespace Sponge.View.Common
 
             using (var bmc = _writeableBmp.GetBitmapContext())
             {
+                bmc.Clear();
+
                 XFactor = ActualWidth / ImageData.boundingRect.Width();
                 YFactor = ActualHeight / ImageData.boundingRect.Height();
                 var minX = ImageData.boundingRect.MinX;

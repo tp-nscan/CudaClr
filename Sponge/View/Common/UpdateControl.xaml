@@ -20,7 +20,7 @@
             </Viewbox>
 
             <TextBlock Margin="0,5,0,0">Steps / Update</TextBlock>
-            <TextBox Text="{Binding StepsPerUpdate}"/>
+            <TextBox Text="{Binding StepsPerUpdate}" FontSize="16" FontWeight="Bold"/>
 
         </StackPanel>
 

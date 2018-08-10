@@ -49,11 +49,29 @@ void PrintIntArray(int *aa, int width, int length)
 	printf("\n");
 }
 
+void PrintUintArray(unsigned int *aa, int width, int length)
+{
+	for (int i = 0; i < length; i++) {
+		printf("%d ", aa[i]);
+		if ((i>0) && ((i + 1) % width == 0)) printf("\n");
+	}
+	printf("\n");
+}
+
 float *RndFloat0to1(int arraySize)
 {
 	float *temp = (float*)malloc(arraySize * sizeof(float));
 	for (int i = 0; i<arraySize; i++) {
 		temp[i] = (float)rand() / (float)(RAND_MAX);
+	}
+	return temp;
+}
+
+unsigned int *RndInts(int arraySize)
+{
+	unsigned int *temp = (unsigned int*)malloc(arraySize * sizeof(int));
+	for (int i = 0; i<arraySize; i++) {
+		temp[i] = rand();
 	}
 	return temp;
 }
@@ -68,10 +86,20 @@ int *Rnd0or1(int arraySize, float fracOnes)
 	return temp;
 }
 
+int *Rnd_m1or1(int arraySize, float fracOnes)
+{
+	int *temp = (int*)malloc(arraySize * sizeof(float));
+	for (int i = 0; i<arraySize; i++) {
+		float fv = (float)rand() / (float)(RAND_MAX);
+		temp[i] = fv < fracOnes ? 1 : -1;
+	}
+	return temp;
+}
+
 unsigned int SqrtPow2Lb(unsigned int rhs)
 {
-	int fRet = 1;
-	int nv = fRet;
+	unsigned int fRet = 1;
+	unsigned int nv = fRet;
 	while (true)
 	{
 		nv = fRet * 2;

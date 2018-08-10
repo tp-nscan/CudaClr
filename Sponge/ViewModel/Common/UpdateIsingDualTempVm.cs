@@ -9,17 +9,17 @@ using System.Windows.Media;
 
 namespace Sponge.ViewModel.Common
 {
-    public class UpdateIsing2dVm : BindableBase
+    public class UpdateIsingDualTempVm : BindableBase
     {
         private readonly Subject<ProcResult> _updateUI
                 = new Subject<ProcResult>();
         public IObservable<ProcResult> OnUpdateUI => _updateUI;
 
-        public UpdateIsing2dVm(SimGrid<int> data)
+        public UpdateIsingDualTempVm(SimGrid<int> data)
         {
             UpdateVm = new UpdateVm(proc: Proc)
             {
-                StepsPerUpdate = 10
+                StepsPerUpdate = 1
             };
 
             Rects = new List<RV<float, Color>>();
@@ -31,17 +31,20 @@ namespace Sponge.ViewModel.Common
                 TitleX = "Temp",
                 TitleY = "Energy"
             };
-            
+
             GraphLatticeVm = new GraphLatticeVm(
-                                new R<uint>(0, 512, 0, 512),
+                                new R<uint>(0, data.Width, 0, data.Height),
                                 "", "", "");
 
             GraphLatticeVm.SetUpdater(DrawGridCell, data);
-            
-            BetaDelta = 0.05f;
+
+            BetaLow = 1.08f;
+            BetaHigh = 2.08f;
+
+            BetaDelta = 0.00001f;
 
             GraphVm.SetData(
-                    boundingRect: new R<float>(_betaMin, _betaMax, _eMin, _eMax),
+                    boundingRect: new R<float>(0, 3, 0, 4),
                     plotPoints: Enumerable.Empty<P2V<float, Color>>(),
                     openRects: Enumerable.Empty<RV<float, Color>>(),
                     filledRects: Enumerable.Empty<RV<float, Color>>(),
@@ -49,27 +52,17 @@ namespace Sponge.ViewModel.Common
                 );
 
             UpdateVm.OnUpdateUI.Subscribe(p => KeepUpdating(p));
-
-            //BlockPick.Init(data.Data, data.Width, 2);
             IsingIntBits.Init(data.Data, data.Width);
-
-            Beta = _betaMin;
         }
 
-
-        float _eMin = 0.0f;
-        float _eMax = 4.0f;
-        float _betaMin = 0.75f;
-        float _betaMax = 1.5f;
-
-        public List<RV<float, Color>> Rects  { get; private set; }
+        public List<RV<float, Color>> Rects { get; private set; }
         public List<P2V<float, Color>> Points { get; private set; }
 
         ProcResult Proc(int steps)
         {
-            return IsingIntBits.UpdateE(steps, temp: Beta);
-            //return BlockPick.ProcIsingRb(steps, temp: Beta);
-
+            //return IsingBitsDual.UpdateE2(steps, tLow: BetaLow, tHigh: BetaHigh);
+            //return IsingBitsDual.UpdateE(steps, temp: BetaHigh);
+            return null;
         }
 
         public UpdateVm UpdateVm { get; private set; }
@@ -78,27 +71,38 @@ namespace Sponge.ViewModel.Common
 
         public GraphLatticeVm GraphLatticeVm { get; private set; }
 
+        float _eMin = 2.1f;
+        float _eMax = 2.7f;
         float smidgeX;
         float smidgeY;
 
         void KeepUpdating(ProcResult result)
         {
-            smidgeX = (_betaMax - _betaMin)/500;
-            smidgeY = (_eMax - _eMin)/500;
+            smidgeX = (_betaMax - _betaMin) / 500;
+            smidgeY = (_eMax - _eMin) / 500;
 
-            var boundingRect = new R<float>(_betaMin, _betaMax, _eMin, _eMax);
+            var boundingRect = new R<float>(_betaMin, _betaMax, 1.8f, 2.7f);
 
             Energy = (float)result.Data["Energy"];
 
-           if (UpdateVm.TotalSteps < 3) return;
+            if (UpdateVm.TotalSteps < 3) return;
 
             Rects.Add(new RV<float, Color>(
-                            minX: Beta,
-                            maxX: Beta + smidgeX,
+                            minX: BetaLow,
+                            maxX: BetaLow + smidgeX,
                             minY: Energy,
                             maxY: Energy + smidgeY,
-                            v: GetColor()
+                            v: Colors.Red
                 ));
+
+            Rects.Add(new RV<float, Color>(
+                            minX: BetaHigh,
+                            maxX: BetaHigh + smidgeX,
+                            minY: Energy,
+                            maxY: Energy + smidgeY,
+                            v: Colors.Blue
+                ));
+
             GraphVm.SetRects(boundingRect: boundingRect, filledRects: Rects);
 
             //Points.Add(new P2V<float, Color>
@@ -117,28 +121,12 @@ namespace Sponge.ViewModel.Common
         }
 
         bool _decreasing;
+        float _betaMin = 1.07f;
+        float _betaMax = 1.13f;
+
         void SetBeta()
         {
-            if (BetaDelta == 0) return;
 
-            if (_decreasing)
-            {
-                Beta -= _betaDelta;
-                if (Beta < _betaMin)
-                    {
-                    Beta = _betaMin;
-                    _decreasing = false;
-                }
-            }
-            else
-            {
-                Beta += _betaDelta;
-                if (Beta > _betaMax)
-                {
-                    Beta = _betaMax;
-                    _decreasing = true;
-                }
-            }
         }
 
         Color GetColor()
@@ -185,13 +173,23 @@ namespace Sponge.ViewModel.Common
                 v: color);
         }
 
-        private float _beta;
-        public float Beta
+        private float _betaLow;
+        public float BetaLow
         {
-            get { return _beta; }
+            get { return _betaLow; }
             set
             {
-                SetProperty(ref _beta, value);
+                SetProperty(ref _betaLow, value);
+            }
+        }
+
+        private float _betaHigh;
+        public float BetaHigh
+        {
+            get { return _betaHigh; }
+            set
+            {
+                SetProperty(ref _betaHigh, value);
             }
         }
 

@@ -7,6 +7,7 @@
 #include <sstream>
 #include <string>
 #include "..\..\Common\ClrUtils.h"
+#include "CuArrayKernels.h"
 
 ////////////////////////////////////////
 // DLL interface
@@ -21,6 +22,7 @@ BSTR DllTestRuntimeErr()
 	return RuntimeErrBSTR(err, funcName);
 }
 
+
 BSTR DllTestCudaStatusErr()
 {
 	std::string funcName = "DllTestCudaStatusErr";
@@ -28,6 +30,7 @@ BSTR DllTestCudaStatusErr()
 
 	return CudaStatusBSTR(cudaStatus, funcName);
 }
+
 
 BSTR DllMallocOnDevice(void **dev_ints, unsigned int bytes)
 {
@@ -118,6 +121,59 @@ BSTR DllCopyDeviceToDevice(void *dest_ints, const void *src_ints, unsigned int b
 		if (cudaStatus != cudaSuccess) {
 			return CudaStatusBSTR(cudaStatus, funcName);
 		}
+		return BSTR();
+	}
+	catch (std::runtime_error &e)
+	{
+		std::string err = e.what();
+		return RuntimeErrBSTR(err, funcName);
+	}
+}
+
+
+BSTR DllRunLinearReduceKernel(int *d_out, const int *d_in, unsigned int length_in, unsigned int length_out)
+{
+	std::string funcName = "DllRunLinearReduceKernel";
+	try
+	{
+		LinearReduceKernel<<<length_out, 512>>>(d_out, d_in, length_in);
+		return BSTR();
+	}
+	catch (std::runtime_error &e)
+	{
+		std::string err = e.what();
+		return RuntimeErrBSTR(err, funcName);
+	}
+}
+
+
+BSTR DllRunBlockReduce_32_Kernel(int *d_out, const int *d_in, unsigned int span)
+{
+	std::string funcName = "DllRunBlockReduce_32_Kernel";
+	try
+	{
+		dim3 b = dim3(span / 32, span / 32);
+		dim3 t = dim3(32, 32);
+		BlockReduce_32_Kernel<<<b, t>>>(d_out, d_in);
+
+		return BSTR();
+	}
+	catch (std::runtime_error &e)
+	{
+		std::string err = e.what();
+		return RuntimeErrBSTR(err, funcName);
+	}
+}
+
+
+BSTR DllRunBlockReduce_16_Kernel(int *d_out, const int *d_in, unsigned int span)
+{
+	std::string funcName = "DllRunBlockReduce_16_Kernel";
+	try
+	{
+		dim3 b = dim3(span / 16, span / 16);
+		dim3 t = dim3(16, 16);
+		BlockReduce_16_Kernel << <b, t >> >(d_out, d_in);
 		return BSTR();
 	}
 	catch (std::runtime_error &e)
