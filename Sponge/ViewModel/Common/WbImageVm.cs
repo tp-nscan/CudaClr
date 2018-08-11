@@ -12,6 +12,11 @@ namespace Sponge.ViewModel.Common
             = new Subject<Point>();
         public IObservable<Point> OnPointerChanged => _pointerChanged;
 
+        public WbImageVm()
+        {
+            ImageData = Id.InitImageData();
+        }
+
         ImageData _imageData;
         public ImageData ImageData
         {

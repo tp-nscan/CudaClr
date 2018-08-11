@@ -12,14 +12,14 @@ namespace Sponge.ViewModel.Common
     {
         public UpdateIsingBpVm(SimGrid<int> data)
         {
-            UpdateVm = new UpdateVm(proc: Proc)
+            UpdateVm = new UpdateVm(proc: Proc, containingVm: this)
             {
                 StepsPerUpdate = 1
             };
 
             Rects = new List<RV<float, Color>>();
 
-            GraphVm = new GraphVm()
+            GraphVm = new GraphVm(new R<float>(0, 3, 0, 4))
             {
                 Title = "Energy vs Temp",
                 TitleX = "Temp",
@@ -33,14 +33,6 @@ namespace Sponge.ViewModel.Common
             GraphLatticeVm.SetUpdater(DrawGridCell, data);
 
             Beta = 1.08f;
-
-            GraphVm.SetData(
-                    boundingRect: new R<float>(0, 3, 0, 4),
-                    plotPoints: Enumerable.Empty<P2V<float, Color>>(),
-                    openRects: Enumerable.Empty<RV<float, Color>>(),
-                    filledRects: Enumerable.Empty<RV<float, Color>>(),
-                    plotLines: Enumerable.Empty<LS2V<float, Color>>()
-                );
 
             UpdateVm.OnUpdateUI.Subscribe(p => KeepUpdating(p));
 
@@ -68,22 +60,22 @@ namespace Sponge.ViewModel.Common
             Energy = (float)result.Data["Energy"];
             GraphLatticeVm.Update(result.Data["Grid"]);
 
-            if (UpdateVm.TotalSteps < 3) return;
+            GraphVm.WbImageVm.ImageData = Id.AddRect(
+              GraphVm.WbImageVm.ImageData,
+              new RV<float, Color>(
+                          minX: Beta,
+                          maxX: Beta + smidgeX,
+                          minY: Energy,
+                          maxY: Energy + smidgeY,
+                          v: GetColor()
+              ));
 
-            Rects.Add(new RV<float, Color>(
-                            minX: Beta,
-                            maxX: Beta + smidgeX,
-                            minY: Energy,
-                            maxY: Energy + smidgeY,
-                            v: GetColor()
-                ));
-            GraphVm.SetRects(boundingRect: boundingRect, filledRects: Rects);
         }
 
 
-        ProcResult Proc(int steps)
+        ProcResult Proc(object steps)
         {
-            return BlockPick.ProcIsingRb(steps, temp: Beta);
+            return BlockPick.ProcIsingRb((int)steps, temp: Beta);
         }
 
 

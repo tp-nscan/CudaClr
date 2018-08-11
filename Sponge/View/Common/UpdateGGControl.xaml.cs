@@ -1,8 +1,8 @@
 ﻿namespace Sponge.View.Common
 {
-    public partial class UpdateIsingControl
+    public partial class UpdateGGControl
     {
-        public UpdateIsingControl()
+        public UpdateGGControl()
         {
             InitializeComponent();
         }

@@ -16,12 +16,15 @@ namespace Sponge.ViewModel.Common
             = new Subject<ProcResult>();
         public IObservable<ProcResult> OnUpdateUI => _updateUI;
 
-        public UpdateVm(Func<int, ProcResult> proc)
+        public UpdateVm(Func<object, ProcResult> proc, object containingVm)
         {
             Proc = proc;
+            _containingVm = containingVm;
         }
 
-        public Func<int, ProcResult> Proc { get; private set; }
+        object _containingVm;
+
+        public Func<object, ProcResult> Proc { get; private set; }
 
         string _errorMsg;
         public string ErrorMsg
@@ -94,7 +97,7 @@ namespace Sponge.ViewModel.Common
 
             await Task.Run(() =>
             {
-                var res = Proc(StepsPerUpdate);
+                var res = Proc(_containingVm);
                 Application.Current.Dispatcher.Invoke
                     (
                         () => UpdateUI(res),
@@ -128,7 +131,7 @@ namespace Sponge.ViewModel.Common
             {
                 for (var i = 0; (IsRunning & string.IsNullOrEmpty(errorMsg)); i++)
                 {
-                    var res = Proc(StepsPerUpdate);
+                    var res = Proc(_containingVm);
                     errorMsg = res.ErrorMsg;
                     Application.Current.Dispatcher.Invoke
                         (

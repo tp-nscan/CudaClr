@@ -126,7 +126,7 @@
     <Compile Include="ViewModel\Common\TileVm.cs" />
     <Compile Include="ViewModel\Common\UpdateDualIsingVm.cs" />
     <Compile Include="ViewModel\Common\UpdateGridVm.cs" />
-    <Compile Include="ViewModel\Common\UpdateIsing2dVm.cs" />
+    <Compile Include="ViewModel\Common\UpdateGGVm.cs" />
     <Compile Include="ViewModel\Common\UpdateIsingBpVm.cs" />
     <Compile Include="ViewModel\Common\UpdateIsingDualTempVm.cs" />
     <Compile Include="ViewModel\Common\UpdateVm.cs" />
@@ -135,7 +135,7 @@
     <Compile Include="ViewModel\Design\Common\GraphVmD.cs" />
     <Compile Include="ViewModel\Design\Common\IntRangeVmD.cs" />
     <Compile Include="ViewModel\Design\Common\LegendVmD.cs" />
-    <Compile Include="ViewModel\Design\Common\WbImageVm.cs" />
+    <Compile Include="ViewModel\Common\WbImageVm.cs" />
     <Compile Include="View\Common\ColorSequenceControl.xaml.cs">
       <DependentUpon>ColorSequenceControl.xaml</DependentUpon>
     </Compile>
@@ -154,11 +154,11 @@
     <Compile Include="View\Common\LegendControl.xaml.cs">
       <DependentUpon>LegendControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="View\Common\UpdateDualIsingControl.xaml.cs">
-      <DependentUpon>UpdateDualIsingControl.xaml</DependentUpon>
+    <Compile Include="View\Common\UpdateGGGControl.xaml.cs">
+      <DependentUpon>UpdateGGGControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="View\Common\UpdateIsingControl.xaml.cs">
-      <DependentUpon>UpdateIsingControl.xaml</DependentUpon>
+    <Compile Include="View\Common\UpdateGGControl.xaml.cs">
+      <DependentUpon>UpdateGGControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\Common\UpdateGridControl.xaml.cs">
       <DependentUpon>UpdateGridControl.xaml</DependentUpon>
@@ -219,11 +219,11 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="View\Common\UpdateDualIsingControl.xaml">
+    <Page Include="View\Common\UpdateGGGControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="View\Common\UpdateIsingControl.xaml">
+    <Page Include="View\Common\UpdateGGControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

@@ -1,4 +1,4 @@
-﻿<UserControl x:Class="Sponge.View.Common.UpdateDualIsingControl"
+﻿<UserControl x:Class="Sponge.View.Common.UpdateGGControl"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
@@ -6,8 +6,10 @@
              xmlns:local="clr-namespace:Sponge.View.Common"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
+    
     <Grid>
-        
+
+
         <Grid>
 
             <Grid.ColumnDefinitions>
@@ -16,8 +18,8 @@
             </Grid.ColumnDefinitions>
 
             <StackPanel>
-                <local:UpdateControl DataContext="{Binding UpdateVm}"/>
-
+                <local:UpdateControl  DataContext="{Binding UpdateVm}"/>
+                
                 <TextBlock Margin="0,5,0,0">Beta</TextBlock>
                 <Viewbox Stretch="Uniform" Height="22">
                     <TextBox Text="{Binding Beta, StringFormat=N5}" FontSize="16" FontWeight="Bold" Height="22"/>
@@ -28,30 +30,27 @@
                     <TextBlock Text="{Binding Energy, StringFormat=N5}" FontSize="16" FontWeight="Bold" Height="22"/>
                 </Viewbox>
 
-                <TextBlock Margin="0,5,0,0">Flip</TextBlock>
-                <CheckBox IsChecked="{Binding Flip}" FontSize="16" FontWeight="Bold"/>
-
                 <TextBlock Margin="0,5,0,0">Beta Delta</TextBlock>
                 <Viewbox Stretch="Uniform" Height="22">
                     <TextBox Text="{Binding BetaDelta, StringFormat=N5}" FontSize="16" FontWeight="Bold" Height="22"/>
                 </Viewbox>
-
+                
             </StackPanel>
 
             <TabControl Grid.Column="1">
                 <TabItem Header="Energy">
                     <local:GraphControl DataContext="{Binding GraphVm}" />
                 </TabItem>
-                <TabItem Header="GridA">
-                    <local:GraphLatticeControl DataContext="{Binding GraphLatticeVmA}" />
+                <TabItem Header="Grid">
+                    <local:GraphLatticeControl DataContext="{Binding GraphLatticeVm}" />
                 </TabItem>
-                <TabItem Header="GridB">
-                    <local:GraphLatticeControl DataContext="{Binding GraphLatticeVmB}" />
-                </TabItem>
+
             </TabControl>
 
 
         </Grid>
 
+
     </Grid>
+    
 </UserControl>

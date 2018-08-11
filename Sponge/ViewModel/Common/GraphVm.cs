@@ -9,24 +9,32 @@ namespace Sponge.ViewModel.Common
 {
     public class GraphVm : BindableBase
     {
-        public GraphVm()
+        public GraphVm(R<float> boundingRect)
         {
             WbImageVm = new WbImageVm();
-            GraphData = Id.MakeGraphData(
-                    title: "Title",
-                    titleX: "titleX",
-                    titleY: "titleY",
-                    xLabeler: FuncConvert.ToFSharpFunc<float, string>(x => x.ToString()),
-                    yLabeler: FuncConvert.ToFSharpFunc<float, string>(x => x.ToString())
+            BoundingRect = boundingRect;
+
+            WbImageVm.ImageData = Id.MakeImageDataAndClip(
+                plotPoints: WbImageVm.ImageData.plotPoints,
+                plotLines: WbImageVm.ImageData.plotLines,
+                filledRects: WbImageVm.ImageData.filledRects,
+                openRects: WbImageVm.ImageData.openRects,
+                clipRegion: BoundingRect
                 );
+
+            MinStrX = BoundingRect.MinX.ToString();
+            MaxStrX = BoundingRect.MaxX.ToString();
+            MinStrY = BoundingRect.MinY.ToString();
+            MaxStrY = BoundingRect.MaxY.ToString();
         }
 
-        public WbImageVm WbImageVm { get; }
+        public R<float> BoundingRect { get; set; }
 
-        GraphData GraphData { get; }
+        public WbImageVm WbImageVm { get; }
+        
 
         public void SetData(
-            IEnumerable<P2V<float,Color>> plotPoints,
+            IEnumerable<P2V<float, Color>> plotPoints,
             IEnumerable<LS2V<float, Color>> plotLines,
             IEnumerable<RV<float, Color>> filledRects,
             IEnumerable<RV<float, Color>> openRects
@@ -38,11 +46,6 @@ namespace Sponge.ViewModel.Common
                     openRects: openRects,
                     plotLines: plotLines
                 );
-
-            MinStrX = GraphData.xLabeler.Invoke(WbImageVm.ImageData.boundingRect.MinX);
-            MinStrY = GraphData.yLabeler.Invoke(WbImageVm.ImageData.boundingRect.MinY);
-            MaxStrX = GraphData.xLabeler.Invoke(WbImageVm.ImageData.boundingRect.MaxX);
-            MaxStrY = GraphData.yLabeler.Invoke(WbImageVm.ImageData.boundingRect.MaxY);
         }
 
         public void SetRects(
@@ -50,13 +53,13 @@ namespace Sponge.ViewModel.Common
                         IEnumerable<RV<float, Color>> filledRects
                     )
         {
-                SetData(
-                            boundingRect: boundingRect,
-                            plotPoints: Enumerable.Empty<P2V<float, Color>>(),
-                            plotLines: Enumerable.Empty<LS2V<float, Color>>(),
-                            filledRects: filledRects,
-                            openRects: Enumerable.Empty<RV<float, Color>>()
-                        );
+            SetData(
+                        boundingRect: boundingRect,
+                        plotPoints: Enumerable.Empty<P2V<float, Color>>(),
+                        plotLines: Enumerable.Empty<LS2V<float, Color>>(),
+                        filledRects: filledRects,
+                        openRects: Enumerable.Empty<RV<float, Color>>()
+                    );
         }
 
         public void SetPoints(
@@ -90,11 +93,6 @@ namespace Sponge.ViewModel.Common
                 plotLines: plotLines
              );
 
-            MinStrX = GraphData.xLabeler.Invoke(WbImageVm.ImageData.boundingRect.MinX);
-            MaxStrX = GraphData.xLabeler.Invoke(WbImageVm.ImageData.boundingRect.MaxX);
-
-            MinStrY = GraphData.yLabeler.Invoke(WbImageVm.ImageData.boundingRect.MinY);
-            MaxStrY = GraphData.yLabeler.Invoke(WbImageVm.ImageData.boundingRect.MaxY);
         }
 
         private string _maxStrX;
@@ -147,6 +145,7 @@ namespace Sponge.ViewModel.Common
         }
 
         private string _watermark;
+
         public string Watermark
         {
             get { return _watermark; }

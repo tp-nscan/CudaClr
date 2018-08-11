@@ -8,7 +8,7 @@ namespace Sponge.ViewModel.Design.Common
 {
     public class GraphVmD : GraphVm
     {
-        public GraphVmD()
+        public GraphVmD() : base(new R<float>(0,1,0,1))
         {
             SetData(
                 plotPoints: PlotPoints, 

@@ -13,9 +13,9 @@ type GraphData = { Title:string; TitleX:string; TitleY:string;
 module Id =
 
     let MakeImageData (plotPoints: seq<P2V<float32, Color>>) 
-                    (filledRects: seq<RV<float32, Color>>) 
-                    (openRects: seq<RV<float32, Color>>)
-                    (plotLines: seq<LS2V<float32, Color>>) =
+                      (filledRects: seq<RV<float32, Color>>) 
+                      (openRects: seq<RV<float32, Color>>)
+                      (plotLines: seq<LS2V<float32, Color>>) =
 
         let pps = plotPoints |> Seq.toArray
         let ors = openRects |> Seq.toArray
@@ -57,8 +57,9 @@ module Id =
                              (plotLines: seq<LS2V<float32, Color>>)
                              (clipRegion: R<float32>) =
 
-     let iD = MakeImageData plotPoints filledRects openRects plotLines
-     ClipImageData iD clipRegion
+       let iD = MakeImageData plotPoints filledRects openRects plotLines
+       ClipImageData iD clipRegion
+
 
     let InitImageData() = 
         { 
@@ -67,6 +68,16 @@ module Id =
             openRects = Array.empty<RV<float32, Color>>;
             plotLines = Array.empty<LS2V<float32, Color>>; 
             boundingRect = { R.MinX = (float32 0); R.MaxX = (float32 0); R.MinY = (float32 0); R.MaxY = (float32 0)}; 
+        }
+
+    
+    let AddRect (imageData: ImageData) (rect:RV<float32, Color> ) =
+        { 
+            plotPoints = imageData.plotPoints; 
+            filledRects = Array.append  imageData.filledRects [|rect|];  
+            openRects = imageData.openRects; 
+            plotLines = imageData.plotLines; 
+            boundingRect = imageData.boundingRect;
         }
 
 

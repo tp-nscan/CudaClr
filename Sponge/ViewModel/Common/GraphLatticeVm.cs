@@ -4,6 +4,7 @@ using System.Linq;
 using System.Reactive.Subjects;
 using System.Windows.Media;
 using Sponge.Common;
+using Sponge.Model;
 using FS;
 
 namespace Sponge.ViewModel.Common
@@ -173,5 +174,52 @@ namespace Sponge.ViewModel.Common
                 _rangeChanged.OnNext(this);
             }
         }
+    }
+
+
+    public static class GraphLatticeVmEx
+    {
+
+        public static object DrawGridCell_BW256(P2<int> dataLoc, R<double> imagePatch, object data)
+        {
+            var sg = (SimGrid<int>)data;
+            Color color;
+            var offset = dataLoc.X + dataLoc.Y * sg.Width;
+            int res = (sg.Data[offset]) % 256;
+            color = Color.FromArgb((byte)res, 0, 0, 0);
+            return new RV<float, Color>(
+                minX: (float)imagePatch.MinX,
+                maxX: (float)imagePatch.MaxX,
+                minY: (float)imagePatch.MinY,
+                maxY: (float)imagePatch.MaxY,
+                v: color);
+        }
+
+
+        public static object DrawGridCell_BWR(P2<int> dataLoc, R<double> imagePatch, object data)
+        {
+            var sg = (SimGrid<int>)data;
+            Color color;
+            var offset = dataLoc.X + dataLoc.Y * sg.Width;
+            if (sg.Data[offset] < -0.5)
+            {
+                color = Colors.White;
+            }
+            else if (sg.Data[offset] > 0.5)
+            {
+                color = Colors.Black;
+            }
+            else
+            {
+                color = Colors.Red;
+            }
+            return new RV<float, Color>(
+                minX: (float)imagePatch.MinX,
+                maxX: (float)imagePatch.MaxX,
+                minY: (float)imagePatch.MinY,
+                maxY: (float)imagePatch.MaxY,
+                v: color);
+        }
+
     }
 }

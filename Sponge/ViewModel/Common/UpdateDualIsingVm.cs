@@ -21,7 +21,7 @@ namespace Sponge.ViewModel.Common
 
         public UpdateDualIsingVm(SimGrid<int> data)
         {
-            UpdateVm = new UpdateVm(proc: Proc)
+            UpdateVm = new UpdateVm(proc: Proc, containingVm: this)
             {
                 StepsPerUpdate = 1
             };
@@ -29,7 +29,7 @@ namespace Sponge.ViewModel.Common
             Rects = new List<RV<float, Color>>();
             Points = new List<P2V<float, Color>>();
 
-            GraphVm = new GraphVm()
+            GraphVm = new GraphVm(new R<float>(0, 3, 0, 4))
             {
                 Title = "Energy vs Temp",
                 TitleX = "Temp",
@@ -44,14 +44,6 @@ namespace Sponge.ViewModel.Common
 
             Beta = 1.08f;
 
-            GraphVm.SetData(
-                    boundingRect: new R<float>(0, 3, 0, 4),
-                    plotPoints: Enumerable.Empty<P2V<float, Color>>(),
-                    openRects: Enumerable.Empty<RV<float, Color>>(),
-                    filledRects: Enumerable.Empty<RV<float, Color>>(),
-                    plotLines: Enumerable.Empty<LS2V<float, Color>>()
-                );
-
             UpdateVm.OnUpdateUI.Subscribe(p => KeepUpdating(p));
             IsingIntBits.Init(data.Data, data.Width);
             Beta = _betaMin;
@@ -60,9 +52,9 @@ namespace Sponge.ViewModel.Common
         public List<RV<float, Color>> Rects { get; private set; }
         public List<P2V<float, Color>> Points { get; private set; }
 
-        ProcResult Proc(int steps)
+        ProcResult Proc(object steps)
         {
-            return IsingIntBits.UpdateE(steps, temp: Beta);
+            return IsingIntBits.UpdateE((int)steps, temp: Beta);
         }
 
         public UpdateVm UpdateVm { get; private set; }
@@ -85,24 +77,15 @@ namespace Sponge.ViewModel.Common
 
             Energy = (float)result.Data["Energy"];
 
-            if (UpdateVm.TotalSteps < 3) return;
-
-            Rects.Add(new RV<float, Color>(
+            GraphVm.WbImageVm.ImageData = Id.AddRect(
+                GraphVm.WbImageVm.ImageData,
+                new RV<float, Color>(
                             minX: Beta,
                             maxX: Beta + smidgeX,
                             minY: Energy,
                             maxY: Energy + smidgeY,
                             v: GetColor()
                 ));
-            GraphVm.SetRects(boundingRect: boundingRect, filledRects: Rects);
-
-            //Points.Add(new P2V<float, Color>
-            //    (
-            //        x: Beta,
-            //        y: Energy,
-            //        v: GetColor()
-            //    ));
-            //GraphVm.SetPoints(boundingRect: boundingRect, plotPoints: Points);
 
             GraphLatticeVm.Update(result.Data["Grid"]);
             
