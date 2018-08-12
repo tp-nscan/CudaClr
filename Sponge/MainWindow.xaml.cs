@@ -14,7 +14,7 @@ namespace Sponge
         {
             InitializeComponent();
             //UpdateGridControl.DataContext = _updateGridVm = UpdateGridVmB.BlockPicker();
-            UpdateGGControl.DataContext = _updateGGVm = UpdateGGVmB.Annealer();
+            UpdateGGControl.DataContext = _updateGGVm = GG_Thermo.Thermo(); // GG_Annealer.Annealer();
         }
 
     }

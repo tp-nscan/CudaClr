@@ -208,7 +208,7 @@ extern "C" __declspec(dllexport) BSTR DllRundevice_function_init_YK(double d_t, 
 }
 
 
-extern "C" __declspec(dllexport) BSTR DllRun_k_Thermo(float *dataOut, float *dataIn, unsigned int span, int alt, float rate)
+extern "C" __declspec(dllexport) BSTR DllRun_k_Thermo(float *dataOut, float *dataIn, unsigned int span, int alt, float rate, unsigned int fixed_colA, unsigned int fixed_colB)
 {
 	std::string funcName = "DllRun_k_Thermo";
 	try
@@ -218,7 +218,7 @@ extern "C" __declspec(dllexport) BSTR DllRun_k_Thermo(float *dataOut, float *dat
 		dim3 t = dim3(td, td);
 		dim3 b = dim3(span / td, span / td);
 
-		k_Thermo << <b, t >> >(dataOut, dataIn, span, alt, rate);
+		k_Thermo<<<b, t>>>(dataOut, dataIn, span, alt, rate, fixed_colA, fixed_colB);
 		return BSTR();
 	}
 	catch (std::runtime_error &e)

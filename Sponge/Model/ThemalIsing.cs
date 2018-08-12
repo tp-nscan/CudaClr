@@ -41,6 +41,59 @@ namespace Sponge.Model
             return strRet;
         }
 
+        public static ProcResult UpdateH(int steps)
+        {
+            var strRet = String.Empty;
+
+            IntPtr dSrc;
+            IntPtr dDest = IntPtr.Zero;
+
+            _stopwatch.Reset();
+            _stopwatch.Start();
+
+           
+            for (var s = 0; s < steps; s++)
+            {
+                if (_phase == 0)
+                {
+                    dSrc = d_gridA;
+                    dDest = d_gridB;
+                    _phase = 1;
+                }
+                else
+                {
+                    dSrc = d_gridB;
+                    dDest = d_gridA;
+                    _phase = 0;
+                }
+
+                strRet = strRet + _gridProcs.Run_k_Thermo(
+                     dataOut: dDest,
+                     dataIn: dSrc,
+                     span: _span,
+                     alt: _phase,
+                     rate: 0.1f,
+                     fixed_colA: 0,
+                     fixed_colB: (uint)(_span/4));
+            }
+            
+
+            var res = new float[_area];
+            strRet = strRet + _cudaArray.CopyFloatsFromDevice(res, dDest, _area);
+
+            _stopwatch.Stop();
+
+            var dRet = new Dictionary<string, object>();
+            dRet["Grid"] = new SimGrid<float>(name: "UpdateH",
+                                            width: _span,
+                                            height: _span,
+                                            data: res);
+   
+            return new ProcResult(data: dRet,
+                                   err: strRet,
+                                   steps: steps,
+                                   time: _stopwatch.ElapsedMilliseconds);
+        }
 
     }
 }

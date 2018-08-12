@@ -8,6 +8,7 @@
 
 int runBoxPick();
 int runIsingK();
+int runThermal();
 
 //void randomInit(int *data, int size)
 //{
@@ -22,13 +23,79 @@ int runIsingK();
 //////////////////////////////////////////////////////////////////////////////////
 //// Program main
 //////////////////////////////////////////////////////////////////////////////////
-int main(int argc, char **argv)
+//int main(int argc, char **argv)
+//{
+//	runThermal();
+//}
+
+int runThermal()
 {
-	//runBoxPick();
+	const int span = 16;
+	int gridVol = span * span;
+	float *h_grid_A_in;
+	float *h_grid_B_in;
+	float *host_out;
+	float *dev_A;
+	float *dev_B;
+	cudaError_t cudaStatus;
 
-	runIsingK();
+	printf("in runThermal\n");
+
+	h_grid_A_in = LeftRightGradient(span, 0, 1);
+	h_grid_B_in = LeftRightGradient(span, 0, 1);
+
+	printf("in array A: \n\n");
+	PrintFloatArray(h_grid_A_in, span, gridVol);
+
+	host_out = (float *)malloc(gridVol * sizeof(float));
+
+	cudaStatus = cudaMalloc((void**)&dev_A, gridVol * sizeof(float));
+	if (cudaStatus != cudaSuccess) {
+		fprintf(stderr, "cudaMalloc failed!");
+		goto Error;
+	}
+
+	cudaStatus = cudaMalloc((void**)&dev_B, gridVol * sizeof(float));
+	if (cudaStatus != cudaSuccess) {
+		fprintf(stderr, "cudaMalloc failed!");
+		goto Error;
+	}
+
+	cudaStatus = cudaMemcpy(dev_A, h_grid_A_in, gridVol * sizeof(float), cudaMemcpyHostToDevice);
+	if (cudaStatus != cudaSuccess) {
+		fprintf(stderr, "cudaMemcpy failed!");
+		goto Error;
+	}
+
+	cudaStatus = cudaMemcpy(dev_B, h_grid_B_in, gridVol * sizeof(float), cudaMemcpyHostToDevice);
+	if (cudaStatus != cudaSuccess) {
+		fprintf(stderr, "cudaMemcpy failed!");
+		goto Error;
+	}
+
+	DllRun_k_Thermo(dev_B, dev_A, span, 1, 0.1, 0, 3);
+
+	cudaStatus = cudaDeviceSynchronize();
+	if (cudaStatus != cudaSuccess) {
+		fprintf(stderr, "cudaDeviceSynchronize returned error code %d after launching copyKernel!\n", cudaStatus);
+		goto Error;
+	}
+
+	cudaStatus = cudaMemcpy(host_out, dev_B, gridVol * sizeof(float), cudaMemcpyDeviceToHost);
+	if (cudaStatus != cudaSuccess) {
+		fprintf(stderr, "cudaMemcpy failed!");
+		goto Error;
+	}
+
+	printf("out array B: \n\n");
+	PrintFloatArray(host_out, span, gridVol);
+
+Error:
+	cudaFree(dev_A);
+	cudaFree(dev_B);
+
+	return cudaStatus;
 }
-
 
 
 int runBoxPick()

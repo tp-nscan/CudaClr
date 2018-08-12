@@ -29,12 +29,12 @@ namespace Sponge.ViewModel.Common
     {
         public static UpdateGridVm BlockPicker()
         {
-            var initData = SimGridSamples.SquareRandBits(512, 5213);
+            var initData = SimGridIntSamples.SquareRandBits(512, 5213);
             var ugvm = new UpdateGridVm(initData, ProcMarkBlocks);
 
             BlockPick.Init(initData.Data, initData.Width, 16);
 
-            ugvm.GraphLatticeVm.SetUpdater(GraphLatticeVmEx.DrawGridCell_BW256, initData);
+            ugvm.GraphLatticeVm.SetUpdater(GraphLatticeVmEx.DrawGridCell_int_BW_mod256, initData);
             ugvm.UpdateVm.OnUpdateUI.Subscribe(p => UpdateGraphLatticeWithGrid(p, ugvm));
 
             return ugvm;

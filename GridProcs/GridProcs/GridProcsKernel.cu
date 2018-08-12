@@ -459,20 +459,20 @@ __global__ void device_function_init_YK(double d_t, int* d_spin,
 }
 
 
-__global__ void k_Thermo(float *dataOut, float *dataIn, unsigned int span, int alt, float rate)
+__global__ void k_Thermo(float *dataOut, float *dataIn, unsigned int span, int alt, float rate, int fixed_colA, int fixed_colB)
 {
 	for (int i = threadIdx.y + blockDim.y*blockIdx.y; i < span; i += gridDim.y*blockDim.y)
 	{
 		for (int j = threadIdx.x + blockIdx.x*blockDim.x; j < span; j += blockDim.x*gridDim.x)
 		{
 			int offset = i * span + j;
-			int c = dataIn[offset];
+			float c = dataIn[offset];
 
-			if (((i + j + alt) % 2) == 0)
-			{
-				dataOut[offset] = c;
-				return;
-			}
+			//if (((i + j + alt) % 2) == 0)
+			//{
+			//	dataOut[offset] = c;
+			//	return;
+			//}
 
 			int im = (i - 1 + span) % span;
 			int ip = (i + 1) % span;
@@ -484,11 +484,19 @@ __global__ void k_Thermo(float *dataOut, float *dataIn, unsigned int span, int a
 			float r = dataIn[i * span + jp];
 			float bot = dataIn[ip * span + j];
 
-			float q = c + (top + l + r + bot) * rate;
+			float q = c + (top + l + r + bot - 4*c) * rate;
 
-			if (q < -1.0) q = -1.0;
+			if (q < 0.0) q = 0.0;
 			if (q > 1.0) q = 1.0;
-			dataOut[offset] = q;
+
+			if ((j == fixed_colA) || (j == fixed_colB))
+			{
+				dataOut[offset] = c;
+			}
+			else
+			{
+				dataOut[offset] = q;
+			}
 		}
 	}
 }

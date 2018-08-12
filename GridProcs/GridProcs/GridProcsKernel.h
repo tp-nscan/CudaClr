@@ -22,4 +22,4 @@ __global__ void k_IsingRb(int *dataOut, int *energyOut, unsigned int *index_rand
 
 __global__ void device_function_init_YK(double d_t, int* d_spin, int* d_bond, double* d_random_data, unsigned int* d_label);
 
-__global__ void k_Thermo(float *dataOut, float *dataIn, unsigned int span, int alt, float rate);
+__global__ void k_Thermo(float *dataOut, float *dataIn, unsigned int span, int alt, float rate, int fixed_colA, int fixed_colB);

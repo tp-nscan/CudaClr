@@ -180,7 +180,7 @@ namespace Sponge.ViewModel.Common
     public static class GraphLatticeVmEx
     {
 
-        public static object DrawGridCell_BW256(P2<int> dataLoc, R<double> imagePatch, object data)
+        public static object DrawGridCell_int_BW_mod256(P2<int> dataLoc, R<double> imagePatch, object data)
         {
             var sg = (SimGrid<int>)data;
             Color color;
@@ -221,5 +221,19 @@ namespace Sponge.ViewModel.Common
                 v: color);
         }
 
+        public static object DrawGridCell_float_BW_mod256(P2<int> dataLoc, R<double> imagePatch, object data)
+        {
+            var sg = (SimGrid<float>)data;
+            Color color;
+            var offset = dataLoc.X + dataLoc.Y * sg.Width;
+            int res = (int)(sg.Data[offset] * 255);
+            color = Color.FromArgb((byte)res, 0, 0, 0);
+            return new RV<float, Color>(
+                minX: (float)imagePatch.MinX,
+                maxX: (float)imagePatch.MaxX,
+                minY: (float)imagePatch.MinY,
+                maxY: (float)imagePatch.MaxY,
+                v: color);
+        }
     }
 }

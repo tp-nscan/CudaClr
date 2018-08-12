@@ -21,4 +21,4 @@ extern "C" __declspec(dllexport) BSTR DllRun_k_IsingRb(int *dataOut, int *energy
 
 extern "C" __declspec(dllexport) BSTR DllRundevice_function_init_YK(double d_t, int* d_spin, int* d_bond, double* d_random_data, unsigned int* d_label);
 
-extern "C" __declspec(dllexport) BSTR DllRun_k_Thermo(float *dataOut, float *dataIn, unsigned int span, int alt, float rate);
+extern "C" __declspec(dllexport) BSTR DllRun_k_Thermo(float *dataOut, float *dataIn, unsigned int span, int alt, float rate, unsigned int fixed_colA, unsigned int fixed_colB);

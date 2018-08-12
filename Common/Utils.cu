@@ -110,3 +110,28 @@ unsigned int SqrtPow2Lb(unsigned int rhs)
 		fRet = nv;
 	}
 }
+
+float *LeftRightGradient(unsigned int span, float low_val, float high_val)
+{
+	float delta = (high_val - low_val) / (span / 2.0f);
+	unsigned int hs = span / 2;
+
+	float *outputs = (float*)malloc(span * span * sizeof(float));
+
+	for (int i = 0; i < span; i++)
+	{
+		for (int j = 0; j < hs; j++)
+		{
+			int index = i * span + j;
+			outputs[index] = high_val - j * delta;
+		}
+
+		for (int j = hs; j < span; j++)
+		{
+			int index = i * span + j;
+			outputs[index] = low_val + (j - hs) * delta;
+		}
+
+	}
+	return outputs;
+}

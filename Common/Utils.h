@@ -13,3 +13,4 @@ unsigned int *RndInts(int arraySize);
 int *Rnd0or1(int arraySize, float fracOnes);
 int *Rnd_m1or1(int arraySize, float fracOnes);
 unsigned int SqrtPow2Lb(unsigned int rhs);
+float *LeftRightGradient(unsigned int span, float low_val, float high_val);

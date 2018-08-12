@@ -9,9 +9,8 @@ namespace Utils.Test
         [TestMethod]
         public void TestMethod1()
         {
-            var grid = new int[] { 0, 0, 0, 0, 1, 0, 0, 0, 0 };
-
-            var res = GridFuncs.Energy4(grid, 3);
+            var res = FloatArrayGen.LeftRightGradient(8, 0.0f, 1.0f);
         }
+
     }
 }

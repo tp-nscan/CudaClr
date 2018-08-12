@@ -56,6 +56,7 @@ namespace Sponge.Model
             return strRet;
         }
 
+
         public static ProcResult UpdateMetro(int steps, float temp)
         {
             var strRet = String.Empty;
@@ -129,20 +130,19 @@ namespace Sponge.Model
 
         public static ProcResult UpdateE(int steps, float temp)
         {
-            double t2 = (1.0 / (1.0 + Math.Exp(2 * temp)));
-            double t4 = (1.0 / (1.0 + Math.Exp(4 * temp)));
+            var strRet = String.Empty;
+
+            float t2 = (float)(1.0 / (1.0 + Math.Exp(2 * temp)));
+            float t4 = (float)(1.0 / (1.0 + Math.Exp(4 * temp)));
 
             float[] thresh = new float[10];
-            //thresh[1] = (float)(1.0 - t4);
-            //thresh[3] = (float)(1.0 - t2);
-            thresh[1] = 1.0f;
-            thresh[3] = 1.0f;
+            thresh[1] = 1.0f; // - t4;
+            thresh[3] = 1.0f; // - t2;
             thresh[5] = 0.5f;
-            thresh[7] = (float)t2;
-            thresh[9] = (float)t4;
+            thresh[7] = t2;
+            thresh[9] = t4;
 
 
-            var strRet = String.Empty;
             strRet = strRet + _cudaArray.CopyFloatsToDevice(thresh, d_betas, 10);
                 //.MallocFloatsOnDevice(ref d_betas, 10);
 

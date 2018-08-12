@@ -46,7 +46,7 @@ namespace Sponge.Model
 
     }
 
-    public static class SimGridSamples
+    public static class SimGridIntSamples
     {
         public static SimGrid<int> SquareRingBits(uint span)
         {
@@ -54,7 +54,7 @@ namespace Sponge.Model
                 name: "TestInt",
                 width: span,
                 height: span,
-                data: Utils.IntArrayGen.Ring(span/6, span/3, span, 2).ToIntBits());
+                data: IntArrayGen.Ring(span/6, span/3, span, 2).ToIntBits());
         }
 
         public static SimGrid<int> SquareRandBits(uint span, int seed)
@@ -63,7 +63,7 @@ namespace Sponge.Model
                 name: "TestInt",
                 width: span,
                 height: span,
-                data: Utils.IntArrayGen.RandInts2(seed, span * span, 0.5).ToIntBits());
+                data: IntArrayGen.RandInts2(seed, span * span, 0.5).ToIntBits());
         }
 
         public static SimGrid<int> UniformVals(uint span, int val)
@@ -73,6 +73,22 @@ namespace Sponge.Model
                 width: span,
                 height: span,
                 data: Enumerable.Repeat(val, (int)(span* span)).ToArray());
+        }
+
+    }
+
+    public static class SimGridFloatSamples
+    {
+        public static SimGrid<float> LeftRightGradient(uint span)
+        {
+            return new SimGrid<float>(
+                name: "LeftRightGradientFloats",
+                width: span,
+                height: span,
+                data: FloatArrayGen.LeftRightGradient(
+                    span:span, 
+                    low_val: 0.0f, 
+                    high_val:1.0f));
         }
 
     }

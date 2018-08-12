@@ -1,14 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Utils
 {
     public static class FloatArrayGen
     {
-        public static float DistFromCenter(int index, int span)
+        public static float DistFromCenter(int index, uint span)
         {
             var cv = span / 2;
             var xv = index % span;
@@ -16,7 +12,7 @@ namespace Utils
             return (float)Math.Sqrt((xv - cv) * (xv - cv) + (yv - cv) * (yv - cv));
         }
 
-        public static float[] DoubleRing(int innerD, int midD, int outerD, uint span, int modulus,
+        public static float[] DoubleRing(uint innerD, uint midD, uint outerD, uint span, uint modulus,
                 float ringVal, float bkgVal)
         {
             var outputs = new float[span * span];
@@ -33,7 +29,7 @@ namespace Utils
             return outputs;
         }
 
-        public static float[] SignedUnitUniformRands(int span, int seed)
+        public static float[] SignedUnitUniformRands(uint span, int seed)
         {
             var outputs = new float[span * span];
             var rando = new Random(seed);
@@ -49,7 +45,7 @@ namespace Utils
         }
 
 
-        public static float[] SplitScreen(int span, float left_val, float right_val)
+        public static float[] SplitScreen(uint span, float left_val, float right_val)
         {
             var outputs = new float[span * span];
             for (var i = 0; i < span; i++)
@@ -70,23 +66,25 @@ namespace Utils
             return outputs;
         }
 
-        public static float[] LeftRightGradient(int span, float low_val, float high_val)
+        public static float[] LeftRightGradient(uint span, float low_val, float high_val)
         {
             float delta = (high_val - low_val) / (span / 2.0f);
+            uint hs = span / 2;
 
             var outputs = new float[span * span];
+
             for (var i = 0; i < span; i++)
             {
-                for (var j = 0; j < span / 2; j++)
+                for (var j = 0; j < hs; j++)
                 {
                     var index = i * span + j;
                     outputs[index] = high_val - j * delta;
                 }
 
-                for (var j = span / 2; j < span; j++)
+                for (var j = hs; j < span; j++)
                 {
                     var index = i * span + j;
-                    outputs[index] = low_val + j * delta;
+                    outputs[index] = low_val + (j - hs) * delta;
                 }
 
             }
