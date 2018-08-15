@@ -111,11 +111,11 @@
     </ApplicationDefinition>
     <Compile Include="Model\BlockPick.cs" />
     <Compile Include="Model\Gol2.cs" />
-    <Compile Include="Model\IntGrid.cs" />
     <Compile Include="Model\IsingIntBits.cs" />
-    <Compile Include="Model\ProcResult.cs" />
     <Compile Include="Model\SK_Ising2d.cs" />
-    <Compile Include="Model\ThemalIsing.cs" />
+    <Compile Include="Model\Themal_dg.cs" />
+    <Compile Include="Model\ThermalIsing_bp.cs" />
+    <Compile Include="Model\Thermal_bp.cs" />
     <Compile Include="ViewModel\Common\ColorSequenceVm.cs" />
     <Compile Include="ViewModel\Common\GraphLatticeVm.cs" />
     <Compile Include="ViewModel\Common\GraphTilesVm.cs" />

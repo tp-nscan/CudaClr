@@ -73,7 +73,7 @@ int runThermal()
 		goto Error;
 	}
 
-	DllRun_k_Thermo(dev_B, dev_A, span, 1, 0.1, 0, 3);
+	DllRun_k_Thermo_dg(dev_B, dev_A, span, 1, 0.1, 0, 3);
 
 	cudaStatus = cudaDeviceSynchronize();
 	if (cudaStatus != cudaSuccess) {
@@ -240,7 +240,7 @@ int runIsingK()
 		goto Error;
 	}
 
-	DllRunIsingKernelPlusEnergy(dev_odd, dev_energy, dev_even, dev_rands, span, 1, dev_thresh);
+	DllRun_k_Ising_dg(dev_odd, dev_energy, dev_even, dev_rands, span, 1, dev_thresh);
 
 	cudaStatus = cudaDeviceSynchronize();
 	if (cudaStatus != cudaSuccess) {
@@ -303,7 +303,7 @@ Error:
 //	}
 //
 //
-//	GolKernel <<<span, span>>>(dev_odd, dev_even, span);
+//	k_Gol <<<span, span>>>(dev_odd, dev_even, span);
 //
 //	cudaStatus = cudaDeviceSynchronize();
 //	if (cudaStatus != cudaSuccess) {

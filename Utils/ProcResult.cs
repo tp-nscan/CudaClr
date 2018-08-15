@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Sponge.Model
+namespace Utils
 {
     public class ProcResult
     {

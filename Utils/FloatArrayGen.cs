@@ -44,6 +44,20 @@ namespace Utils
             return outputs;
         }
 
+        public static float[] UnSignedUnitUniformRands(uint span, int seed)
+        {
+            var outputs = new float[span * span];
+            var rando = new Random(seed);
+            for (var i = 0; i < span; i++)
+            {
+                for (var j = 0; j < span; j++)
+                {
+                    var index = i * span + j;
+                    outputs[index] = (float)rando.NextDouble();
+                }
+            }
+            return outputs;
+        }
 
         public static float[] SplitScreen(uint span, float left_val, float right_val)
         {

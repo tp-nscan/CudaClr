@@ -5,10 +5,11 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using Utils;
 
 namespace Sponge.Model
 {
-    public class ThemalIsing
+    public static class Themal_dg
     {
         private static IntPtr d_gridA;
         private static IntPtr d_gridB;
@@ -41,7 +42,7 @@ namespace Sponge.Model
             return strRet;
         }
 
-        public static ProcResult UpdateH(int steps)
+        public static ProcResult UpdateH(int steps, float rate)
         {
             var strRet = String.Empty;
 
@@ -67,14 +68,14 @@ namespace Sponge.Model
                     _phase = 0;
                 }
 
-                strRet = strRet + _gridProcs.Run_k_Thermo(
+                strRet = strRet + _gridProcs.Run_k_Thermo_dg(
                      dataOut: dDest,
                      dataIn: dSrc,
                      span: _span,
                      alt: _phase,
-                     rate: 0.1f,
-                     fixed_colA: 0,
-                     fixed_colB: (uint)(_span/4));
+                     rate: rate,
+                     fixed_colA: _span - 1,
+                     fixed_colB: _span / 4);
             }
             
 

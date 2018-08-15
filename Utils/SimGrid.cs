@@ -1,8 +1,6 @@
-﻿using System.Collections;
-using System.Linq;
-using Utils;
+﻿using System.Linq;
 
-namespace Sponge.Model
+namespace Utils
 {
     public class SimGrid<T>
     {
@@ -89,6 +87,17 @@ namespace Sponge.Model
                     span:span, 
                     low_val: 0.0f, 
                     high_val:1.0f));
+        }
+
+        public static SimGrid<float> RandUniform0_1(uint span, int seed)
+        {
+            return new SimGrid<float>(
+                name: "RandUniform0_1",
+                width: span,
+                height: span,
+                data: FloatArrayGen.UnSignedUnitUniformRands(
+                    span: span,
+                    seed: seed));
         }
 
     }

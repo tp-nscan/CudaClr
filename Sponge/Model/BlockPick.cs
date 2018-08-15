@@ -9,7 +9,7 @@ using Utils;
 
 namespace Sponge.Model
 {
-    public class BlockPick
+    public static class BlockPick
     {
         private const int SEED = 123;
         private static IntPtr d_indexRands;
@@ -17,6 +17,7 @@ namespace Sponge.Model
         private static IntPtr d_energy;
         private static IntPtr d_energyBlocks;
         private static int[] h_energyBlocks;
+        private static IntPtr d_betas;
 
         private static IntPtr d_grid;
         private static uint _span;
@@ -30,6 +31,7 @@ namespace Sponge.Model
 
         
         private static Stopwatch _stopwatch = new Stopwatch();
+
 
         public static string Init(int[] inputs, uint span, uint blockSize)
         {
@@ -55,10 +57,12 @@ namespace Sponge.Model
             strRet = strRet + _cudaArray.CopyIntsToDevice(inputs, d_grid, _area);
             strRet = strRet + _cudaArray.MallocIntsOnDevice(ref d_indexRands, _blockCount);
             strRet = strRet + _cudaArray.MallocFloatsOnDevice(ref d_tempRands, _blockCount);
-            strRet = strRet + _gridProcs.RunIsingKernelEnergy(d_energy, d_grid, _span);
+            strRet = strRet + _gridProcs.Runk_Energy4(d_energy, d_grid, _span);
+            strRet = strRet + _cudaArray.MallocFloatsOnDevice(ref d_betas, 5);
 
             return strRet;
         }
+
 
         public static ProcResult ProcMarkBlocks(int steps)
         {
@@ -107,11 +111,22 @@ namespace Sponge.Model
 
         public static ProcResult ProcIsingRb(int steps, float temp)
         {
-            double t2 = (1.0 / (1.0 + Math.Exp(2 * temp)));
-            double t4 = (1.0 / (1.0 + Math.Exp(4 * temp)));
-
             var strRet = String.Empty;
-  
+
+            float t2 = (float)(1.0 / (1.0 + Math.Exp(2 * temp)));
+            float t4 = (float)(1.0 / (1.0 + Math.Exp(4 * temp)));
+
+            float[] thresh = new float[5];
+            //thresh[0] = 1.0f;
+            //thresh[1] = 1.0f;
+            thresh[0] = 1.0f - t4;
+            thresh[1] = 1.0f - t2;
+            thresh[2] = 0.5f;
+            thresh[3] = t2;
+            thresh[4] = t4;
+
+            strRet = strRet + _cudaArray.CopyFloatsToDevice(thresh, d_betas, 5);
+
             _stopwatch.Reset();
             _stopwatch.Start();
 
@@ -120,19 +135,18 @@ namespace Sponge.Model
                 strRet = strRet + _randoProcs.MakeRandomInts(d_indexRands, _blockCount);
                 strRet = strRet + _randoProcs.MakeUniformRands(d_tempRands, _blockCount);
 
-                strRet = strRet + _gridProcs.Run_k_IsingRb(
+                strRet = strRet + _gridProcs.Run_k_Ising_bp(
                         destPtr: d_grid,
                         energyPtr: d_energy,
                         indexRandPtr: d_indexRands,
                         tempRandPtr: d_tempRands,
                         block_size: _block_size,
                         blocks_per_span: _blocks_per_span,
-                        t2:(float)t2,
-                        t4:(float)t4
+                        threshPtr: d_betas
                     );
             }
 
-            strRet = strRet + _gridProcs.RunIsingKernelEnergy(d_energy, d_grid, _span);
+            strRet = strRet + _gridProcs.Runk_Energy4(d_energy, d_grid, _span);
 
             int[] mres = new int[_area / 1024];
 
@@ -170,6 +184,9 @@ namespace Sponge.Model
                                    steps: steps,
                                    time: _stopwatch.ElapsedMilliseconds);
         }
+
+
+
 
     }
 }

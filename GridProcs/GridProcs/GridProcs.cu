@@ -9,7 +9,7 @@
 #include "..\..\Common\ClrUtils.h"
 
 
-extern "C" __declspec(dllexport) BSTR DllRunGolKernel(int *dev_out, int *dev_in, int span)
+extern "C" __declspec(dllexport) BSTR DllRun_k_Gol(int *dev_out, int *dev_in, int span)
 {
 	std::string funcName = "DllRunGolK";
 	try
@@ -18,7 +18,26 @@ extern "C" __declspec(dllexport) BSTR DllRunGolKernel(int *dev_out, int *dev_in,
 		td = (td > 32) ? 32 : td;
 		dim3 t = dim3(td, td);
 		dim3 b = dim3(span / td, span / td);
-		GolKernel <<<b, t>>>(dev_out, dev_in, span);
+		k_Gol <<<b, t>>>(dev_out, dev_in, span);
+		return BSTR();
+	}
+	catch (std::runtime_error &e)
+	{
+		std::string err = e.what();
+		return RuntimeErrBSTR(err, funcName);
+	}
+}
+
+extern "C" __declspec(dllexport) BSTR DllRun_k_Ising_dg(int *dataOut, int *energyOut, int *dataIn, float *rands, unsigned int span, int alt, float *thresh)
+{
+	std::string funcName = "DllRun_k_Ising";
+	try
+	{
+		int td = SqrtPow2Lb(span);
+		td = (td > 32) ? 32 : td;
+		dim3 t = dim3(td, td);
+		dim3 b = dim3(span / td, span / td);
+		k_Ising_dg<< <b, t >> >(dataOut, energyOut, dataIn, rands, span, alt, thresh);
 		return BSTR();
 	}
 	catch (std::runtime_error &e)
@@ -29,116 +48,16 @@ extern "C" __declspec(dllexport) BSTR DllRunGolKernel(int *dev_out, int *dev_in,
 }
 
 
-extern "C" __declspec(dllexport) BSTR DllRunAltKernel(int *data, unsigned int span, int alt, int value)
+extern "C" __declspec(dllexport) BSTR DllRun_k_Energy4(int *energyOut, int *dataIn, unsigned int span)
 {
-	std::string funcName = "DllRunAltKernel";
+	std::string funcName = "DllRun_k_Energy4";
 	try
 	{
 		int td = SqrtPow2Lb(span);
 		td = (td > 32) ? 32 : td;
 		dim3 t = dim3(td, td);
 		dim3 b = dim3(span / td, span / td);
-		AltKernel<<<b, t>>>(data, span, alt, value);
-		return BSTR();
-	}
-	catch (std::runtime_error &e)
-	{
-		std::string err = e.what();
-		return RuntimeErrBSTR(err, funcName);
-	}
-}
-
-
-extern "C" __declspec(dllexport) BSTR DllRunAltKernelCopy(int *dataOut, int *dataIn, unsigned int span, int alt, int value)
-{
-	std::string funcName = "DllRunAltKernelCopy";
-	try
-	{
-		int td = SqrtPow2Lb(span);
-		td = (td > 32) ? 32 : td;
-		dim3 t = dim3(td, td);
-		dim3 b = dim3(span / td, span / td);
-		AltKernelCopy<<<b, t>>>(dataOut, dataIn, span, alt, value);
-		return BSTR();
-	}
-	catch (std::runtime_error &e)
-	{
-		std::string err = e.what();
-		return RuntimeErrBSTR(err, funcName);
-	}
-}
-
-
-extern "C" __declspec(dllexport) BSTR DllRunMetroIsingKernel(int *dataOut, int *dataIn, float *rands, float temp, unsigned int span, int alt)
-{
-	std::string funcName = "DllRunMetroIsingKernel";
-	try
-	{
-		int td = SqrtPow2Lb(span);
-		td = (td > 32) ? 32 : td;
-		dim3 t = dim3(td, td);
-		dim3 b = dim3(span / td, span / td);
-		MetroIsingKernel<<<b, t>>>(dataOut, dataIn, rands, temp, span, alt);
-		return BSTR();
-	}
-	catch (std::runtime_error &e)
-	{
-		std::string err = e.what();
-		return RuntimeErrBSTR(err, funcName);
-	}
-}
-
-
-extern "C" __declspec(dllexport) BSTR DllRunIsingKernel(int *dataOut, int *dataIn, float *rands, unsigned int span, int alt, float t2, float t4)
-{
-	std::string funcName = "DllRunIsingKernel";
-	try
-	{
-		int td = SqrtPow2Lb(span);
-		td = (td > 32) ? 32 : td;
-		dim3 t = dim3(td, td);
-		dim3 b = dim3(span / td, span / td);
-		IsingKernel<<<b, t>>>(dataOut, dataIn, rands, span, alt, t2, t4);
-		return BSTR();
-	}
-	catch (std::runtime_error &e)
-	{
-		std::string err = e.what();
-		return RuntimeErrBSTR(err, funcName);
-	}
-}
-
-
-extern "C" __declspec(dllexport) BSTR DllRunIsingKernelPlusEnergy(int *dataOut, int *energyOut, int *dataIn, float *rands, unsigned int span, int alt, float *thresh)
-{
-	std::string funcName = "DllRunIsingKernelPlusEnergy";
-	try
-	{
-		int td = SqrtPow2Lb(span);
-		td = (td > 32) ? 32 : td;
-		dim3 t = dim3(td, td);
-		dim3 b = dim3(span / td, span / td);
-		IsingKernelPlusEnergy << <b, t >> >(dataOut, energyOut, dataIn, rands, span, alt, thresh);
-		return BSTR();
-	}
-	catch (std::runtime_error &e)
-	{
-		std::string err = e.what();
-		return RuntimeErrBSTR(err, funcName);
-	}
-}
-
-
-extern "C" __declspec(dllexport) BSTR DllRunIsingKernelEnergy(int *energyOut, int *dataIn, unsigned int span)
-{
-	std::string funcName = "DllRunIsingKernelEnergy";
-	try
-	{
-		int td = SqrtPow2Lb(span);
-		td = (td > 32) ? 32 : td;
-		dim3 t = dim3(td, td);
-		dim3 b = dim3(span / td, span / td);
-		IsingKernelEnergy<<<b, t>>>(energyOut, dataIn, span);
+		k_Energy4<<<b, t>>>(energyOut, dataIn, span);
 		return BSTR();
 	}
 	catch (std::runtime_error &e)
@@ -170,9 +89,10 @@ extern "C" __declspec(dllexport) BSTR DllRun_k_RandBlockPick(int *dataOut, unsig
 }
 
 
-extern "C" __declspec(dllexport) BSTR DllRun_k_IsingRb(int *dataOut, int *energyOut, unsigned int *index_rands, float *temp_rands, unsigned int block_size, unsigned int blocks_per_span, float t2, float t4)
+extern "C" __declspec(dllexport) BSTR DllRun_k_Ising_bp(int *dataOut, int *energyOut, unsigned int *index_rands, 
+	float *temp_rands, unsigned int block_size, unsigned int blocks_per_span, float *tts)
 {
-	std::string funcName = "DllRun_k_IsingRb";
+	std::string funcName = "DllRun_k_Ising_bp";
 	try
 	{
 		int td = SqrtPow2Lb(blocks_per_span);
@@ -180,7 +100,7 @@ extern "C" __declspec(dllexport) BSTR DllRun_k_IsingRb(int *dataOut, int *energy
 		dim3 t = dim3(td, td);
 		dim3 b = dim3(blocks_per_span / td, blocks_per_span / td);
 
-		k_IsingRb<<<b, t>>>(dataOut, energyOut, index_rands, temp_rands, block_size, t2, t4);
+		k_Ising_bp<<<b, t>>>(dataOut, energyOut, index_rands, temp_rands, block_size, tts);
 		return BSTR();
 	}
 	catch (std::runtime_error &e)
@@ -208,9 +128,9 @@ extern "C" __declspec(dllexport) BSTR DllRundevice_function_init_YK(double d_t, 
 }
 
 
-extern "C" __declspec(dllexport) BSTR DllRun_k_Thermo(float *dataOut, float *dataIn, unsigned int span, int alt, float rate, unsigned int fixed_colA, unsigned int fixed_colB)
+extern "C" __declspec(dllexport) BSTR DllRun_k_Thermo_dg(float *dataOut, float *dataIn, unsigned int span, int alt, float rate, unsigned int fixed_colA, unsigned int fixed_colB)
 {
-	std::string funcName = "DllRun_k_Thermo";
+	std::string funcName = "DllRun_k_Thermo_dg";
 	try
 	{
 		int td = SqrtPow2Lb(span);
@@ -218,7 +138,7 @@ extern "C" __declspec(dllexport) BSTR DllRun_k_Thermo(float *dataOut, float *dat
 		dim3 t = dim3(td, td);
 		dim3 b = dim3(span / td, span / td);
 
-		k_Thermo<<<b, t>>>(dataOut, dataIn, span, alt, rate, fixed_colA, fixed_colB);
+		k_Thermo_dg<<<b, t>>>(dataOut, dataIn, span, alt, rate, fixed_colA, fixed_colB);
 		return BSTR();
 	}
 	catch (std::runtime_error &e)
@@ -228,3 +148,46 @@ extern "C" __declspec(dllexport) BSTR DllRun_k_Thermo(float *dataOut, float *dat
 	}
 }
 
+
+extern "C" __declspec(dllexport) BSTR DllRun_k_Thermo_bp(float *dataOut, unsigned int *index_rands, unsigned int block_size, 
+								unsigned int blocks_per_span, float rate, unsigned int fixed_colA, unsigned int fixed_colB)
+{
+	std::string funcName = "DllRun_k_Thermo_bp";
+	try
+	{
+		int td = SqrtPow2Lb(blocks_per_span);
+		td = (td > 32) ? 32 : td;
+		dim3 t = dim3(td, td);
+		dim3 b = dim3(blocks_per_span / td, blocks_per_span / td);
+
+		k_Thermo_bp <<<b, t >>>(dataOut, index_rands, block_size, rate, fixed_colA, fixed_colB);
+		return BSTR();
+	}
+	catch (std::runtime_error &e)
+	{
+		std::string err = e.what();
+		return RuntimeErrBSTR(err, funcName);
+	}
+}
+
+extern "C" __declspec(dllexport) BSTR DllRun_k_ThermoIsing_bp(float *temp_data, int *flip_data,
+	unsigned int *index_rands, float *flip_rands, float *threshes, float flip_energy, unsigned int block_size,
+	unsigned int blocks_per_span, float q_rate, unsigned int fixed_colA, unsigned int fixed_colB)
+{
+	std::string funcName = "DllRun_k_ThermoIsing_bp";
+	try
+	{
+		int td = SqrtPow2Lb(blocks_per_span);
+		td = (td > 32) ? 32 : td;
+		dim3 t = dim3(td, td);
+		dim3 b = dim3(blocks_per_span / td, blocks_per_span / td);
+
+		k_ThermoIsing_bp<<<b, t>>>(temp_data, flip_data, index_rands, flip_rands, threshes, flip_energy, block_size, q_rate, fixed_colA, fixed_colB);
+		return BSTR();
+	}
+	catch (std::runtime_error &e)
+	{
+		std::string err = e.what();
+		return RuntimeErrBSTR(err, funcName);
+	}
+}

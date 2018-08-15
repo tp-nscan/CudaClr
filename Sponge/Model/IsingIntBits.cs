@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using Utils;
 
 namespace Sponge.Model
 {
@@ -57,50 +58,6 @@ namespace Sponge.Model
         }
 
 
-        public static ProcResult UpdateMetro(int steps, float temp)
-        {
-            var strRet = String.Empty;
-            IntPtr dSrc;
-            IntPtr dDest = IntPtr.Zero;
-            _stopwatch.Reset();
-            _stopwatch.Start();
-
-            for (var s = 0; s < steps; s++)
-            {
-                if (_phase == 0)
-                {
-                    dSrc = d_gridA;
-                    dDest = d_gridB;
-                    strRet = strRet + _randoProcs.MakeNormalRands(d_rands, _area, mean: 0.0f, stdev: 0.95f);
-                    _phase = 1;
-                }
-                else
-                {
-                    dSrc = d_gridB;
-                    dDest = d_gridA;
-                    _phase = 0;
-                }
-
-                strRet = strRet + _gridProcs.RunMetroIsingKernel(destPtr:dDest, srcPtr: dSrc, randPtr:d_rands, temp:temp, span: _span, alt: _phase);
-            }
-
-            int[] res = new int[_area];
-            strRet = strRet + _cudaArray.CopyIntsFromDevice(res, dDest, _area);
-
-            _stopwatch.Stop();
-
-            var dRet = new Dictionary<string, object>();
-            dRet["Grid"] = new SimGrid<int>(name: "UpdateMetro",
-                                            width: _span,
-                                            height: _span,
-                                            data: res);
-            return new ProcResult(data: dRet,
-                                   err: strRet,
-                                   steps: 0,
-                                   time: _stopwatch.ElapsedMilliseconds);
-        }
-
-
         public static ProcResult GetEnergy()
         {
             var strRet = String.Empty;
@@ -136,15 +93,15 @@ namespace Sponge.Model
             float t4 = (float)(1.0 / (1.0 + Math.Exp(4 * temp)));
 
             float[] thresh = new float[10];
-            thresh[1] = 1.0f; // - t4;
-            thresh[3] = 1.0f; // - t2;
+            //thresh[1] = 1.0f;
+            //thresh[3] = 1.0f;
+            thresh[1] = 1.0f - t4;
+            thresh[3] = 1.0f - t2;
             thresh[5] = 0.5f;
             thresh[7] = t2;
             thresh[9] = t4;
 
-
             strRet = strRet + _cudaArray.CopyFloatsToDevice(thresh, d_betas, 10);
-                //.MallocFloatsOnDevice(ref d_betas, 10);
 
             IntPtr dSrc;
             IntPtr dDest = IntPtr.Zero;
@@ -171,7 +128,7 @@ namespace Sponge.Model
                     _phase = 0;
                 }
 
-                strRet = strRet + _gridProcs.RunIsingKernelPlusEnergy(
+                strRet = strRet + _gridProcs.Runk_Ising_dg(
                         destPtr: dDest,
                         energyPtr: d_energy,
                         srcPtr: dSrc,

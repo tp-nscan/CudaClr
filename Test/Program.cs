@@ -18,7 +18,7 @@ namespace Test
         {
             var grid = new int[] { -1, -1, -1, -1,  1, -1, -1, -1, -1 };
 
-            var res = GridFuncs.Energy4(grid, 3);
+            var res = GridFuncs.k_Energy4(grid, 3);
 
         }
     }

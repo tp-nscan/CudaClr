@@ -6,6 +6,7 @@ using System.Windows.Media;
 using Sponge.Common;
 using Sponge.Model;
 using FS;
+using Utils;
 
 namespace Sponge.ViewModel.Common
 {

@@ -1,6 +1,7 @@
 ﻿using System; 
 using FS;
 using Sponge.Model;
+using Utils;
 
 namespace Sponge.ViewModel.Common
 {
@@ -32,7 +33,7 @@ namespace Sponge.ViewModel.Common
             var initData = SimGridIntSamples.SquareRandBits(512, 5213);
             var ugvm = new UpdateGridVm(initData, ProcMarkBlocks);
 
-            BlockPick.Init(initData.Data, initData.Width, 16);
+            BlockPick.Init(initData.Data, initData.Width, 4);
 
             ugvm.GraphLatticeVm.SetUpdater(GraphLatticeVmEx.DrawGridCell_int_BW_mod256, initData);
             ugvm.UpdateVm.OnUpdateUI.Subscribe(p => UpdateGraphLatticeWithGrid(p, ugvm));

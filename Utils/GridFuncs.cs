@@ -2,7 +2,7 @@
 {
     public static class GridFuncs
     {
-        public static int Energy4(int[] grid, uint stride)
+        public static int k_Energy4(int[] grid, uint stride)
         {
             int tot = 0;
             for(var i=0; i<stride; i++)

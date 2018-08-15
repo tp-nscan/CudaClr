@@ -1,5 +1,6 @@
 ﻿using Sponge.ViewModel.Common;
 using Sponge.Model;
+using Utils;
 
 namespace Sponge
 {
@@ -13,8 +14,15 @@ namespace Sponge
         public MainWindow()
         {
             InitializeComponent();
+
+            var res = FloatFuncs.Betas(32, 10.0f);
+
+            UpdateGGControl.DataContext = _updateGGVm = GG_ThermoIsing_bp.Thermo();
+
+            //UpdateGGControl.DataContext = _updateGGVm = GG_Thermo.Thermo();
             //UpdateGridControl.DataContext = _updateGridVm = UpdateGridVmB.BlockPicker();
-            UpdateGGControl.DataContext = _updateGGVm = GG_Thermo.Thermo(); // GG_Annealer.Annealer();
+            //UpdateGGControl.DataContext = _updateGGVm = GG_Annealer.Annealer();
+            //UpdateGGControl.DataContext = _updateGGVm = GG_AnnealerRb.AnnealerRb();
         }
 
     }

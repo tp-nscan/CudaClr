@@ -6,6 +6,7 @@ using FS;
 using Sponge.Common;
 using System.Collections.Generic;
 using System.Windows.Media;
+using Utils;
 
 namespace Sponge.ViewModel.Common
 {
@@ -156,15 +157,15 @@ namespace Sponge.ViewModel.Common
 
         public static I<float> EnergyBoundsW
         {
-            get { return new I<float>(min: 0.0f, max: 4.0f); }
+            get { return new I<float>(min: 0.0f, max: 2.2f); }
         }
 
         public static I<float> BetaBoundsW
         {
-            get { return new I<float>(min: 0.25f, max: 1.5f); }
+            get { return new I<float>(min: 0.675f, max: 1.3f); }
         }
 
-        public static float BetaDelta = 0.05f;
+        public static float BetaDelta = 0.02f;
 
         public static ProcResult ProcIsingIntBitsEnergy(object vm)
         {
@@ -195,39 +196,219 @@ namespace Sponge.ViewModel.Common
     }
 
 
-    public static class GG_Thermo
+    public static class GG_AnnealerRb
+    {
+        public static UpdateGGVm AnnealerRb()
+        {
+            var initData = SimGridIntSamples.SquareRandBits(GridSpan, 5213);
+            var ggRet = new UpdateGGVm(GridSpan, GridSpan, BetaBoundsW, EnergyBoundsW, BetaDelta, ProcIsingIntBitsEnergy);
+
+            ggRet.GraphLatticeVm.SetUpdater(GraphLatticeVmEx.DrawGridCell_BWR, initData);
+            ggRet.UpdateVm.OnUpdateUI.Subscribe(p => UpdateGGView(p, ggRet));
+
+            BlockPick.Init(initData.Data, initData.Width, 8);
+
+            return ggRet;
+        }
+
+        public static uint GridSpan = 1024;
+
+        public static I<float> EnergyBoundsW
+        {
+            get { return new I<float>(min: 0.0f, max: 2.2f); }
+        }
+
+        public static I<float> BetaBoundsW
+        {
+            get { return new I<float>(min: 0.675f, max: 1.3f); }
+        }
+
+        public static float BetaDelta = 0.02f;
+
+        public static ProcResult ProcIsingIntBitsEnergy(object vm)
+        {
+            var ggvm = (UpdateGGVm)vm;
+            ggvm.SetBeta();
+            return BlockPick.ProcIsingRb(ggvm.UpdateVm.StepsPerUpdate, ggvm.Beta);
+        }
+
+        public static void UpdateGGView(ProcResult result, UpdateGGVm ugvm)
+        {
+            ugvm.GraphLatticeVm.Update(result.Data["Grid"]);
+            ugvm.Energy = 4.0f - (float)result.Data["Energy"];
+
+            var smidgeX = (ugvm.BetaBounds.Max - ugvm.BetaBounds.Min) / 500;
+            var smidgeY = (ugvm.EnergyBounds.Max - ugvm.EnergyBounds.Min) / 500;
+
+            ugvm.GraphVm.WbImageVm.ImageData = Id.AddRect(
+                ugvm.GraphVm.WbImageVm.ImageData,
+                new RV<float, Color>(
+                            minX: ugvm.Beta,
+                            maxX: ugvm.Beta + smidgeX,
+                            minY: ugvm.Energy,
+                            maxY: ugvm.Energy + smidgeY,
+                            v: (ugvm.Decreasing) ? Colors.Red : Colors.Black
+                ));
+        }
+
+    }
+
+
+    public static class GG_Thermo_dg
     {
         public static UpdateGGVm Thermo()
         {
-            var initData = SimGridFloatSamples.LeftRightGradient(GridSpan);
+            var initData = SimGridFloatSamples.RandUniform0_1(GridSpan, 1234);
             var ggRet = new UpdateGGVm(GridSpan, GridSpan, BetaBoundsW, EnergyBoundsW, BetaDelta, ProcIsingIntBitsEnergy);
 
             ggRet.GraphLatticeVm.SetUpdater(GraphLatticeVmEx.DrawGridCell_float_BW_mod256, initData);
             ggRet.UpdateVm.OnUpdateUI.Subscribe(p => UpdateGGView(p, ggRet));
 
-            ThemalIsing.Init(initData.Data, initData.Width);
+            Themal_dg.Init(initData.Data, initData.Width);
 
             return ggRet;
         }
 
-        public static uint GridSpan = 64;
+        public static uint GridSpan = 1024;
+        public static float Rate = 0.001f;
 
         public static I<float> EnergyBoundsW
         {
-            get { return new I<float>(min: 0.0f, max: 4.0f); }
+            get { return new I<float>(min: 0.0f, max: 2.2f); }
         }
 
         public static I<float> BetaBoundsW
         {
-            get { return new I<float>(min: 0.25f, max: 1.5f); }
+            get { return new I<float>(min: 0.675f, max: 1.3f); }
         }
 
-        public static float BetaDelta = 0.05f;
+        public static float BetaDelta = 0.02f;
 
         public static ProcResult ProcIsingIntBitsEnergy(object vm)
         {
             var ggvm = (UpdateGGVm)vm;
-            return ThemalIsing.UpdateH(ggvm.UpdateVm.StepsPerUpdate);
+            return Themal_dg.UpdateH(ggvm.UpdateVm.StepsPerUpdate, Rate);
+        }
+
+        public static void UpdateGGView(ProcResult result, UpdateGGVm ugvm)
+        {
+            ugvm.GraphLatticeVm.Update(result.Data["Grid"]);
+
+            //ugvm.Energy = 4.0f - (float)result.Data["Energy"];
+
+            //var smidgeX = (ugvm.BetaBounds.Max - ugvm.BetaBounds.Min) / 500;
+            //var smidgeY = (ugvm.EnergyBounds.Max - ugvm.EnergyBounds.Min) / 500;
+
+            //ugvm.GraphVm.WbImageVm.ImageData = Id.AddRect(
+            //    ugvm.GraphVm.WbImageVm.ImageData,
+            //    new RV<float, Color>(
+            //                minX: ugvm.Beta,
+            //                maxX: ugvm.Beta + smidgeX,
+            //                minY: ugvm.Energy,
+            //                maxY: ugvm.Energy + smidgeY,
+            //                v: (ugvm.Decreasing) ? Colors.Red : Colors.Black
+            //    ));
+        }
+
+    }
+
+
+    public static class GG_Thermo_bp
+    {
+        public static UpdateGGVm Thermo()
+        {
+            var initData = SimGridFloatSamples.RandUniform0_1(GridSpan, 1234);
+            var ggRet = new UpdateGGVm(GridSpan, GridSpan, BetaBoundsW, EnergyBoundsW, BetaDelta, ProcIsingIntBitsEnergy);
+
+            ggRet.GraphLatticeVm.SetUpdater(GraphLatticeVmEx.DrawGridCell_float_BW_mod256, initData);
+            ggRet.UpdateVm.OnUpdateUI.Subscribe(p => UpdateGGView(p, ggRet));
+
+            Thermal_bp.Init(initData.Data, initData.Width, BlockSize);
+
+            return ggRet;
+        }
+
+        public static uint GridSpan = 1024;
+        public static uint BlockSize = 4;
+        public static float Rate = 0.001f;
+
+        public static I<float> EnergyBoundsW
+        {
+            get { return new I<float>(min: 0.0f, max: 2.2f); }
+        }
+
+        public static I<float> BetaBoundsW
+        {
+            get { return new I<float>(min: 0.675f, max: 1.3f); }
+        }
+
+        public static float BetaDelta = 0.02f;
+
+        public static ProcResult ProcIsingIntBitsEnergy(object vm)
+        {
+            var ggvm = (UpdateGGVm)vm;
+            return Thermal_bp.UpdateH(ggvm.UpdateVm.StepsPerUpdate, Rate);
+        }
+
+        public static void UpdateGGView(ProcResult result, UpdateGGVm ugvm)
+        {
+            ugvm.GraphLatticeVm.Update(result.Data["Grid"]);
+
+            //ugvm.Energy = 4.0f - (float)result.Data["Energy"];
+
+            //var smidgeX = (ugvm.BetaBounds.Max - ugvm.BetaBounds.Min) / 500;
+            //var smidgeY = (ugvm.EnergyBounds.Max - ugvm.EnergyBounds.Min) / 500;
+
+            //ugvm.GraphVm.WbImageVm.ImageData = Id.AddRect(
+            //    ugvm.GraphVm.WbImageVm.ImageData,
+            //    new RV<float, Color>(
+            //                minX: ugvm.Beta,
+            //                maxX: ugvm.Beta + smidgeX,
+            //                minY: ugvm.Energy,
+            //                maxY: ugvm.Energy + smidgeY,
+            //                v: (ugvm.Decreasing) ? Colors.Red : Colors.Black
+            //    ));
+        }
+
+    }
+
+
+    public static class GG_ThermoIsing_bp
+    {
+        public static UpdateGGVm Thermo()
+        {
+            var initData = SimGridFloatSamples.RandUniform0_1(GridSpan, 1234);
+            var ggRet = new UpdateGGVm(GridSpan, GridSpan, BetaBoundsW, EnergyBoundsW, BetaDelta, ProcIsingIntBitsEnergy);
+
+            ggRet.GraphLatticeVm.SetUpdater(GraphLatticeVmEx.DrawGridCell_float_BW_mod256, initData);
+            ggRet.UpdateVm.OnUpdateUI.Subscribe(p => UpdateGGView(p, ggRet));
+
+            ThermalIsing_bp.Init(initData.Data, initData.Width, BlockSize);
+
+            return ggRet;
+        }
+
+        public static uint GridSpan = 1024;
+        public static uint BlockSize = 4;
+        public static float qRate = 0.001f;
+
+        public static I<float> EnergyBoundsW
+        {
+            get { return new I<float>(min: 0.0f, max: 2.2f); }
+        }
+
+        public static I<float> BetaBoundsW
+        {
+            get { return new I<float>(min: 0.675f, max: 1.3f); }
+        }
+
+        public static float BetaDelta = 0.02f;
+        public static float FlipEnergy = 0.02f;
+
+        public static ProcResult ProcIsingIntBitsEnergy(object vm)
+        {
+            var ggvm = (UpdateGGVm)vm;
+            return ThermalIsing_bp.UpdateH(ggvm.UpdateVm.StepsPerUpdate, qRate, FlipEnergy);
         }
 
         public static void UpdateGGView(ProcResult result, UpdateGGVm ugvm)
