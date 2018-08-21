@@ -131,12 +131,12 @@ BSTR DllCopyDeviceToDevice(void *dest_ints, const void *src_ints, unsigned int b
 }
 
 
-BSTR DllRunLinearReduceKernel(int *d_out, const int *d_in, unsigned int length_in, unsigned int length_out)
+BSTR DllRunLinearAddIntsKernel(int *d_out, const int *d_in, unsigned int length_in, unsigned int length_out)
 {
-	std::string funcName = "DllRunLinearReduceKernel";
+	std::string funcName = "DllRunLinearAddIntsKernel";
 	try
 	{
-		LinearReduceKernel<<<length_out, 512>>>(d_out, d_in, length_in);
+		LinearAddIntsKernel<<<length_out, 512>>>(d_out, d_in, length_in);
 		return BSTR();
 	}
 	catch (std::runtime_error &e)
@@ -147,14 +147,14 @@ BSTR DllRunLinearReduceKernel(int *d_out, const int *d_in, unsigned int length_i
 }
 
 
-BSTR DllRunBlockReduce_32_Kernel(int *d_out, const int *d_in, unsigned int span)
+BSTR DllRunBlockAddInts_32_Kernel(int *d_out, const int *d_in, unsigned int span)
 {
-	std::string funcName = "DllRunBlockReduce_32_Kernel";
+	std::string funcName = "DllRunBlockAddInts_32_Kernel";
 	try
 	{
 		dim3 b = dim3(span / 32, span / 32);
 		dim3 t = dim3(32, 32);
-		BlockReduce_32_Kernel<<<b, t>>>(d_out, d_in);
+		BlockAddInts_32_Kernel<<<b, t>>>(d_out, d_in);
 
 		return BSTR();
 	}
@@ -166,14 +166,66 @@ BSTR DllRunBlockReduce_32_Kernel(int *d_out, const int *d_in, unsigned int span)
 }
 
 
-BSTR DllRunBlockReduce_16_Kernel(int *d_out, const int *d_in, unsigned int span)
+BSTR DllRunBlockAddInts_16_Kernel(int *d_out, const int *d_in, unsigned int span)
 {
-	std::string funcName = "DllRunBlockReduce_16_Kernel";
+	std::string funcName = "DllRunBlockAddInts_16_Kernel";
 	try
 	{
 		dim3 b = dim3(span / 16, span / 16);
 		dim3 t = dim3(16, 16);
-		BlockReduce_16_Kernel << <b, t >> >(d_out, d_in);
+		BlockAddInts_16_Kernel << <b, t >> >(d_out, d_in);
+		return BSTR();
+	}
+	catch (std::runtime_error &e)
+	{
+		std::string err = e.what();
+		return RuntimeErrBSTR(err, funcName);
+	}
+}
+
+BSTR DllRunLinearAddFloatsKernel(float *d_out, const float *d_in, unsigned int length_in, unsigned int length_out)
+{
+	std::string funcName = "DllRunLinearAddFloatsKernel";
+	try
+	{
+		LinearAddFloatsKernel <<<length_out, 512>>>(d_out, d_in, length_in);
+		return BSTR();
+	}
+	catch (std::runtime_error &e)
+	{
+		std::string err = e.what();
+		return RuntimeErrBSTR(err, funcName);
+	}
+}
+
+
+BSTR DllRunBlockAddFloats_32_Kernel(float *d_out, const float *d_in, unsigned int span)
+{
+	std::string funcName = "DllRunBlockAddFloats_32_Kernel";
+	try
+	{
+		dim3 b = dim3(span / 32, span / 32);
+		dim3 t = dim3(32, 32);
+		BlockAddFloats_32_Kernel <<<b, t>>>(d_out, d_in);
+
+		return BSTR();
+	}
+	catch (std::runtime_error &e)
+	{
+		std::string err = e.what();
+		return RuntimeErrBSTR(err, funcName);
+	}
+}
+
+
+BSTR DllRunBlockAddFloats_16_Kernel(float *d_out, const float *d_in, unsigned int span)
+{
+	std::string funcName = "DllRunBlockAddFloats_16_Kernel";
+	try
+	{
+		dim3 b = dim3(span / 16, span / 16);
+		dim3 t = dim3(16, 16);
+		BlockAddFloats_16_Kernel <<<b, t>>>(d_out, d_in);
 		return BSTR();
 	}
 	catch (std::runtime_error &e)

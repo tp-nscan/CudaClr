@@ -13,7 +13,7 @@ namespace Sponge.ViewModel.Common
     {
         public UpdateIsingBpVm(SimGrid<int> data)
         {
-            UpdateVm = new UpdateVm(proc: Proc, containingVm: this)
+            UpdateVm = new UpdateVm(proc: Proc, containingVm: this, update_params: UpdateParams)
             {
                 StepsPerUpdate = 1
             };
@@ -78,6 +78,8 @@ namespace Sponge.ViewModel.Common
         {
             return BlockPick.ProcIsingRb((int)steps, temp: Beta);
         }
+
+        void UpdateParams(object o) { }
 
 
         public List<RV<float, Color>> Rects { get; private set; }

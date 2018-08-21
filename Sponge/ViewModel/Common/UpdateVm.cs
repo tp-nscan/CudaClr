@@ -17,15 +17,18 @@ namespace Sponge.ViewModel.Common
             = new Subject<ProcResult>();
         public IObservable<ProcResult> OnUpdateUI => _updateUI;
 
-        public UpdateVm(Func<object, ProcResult> proc, object containingVm)
+        public UpdateVm(Func<object, ProcResult> proc, Action<object> update_params, object containingVm)
         {
             Proc = proc;
+            UpdateParams = update_params;
             _containingVm = containingVm;
         }
 
         object _containingVm;
 
         public Func<object, ProcResult> Proc { get; private set; }
+
+        public Action<object> UpdateParams { get; private set; }
 
         string _errorMsg;
         public string ErrorMsg
@@ -139,6 +142,8 @@ namespace Sponge.ViewModel.Common
                             () => UpdateUI(res),
                             DispatcherPriority.Background
                         );
+
+                    UpdateParams(_containingVm);
 
                     if (_cancellationTokenSource.IsCancellationRequested)
                     {

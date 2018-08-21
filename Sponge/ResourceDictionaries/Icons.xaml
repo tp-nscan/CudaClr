@@ -1,0 +1,47 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:local="clr-namespace:Sponge.ResourceDictionaries">
+
+
+    <ControlTemplate x:Key="NoBorderControlTemplate" TargetType="{x:Type ButtonBase}">
+        <Border x:Name="border" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Background="{TemplateBinding Background}" SnapsToDevicePixels="True">
+            <ContentPresenter x:Name="contentPresenter" ContentTemplate="{TemplateBinding ContentTemplate}" Content="{TemplateBinding Content}" ContentStringFormat="{TemplateBinding ContentStringFormat}" Focusable="False" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" Margin="{TemplateBinding Padding}" RecognizesAccessKey="True" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
+        </Border>
+        <ControlTemplate.Triggers>
+            <Trigger Property="Button.IsDefaulted" Value="True">
+                <Setter Property="BorderBrush" TargetName="border" Value="{DynamicResource {x:Static SystemColors.HighlightBrushKey}}"/>
+            </Trigger>
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter Property="BorderBrush" TargetName="border" Value="{x:Null}"/>
+                <Setter Property="Background" TargetName="border" Value="{x:Null}"/>
+            </Trigger>
+            <Trigger Property="IsPressed" Value="True">
+                <Setter Property="BorderBrush" TargetName="border" Value="{x:Null}"/>
+                <Setter Property="Background" TargetName="border" Value="{x:Null}"/>
+            </Trigger>
+            <Trigger Property="ToggleButton.IsChecked" Value="True">
+                <Setter Property="BorderBrush" TargetName="border" Value="{x:Null}"/>
+                <Setter Property="Background" TargetName="border" Value="{x:Null}"/>
+            </Trigger>
+            <Trigger Property="IsEnabled" Value="False">
+                <Setter Property="BorderBrush" TargetName="border" Value="{x:Null}"/>
+                <Setter Property="Background" TargetName="border" Value="{x:Null}"/>
+            </Trigger>
+        </ControlTemplate.Triggers>
+    </ControlTemplate>
+
+    <SolidColorBrush x:Key="GrayBrush" Color="#FF53626F"/>
+    <DataTemplate x:Key="IconCamera">
+        <Canvas HorizontalAlignment="Left" Height="53.0005" UseLayoutRounding="False" VerticalAlignment="Top" Width="53">
+            <Canvas x:Name="Layer_1" Height="53" Canvas.Left="0" Canvas.Top="0" Width="53">
+                <Path Data="F1M50,25C50,38.807 38.807,50 25,50 11.193,50 0,38.807 0,25 0,11.193 11.193,0 25,0 38.807,0 50,11.193 50,25" Fill="White" Height="50" Canvas.Left="1.5" Canvas.Top="1.5" Width="50"/>
+                <Path Data="F1M26.5,3C13.542,3 3,13.542 3,26.5 3,39.458 13.542,50 26.5,50 39.458,50 50,39.458 50,26.5 50,13.542 39.458,3 26.5,3 M26.5,53C11.888,53 0,41.112 0,26.5 0,11.888 11.888,0 26.5,0 41.112,0 53,11.888 53,26.5 53,41.112 41.112,53 26.5,53" Fill="{DynamicResource GrayBrush}" Height="53" Canvas.Left="0" Canvas.Top="0" Width="53"/>
+                <Path Data="F1M14.04,7.018C14.04,10.895 10.894,14.036 7.02,14.036 3.144,14.036 0,10.895 0,7.018 0,3.143 3.144,0 7.02,0 10.894,0 14.04,3.143 14.04,7.018" Fill="White" Height="14.036" Canvas.Left="19.48" Canvas.Top="19.482" Width="14.039"/>
+                <Path Data="F1M8.02,2C4.701,2 2,4.7 2,8.018 2,11.336 4.701,14.036 8.02,14.036 11.339,14.036 14.04,11.336 14.04,8.018 14.04,4.7 11.339,2 8.02,2 M8.02,16.036C3.598,16.036 0,12.439 0,8.018 0,3.597 3.598,0 8.02,0 12.442,0 16.04,3.597 16.04,8.018 16.04,12.439 12.442,16.036 8.02,16.036" Fill="{DynamicResource GrayBrush}" Height="16.036" Canvas.Left="18.48" Canvas.Top="18.482" Width="16.04"/>
+                <Path Data="F1M8.637,4.319C8.637,6.706 6.705,8.637 4.319,8.637 1.934,8.637 0,6.706 0,4.319 0,1.932 1.934,0 4.319,0 6.705,0 8.637,1.932 8.637,4.319" Fill="{DynamicResource GrayBrush}" Height="8.637" Canvas.Left="22.181" Canvas.Top="22.181" Width="8.637"/>
+                <Path Data="F1M4.256,6.713C3.564,6.713,3,7.275,3,7.967L3,21.275C3,21.966,3.564,22.529,4.256,22.529L30.699,22.529C31.391,22.529,31.953,21.966,31.953,21.275L31.953,7.967C31.953,7.275,31.391,6.713,30.699,6.713L24.458,6.713 22.978,3 11.976,3 10.495,6.713z M30.699,25.529L4.256,25.529C1.909,25.529,0,23.621,0,21.275L0,7.967C0,5.621,1.909,3.713,4.256,3.713L8.462,3.713 9,2.363C9.169,1.032,10.309,0,11.686,0L23.269,0C24.645,0,25.784,1.032,25.953,2.363L26.491,3.713 30.699,3.713C33.045,3.713,34.953,5.621,34.953,7.967L34.953,21.275C34.953,23.621,33.045,25.529,30.699,25.529" Fill="{DynamicResource GrayBrush}" Height="25.529" Canvas.Left="9.023" Canvas.Top="13.174" Width="34.953"/>
+            </Canvas>
+        </Canvas>
+    </DataTemplate>
+    
+</ResourceDictionary>

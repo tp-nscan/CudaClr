@@ -124,7 +124,7 @@ __global__ void k_RandBlockPick(int *dataOut, unsigned int *rands, unsigned int 
 }
 
 
-__global__ void k_Ising_bp(int *dataOut, int *energyOut, unsigned int *index_rands, float *temp_rands, unsigned int block_size, float *tts)
+__global__ void k_Ising_bp(int *flip_data, int *energyOut, unsigned int *index_rands, float *temp_rands, unsigned int block_size, float *tts)
 {
 	unsigned int blocks_per_span = gridDim.x * blockDim.x;
 	unsigned int span = blocks_per_span * block_size;
@@ -142,18 +142,17 @@ __global__ void k_Ising_bp(int *dataOut, int *energyOut, unsigned int *index_ran
 	unsigned int col = in_block_col + block_col * block_size;
 	unsigned int index = col + row * span;
 
-
-	int c = dataOut[index];
+	int c = flip_data[index];
 
 	unsigned int row_m = (row - 1 + span) % span;
 	unsigned int row_p = (row + 1) % span;
 	unsigned int col_m = (col - 1 + span) % span;
 	unsigned int col_p = (col + 1) % span;
 
-	unsigned int top = dataOut[row_m * span + col];
-	unsigned int l = dataOut[row * span + col_m];
-	unsigned int r = dataOut[row * span + col_p];
-	unsigned int bot = dataOut[row_p * span + col];
+	int top = flip_data[row_m * span + col];
+	int l = flip_data[row * span + col_m];
+	int r = flip_data[row * span + col_p];
+	int bot = flip_data[row_p * span + col];
 
 	int q = (top + l + r + bot) * c;
 	energyOut[index] = q;
@@ -167,7 +166,7 @@ __global__ void k_Ising_bp(int *dataOut, int *energyOut, unsigned int *index_ran
 	{
 		res = c * (-1);
 	}
-	dataOut[index] = res;
+	flip_data[index] = res;
 }
 
 
@@ -368,8 +367,8 @@ __global__ void k_Thermo_bp(float *grid_data, unsigned int *index_rands, unsigne
 }
 
 
-__global__ void k_ThermoIsing_bp(float *temp_data, int *flip_data, unsigned int *index_rands, float *flip_rands, 
-					float *threshes, float flip_energy, unsigned int block_size, float q_rate, int fixed_colA, int fixed_colB)
+__global__ void k_ThermoIsing_bp(float *temp_data, int *flip_data, unsigned int *index_rands, float *flip_rands,
+	float *threshes, float flip_energy, unsigned int block_size, float q_rate, int fixed_colA, int fixed_colB)
 {
 	unsigned int blocks_per_span = gridDim.x * blockDim.x;
 	unsigned int span = blocks_per_span * block_size;
@@ -387,31 +386,61 @@ __global__ void k_ThermoIsing_bp(float *temp_data, int *flip_data, unsigned int 
 	unsigned int col = in_block_col + block_col * block_size;
 	unsigned int index = col + row * span;
 
-	float c = temp_data[index];
+	float c_t = temp_data[index];
+	int c_f = flip_data[index];
 
 	unsigned int row_m = (row - 1 + span) % span;
 	unsigned int row_p = (row + 1) % span;
 	unsigned int col_m = (col - 1 + span) % span;
 	unsigned int col_p = (col + 1) % span;
 
-	float top = temp_data[row_m * span + col];
-	float l = temp_data[row * span + col_m];
-	float r = temp_data[row * span + col_p];
-	float bot = temp_data[row_p * span + col];
+	unsigned int t_dex = row_m * span + col;
+	unsigned int l_dex = row * span + col_m;
+	unsigned int r_dex = row * span + col_p;
+	unsigned int b_dex = row_p * span + col;
 
-	float q = c + (top + l + r + bot - 4 * c) * q_rate;
+	float top_t = temp_data[t_dex];
+	float l_t = temp_data[l_dex];
+	float r_t = temp_data[r_dex];
+	float bot_t = temp_data[b_dex];
 
-	if (q < 0.0) q = 0.0;
-	if (q > 1.0) q = 1.0;
+	int top_f = flip_data[t_dex];
+	int l_f = flip_data[l_dex];
+	int r_f = flip_data[r_dex];
+	int bot_f = flip_data[b_dex];
 
-	if ((col == fixed_colA) || (col == fixed_colB))
+	int q_f = (top_f + l_f + r_f + bot_f) * c_f;
+	float flip_t = 0;
+	
+	float rr = flip_rands[indexIn];
+	int threshDex = q_f * (1 - c_t) * 32.0 + 128;
+	float thresh = threshes[threshDex];
+	int res_f = c_f;
+
+	if (rr < thresh)
 	{
-		temp_data[index] = c;
+		res_f = c_f * (-1);
+		flip_t = flip_energy;
+		flip_t *= q_f;
 	}
 	else
 	{
-		temp_data[index] = q;
+		flip_t = 0;
+	}
+
+	flip_data[index] = res_f;
+
+	float res_t = c_t + (top_t + l_t + r_t + bot_t - 4 * c_t) * q_rate - flip_t;
+	if (res_t < 0.0) res_t = 0.0;
+	if (res_t > 1.0) res_t = 1.0;
+
+	if ((col == fixed_colA) || (col == fixed_colB))
+	{
+		temp_data[index] = c_t;
+	}
+	else
+	{
+		temp_data[index] = res_t;
 	}
 
 }
-

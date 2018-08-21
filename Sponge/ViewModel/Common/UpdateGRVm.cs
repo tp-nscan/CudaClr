@@ -10,13 +10,14 @@ using Utils;
 
 namespace Sponge.ViewModel.Common
 {
-    public class UpdateGGVm : BindableBase
+    public class UpdateGRVm : BindableBase
     {
         private readonly Subject<ProcResult> _updateUI
                 = new Subject<ProcResult>();
         public IObservable<ProcResult> OnUpdateUI => _updateUI;
 
-        public UpdateGGVm(uint width, uint height, I<float> betaBounds, I<float> energyBounds, float betaDelta, Func<object, ProcResult> proc)
+        public UpdateGRVm(uint width, uint height, I<float> betaBounds, I<float> energyBounds, 
+            float betaDelta, Func<object, ProcResult> proc, Action<object> update_params)
         {
             BetaBounds = betaBounds;
             EnergyBounds = energyBounds;
@@ -35,7 +36,7 @@ namespace Sponge.ViewModel.Common
                     maxY: EnergyBounds.Max
                 ); 
 
-            UpdateVm = new UpdateVm(proc: proc, containingVm:this)
+            UpdateVm = new UpdateVm(proc: proc, containingVm:this, update_params: update_params)
             {
                 StepsPerUpdate = 100
             };
@@ -60,10 +61,6 @@ namespace Sponge.ViewModel.Common
         public R<float> GraphDisplayBounds { get; set; }
 
         public R<uint> LatticeDisplayBounds { get; set; }
-
-        public List<RV<float, Color>> Rects  { get; private set; }
-
-        public List<P2V<float, Color>> Points { get; private set; }
 
         public UpdateVm UpdateVm { get; private set; }
 
@@ -138,12 +135,19 @@ namespace Sponge.ViewModel.Common
 
 
 
-    public static class GG_Annealer
+    public static class GR_Annealer
     {
-        public static UpdateGGVm Annealer()
+        public static UpdateGRVm Annealer()
         {
             var initData = SimGridIntSamples.SquareRandBits(GridSpan, 5213);
-            var ggRet = new UpdateGGVm(GridSpan, GridSpan, BetaBoundsW, EnergyBoundsW, BetaDelta, ProcIsingIntBitsEnergy);
+            var ggRet = new UpdateGRVm(
+                GridSpan, 
+                GridSpan, 
+                BetaBoundsW, 
+                EnergyBoundsW, 
+                BetaDelta, 
+                ProcIsingIntBitsEnergy,
+                update_params: UpdateParams);
 
             ggRet.GraphLatticeVm.SetUpdater(GraphLatticeVmEx.DrawGridCell_BWR, initData);
             ggRet.UpdateVm.OnUpdateUI.Subscribe(p => UpdateGGView(p, ggRet));
@@ -169,12 +173,12 @@ namespace Sponge.ViewModel.Common
 
         public static ProcResult ProcIsingIntBitsEnergy(object vm)
         {
-            var ggvm = (UpdateGGVm)vm;
+            var ggvm = (UpdateGRVm)vm;
             ggvm.SetBeta();
             return IsingIntBits.UpdateE(ggvm.UpdateVm.StepsPerUpdate, ggvm.Beta);
         }
 
-        public static void UpdateGGView(ProcResult result, UpdateGGVm ugvm)
+        public static void UpdateGGView(ProcResult result, UpdateGRVm ugvm)
         {
             ugvm.GraphLatticeVm.Update(result.Data["Grid"]);
             ugvm.Energy = 4.0f - (float)result.Data["Energy"];
@@ -193,17 +197,22 @@ namespace Sponge.ViewModel.Common
                 ));
         }
 
+
+        static void UpdateParams(object o) { }
     }
 
 
-    public static class GG_AnnealerRb
+    public static class GR_AnnealerRb
     {
-        public static UpdateGGVm AnnealerRb()
+        public static UpdateGRVm AnnealerRb()
         {
             var initData = SimGridIntSamples.SquareRandBits(GridSpan, 5213);
-            var ggRet = new UpdateGGVm(GridSpan, GridSpan, BetaBoundsW, EnergyBoundsW, BetaDelta, ProcIsingIntBitsEnergy);
+            var ggRet = new UpdateGRVm(GridSpan, GridSpan, BetaBoundsW, EnergyBoundsW, BetaDelta, ProcIsingIntBitsEnergy,
+                update_params: UpdateParams);
 
-            ggRet.GraphLatticeVm.SetUpdater(GraphLatticeVmEx.DrawGridCell_BWR, initData);
+            //ggRet.GraphLatticeVm.SetUpdater(GraphLatticeVmEx.DrawGridCell_BWR, initData);
+            ggRet.GraphLatticeVm.SetUpdater(GraphLatticeVmEx.DrawGridCell_float_BW_mod256, initData);
+            
             ggRet.UpdateVm.OnUpdateUI.Subscribe(p => UpdateGGView(p, ggRet));
 
             BlockPick.Init(initData.Data, initData.Width, 8);
@@ -227,12 +236,12 @@ namespace Sponge.ViewModel.Common
 
         public static ProcResult ProcIsingIntBitsEnergy(object vm)
         {
-            var ggvm = (UpdateGGVm)vm;
+            var ggvm = (UpdateGRVm)vm;
             ggvm.SetBeta();
             return BlockPick.ProcIsingRb(ggvm.UpdateVm.StepsPerUpdate, ggvm.Beta);
         }
 
-        public static void UpdateGGView(ProcResult result, UpdateGGVm ugvm)
+        public static void UpdateGGView(ProcResult result, UpdateGRVm ugvm)
         {
             ugvm.GraphLatticeVm.Update(result.Data["Grid"]);
             ugvm.Energy = 4.0f - (float)result.Data["Energy"];
@@ -251,15 +260,18 @@ namespace Sponge.ViewModel.Common
                 ));
         }
 
+
+        static void UpdateParams(object o) { }
     }
 
 
-    public static class GG_Thermo_dg
+    public static class GR_Thermo_dg
     {
-        public static UpdateGGVm Thermo()
+        public static UpdateGRVm Thermo()
         {
             var initData = SimGridFloatSamples.RandUniform0_1(GridSpan, 1234);
-            var ggRet = new UpdateGGVm(GridSpan, GridSpan, BetaBoundsW, EnergyBoundsW, BetaDelta, ProcIsingIntBitsEnergy);
+            var ggRet = new UpdateGRVm(GridSpan, GridSpan, BetaBoundsW, EnergyBoundsW, BetaDelta, ProcIsingIntBitsEnergy,
+                update_params: UpdateParams);
 
             ggRet.GraphLatticeVm.SetUpdater(GraphLatticeVmEx.DrawGridCell_float_BW_mod256, initData);
             ggRet.UpdateVm.OnUpdateUI.Subscribe(p => UpdateGGView(p, ggRet));
@@ -286,11 +298,11 @@ namespace Sponge.ViewModel.Common
 
         public static ProcResult ProcIsingIntBitsEnergy(object vm)
         {
-            var ggvm = (UpdateGGVm)vm;
+            var ggvm = (UpdateGRVm)vm;
             return Themal_dg.UpdateH(ggvm.UpdateVm.StepsPerUpdate, Rate);
         }
 
-        public static void UpdateGGView(ProcResult result, UpdateGGVm ugvm)
+        public static void UpdateGGView(ProcResult result, UpdateGRVm ugvm)
         {
             ugvm.GraphLatticeVm.Update(result.Data["Grid"]);
 
@@ -310,15 +322,19 @@ namespace Sponge.ViewModel.Common
             //    ));
         }
 
+
+        static void UpdateParams(object o) { }
+
     }
 
 
-    public static class GG_Thermo_bp
+    public static class GR_Thermo_bp
     {
-        public static UpdateGGVm Thermo()
+        public static UpdateGRVm Thermo()
         {
             var initData = SimGridFloatSamples.RandUniform0_1(GridSpan, 1234);
-            var ggRet = new UpdateGGVm(GridSpan, GridSpan, BetaBoundsW, EnergyBoundsW, BetaDelta, ProcIsingIntBitsEnergy);
+            var ggRet = new UpdateGRVm(GridSpan, GridSpan, BetaBoundsW, EnergyBoundsW, BetaDelta, ProcIsingIntBitsEnergy,
+                update_params: UpdateParams);
 
             ggRet.GraphLatticeVm.SetUpdater(GraphLatticeVmEx.DrawGridCell_float_BW_mod256, initData);
             ggRet.UpdateVm.OnUpdateUI.Subscribe(p => UpdateGGView(p, ggRet));
@@ -346,11 +362,11 @@ namespace Sponge.ViewModel.Common
 
         public static ProcResult ProcIsingIntBitsEnergy(object vm)
         {
-            var ggvm = (UpdateGGVm)vm;
+            var ggvm = (UpdateGRVm)vm;
             return Thermal_bp.UpdateH(ggvm.UpdateVm.StepsPerUpdate, Rate);
         }
 
-        public static void UpdateGGView(ProcResult result, UpdateGGVm ugvm)
+        public static void UpdateGGView(ProcResult result, UpdateGRVm ugvm)
         {
             ugvm.GraphLatticeVm.Update(result.Data["Grid"]);
 
@@ -370,25 +386,32 @@ namespace Sponge.ViewModel.Common
             //    ));
         }
 
+
+        static void UpdateParams(object o) { }
+
     }
 
 
-    public static class GG_ThermoIsing_bp
+    public static class GR_ThermoIsing_bp
     {
-        public static UpdateGGVm Thermo()
+        public static UpdateGRVm Thermo()
         {
-            var initData = SimGridFloatSamples.RandUniform0_1(GridSpan, 1234);
-            var ggRet = new UpdateGGVm(GridSpan, GridSpan, BetaBoundsW, EnergyBoundsW, BetaDelta, ProcIsingIntBitsEnergy);
+            var initTemps = SimGridFloatSamples.HiLow(GridSpan, 0.99f, 0.01f);
+            var initFlips = SimGridIntSamples.SquareRandBits(GridSpan, 5213);
+            var ggRet = new UpdateGRVm(GridSpan, GridSpan, BetaBoundsW, EnergyBoundsW, BetaDelta, ProcIsingIntBitsEnergy,
+                update_params: UpdateParams);
 
-            ggRet.GraphLatticeVm.SetUpdater(GraphLatticeVmEx.DrawGridCell_float_BW_mod256, initData);
+            ggRet.GraphLatticeVm.SetUpdater(GraphLatticeVmEx.DrawGridCell_int_BW_mod256, initFlips);
+           // ggRet.GraphLatticeVm.SetUpdater(GraphLatticeVmEx.DrawGridCell_float_BW_mod256, initTemps);
+            
             ggRet.UpdateVm.OnUpdateUI.Subscribe(p => UpdateGGView(p, ggRet));
 
-            ThermalIsing_bp.Init(initData.Data, initData.Width, BlockSize);
+            ThermalIsing_bp.Init(initTemps.Data, initFlips.Data, initTemps.Width, BlockSize);
 
             return ggRet;
         }
 
-        public static uint GridSpan = 1024;
+        public static uint GridSpan = 256;
         public static uint BlockSize = 4;
         public static float qRate = 0.001f;
 
@@ -407,11 +430,15 @@ namespace Sponge.ViewModel.Common
 
         public static ProcResult ProcIsingIntBitsEnergy(object vm)
         {
-            var ggvm = (UpdateGGVm)vm;
-            return ThermalIsing_bp.UpdateH(ggvm.UpdateVm.StepsPerUpdate, qRate, FlipEnergy);
+            var ggvm = (UpdateGRVm)vm;
+            return ThermalIsing_bp.UpdateH(
+                ggvm.UpdateVm.StepsPerUpdate, 
+                qRate, 
+                FlipEnergy, 
+                9.0f);
         }
 
-        public static void UpdateGGView(ProcResult result, UpdateGGVm ugvm)
+        public static void UpdateGGView(ProcResult result, UpdateGRVm ugvm)
         {
             ugvm.GraphLatticeVm.Update(result.Data["Grid"]);
 
@@ -431,6 +458,7 @@ namespace Sponge.ViewModel.Common
             //    ));
         }
 
+        static void UpdateParams(object o) { }
     }
 
 

@@ -228,7 +228,7 @@ namespace Sponge.ViewModel.Common
             Color color;
             var offset = dataLoc.X + dataLoc.Y * sg.Width;
             int res = (int)(sg.Data[offset] * 255);
-            color = Color.FromArgb((byte)res, 0, 0, 0);
+            color = Color.FromArgb(255, (byte)res, (byte)res, (byte)res);
             return new RV<float, Color>(
                 minX: (float)imagePatch.MinX,
                 maxX: (float)imagePatch.MaxX,

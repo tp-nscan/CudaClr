@@ -58,6 +58,23 @@ namespace Utils
             }
             return outputs;
         }
+        
+        public static float[] HiLow(uint span, float lowVal, float hiVal)
+        {
+            var outputs = new float[span * span];
+            var lowCol = span / 4;
+            var hiCol = (3 * span) / 4;
+            for (var i = 0; i < span; i++)
+            {
+                for (var j = 0; j < span; j++)
+                {
+                    var index = i * span + j;
+                    if (j == lowCol) outputs[index] = lowCol;
+                    if (j == hiCol) outputs[index] = hiVal;
+                }
+            }
+            return outputs;
+        }
 
         public static float[] SplitScreen(uint span, float left_val, float right_val)
         {

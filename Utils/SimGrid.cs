@@ -100,6 +100,18 @@ namespace Utils
                     seed: seed));
         }
 
+        public static SimGrid<float> HiLow(uint span, float lowVal, float hiVal)
+        {
+            return new SimGrid<float>(
+                name: "HiLow",
+                width: span,
+                height: span,
+                data: FloatArrayGen.HiLow(
+                    span: span,
+                    lowVal: lowVal,
+                    hiVal: hiVal));
+        }
+
     }
 
 }

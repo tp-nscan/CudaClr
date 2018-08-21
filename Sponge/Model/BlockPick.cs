@@ -150,7 +150,7 @@ namespace Sponge.Model
 
             int[] mres = new int[_area / 1024];
 
-            strRet = strRet + _cudaArray.RunBlockReduce_32_Kernel(
+            strRet = strRet + _cudaArray.RunBlockAddInts_32_Kernel(
                                     destPtr: d_energyBlocks,
                                     srcPtr: d_energy,
                                     span: _span);

@@ -23,30 +23,29 @@
                     <TextBox Text="{Binding Beta, StringFormat=N5}" FontSize="16" FontWeight="Bold" Height="22"/>
                 </Viewbox>
 
-                <TextBlock Margin="0,5,0,0">Energy</TextBlock>
+                <TextBlock Margin="0,5,0,0">Flip Energy</TextBlock>
                 <Viewbox Stretch="Uniform" Height="22">
-                    <TextBlock Text="{Binding Energy, StringFormat=N5}" FontSize="16" FontWeight="Bold" Height="22"/>
+                    <TextBox Text="{Binding FlipEnergy, StringFormat=N5}" FontSize="16" FontWeight="Bold" Height="22"/>
                 </Viewbox>
 
-                <TextBlock Margin="0,5,0,0">Flip</TextBlock>
-                <CheckBox IsChecked="{Binding Flip}" FontSize="16" FontWeight="Bold"/>
-
-                <TextBlock Margin="0,5,0,0">Beta Delta</TextBlock>
+                <TextBlock Margin="0,5,0,0">Qrate</TextBlock>
                 <Viewbox Stretch="Uniform" Height="22">
-                    <TextBox Text="{Binding BetaDelta, StringFormat=N5}" FontSize="16" FontWeight="Bold" Height="22"/>
+                    <TextBox Text="{Binding Qrate, StringFormat=N5}" FontSize="16" FontWeight="Bold" Height="22"/>
                 </Viewbox>
 
+                <TextBlock Margin="0,5,0,0">Total Heat</TextBlock>
+                <Viewbox Stretch="Uniform" Height="22">
+                    <TextBlock Text="{Binding TotalHeat, StringFormat=N5}" FontSize="16" FontWeight="Bold" Height="22"/>
+                </Viewbox>
+                
             </StackPanel>
 
             <TabControl Grid.Column="1">
-                <TabItem Header="Energy">
-                    <local:GraphControl DataContext="{Binding GraphVm}" />
+                <TabItem Header="Temps">
+                    <local:GraphLatticeControl DataContext="{Binding GraphLatticeTempVm}" />
                 </TabItem>
-                <TabItem Header="GridA">
-                    <local:GraphLatticeControl DataContext="{Binding GraphLatticeVmA}" />
-                </TabItem>
-                <TabItem Header="GridB">
-                    <local:GraphLatticeControl DataContext="{Binding GraphLatticeVmB}" />
+                <TabItem Header="Flips">
+                    <local:GraphLatticeControl DataContext="{Binding GraphLatticeFlipVm}" />
                 </TabItem>
             </TabControl>
 

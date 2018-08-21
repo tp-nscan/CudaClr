@@ -7,9 +7,9 @@ namespace Sponge.ViewModel.Common
 {
     public class UpdateGridVm
     {
-        public UpdateGridVm(SimGrid<int> data, Func<object, ProcResult> proc)
+        public UpdateGridVm(SimGrid<int> data, Func<object, ProcResult> proc, Action<object> update_params)
         {
-            UpdateVm = new UpdateVm(proc: proc, containingVm: this)
+            UpdateVm = new UpdateVm(proc: proc, containingVm: this, update_params:update_params)
             {
                 StepsPerUpdate = 1
             };
@@ -31,7 +31,7 @@ namespace Sponge.ViewModel.Common
         public static UpdateGridVm BlockPicker()
         {
             var initData = SimGridIntSamples.SquareRandBits(512, 5213);
-            var ugvm = new UpdateGridVm(initData, ProcMarkBlocks);
+            var ugvm = new UpdateGridVm(data:initData, proc:ProcMarkBlocks, update_params: UpdateParams);
 
             BlockPick.Init(initData.Data, initData.Width, 4);
 
@@ -41,6 +41,7 @@ namespace Sponge.ViewModel.Common
             return ugvm;
         }
 
+        static void UpdateParams(object o) { }
 
         public static ProcResult ProcMarkBlocks(object steps)
         {

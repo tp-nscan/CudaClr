@@ -64,7 +64,7 @@ namespace Sponge.Model
 
             int[] res = new int[_area/1024];
 
-            strRet = strRet + _cudaArray.RunBlockReduce_32_Kernel(
+            strRet = strRet + _cudaArray.RunBlockAddInts_32_Kernel(
                                     destPtr: d_energyBlocks,
                                     srcPtr: d_energy,
                                     span: _span
@@ -79,9 +79,9 @@ namespace Sponge.Model
             dRet["Grid"] = res;
             dRet["Energy"] = tot;
             return new ProcResult(data: dRet,
-                                   err: strRet,
-                                   steps: 0,
-                                   time: _stopwatch.ElapsedMilliseconds);
+                                  err: strRet,
+                                  steps: 0,
+                                  time: _stopwatch.ElapsedMilliseconds);
         }
 
 
@@ -138,7 +138,7 @@ namespace Sponge.Model
                         threshPtr: d_betas
                     );
 
-                strRet = strRet + _cudaArray.RunBlockReduce_32_Kernel(
+                strRet = strRet + _cudaArray.RunBlockAddInts_32_Kernel(
                         destPtr: d_energyBlocks,
                         srcPtr: d_energy,
                         span: _span

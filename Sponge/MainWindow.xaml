@@ -6,9 +6,22 @@
         xmlns:local="clr-namespace:Sponge"
         xmlns:common="clr-namespace:Sponge.View.Common"
         mc:Ignorable="d"
+        x:Name="ControlRoot"
         Title="MainWindow" Height="1200" Width="1200">
     <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
         <!--<common:UpdateGridControl x:Name="UpdateGridControl" />-->
-        <common:UpdateGGControl x:Name="UpdateGGControl"/>
+        <!--<common:UpdateGRControl x:Name="UpdateGRControl"/>-->
+        <common:UpdateGGGControl x:Name="UpdateGGGControl"/>
+
+        <common:CameraControl
+            Grid.Row="1"
+            Height="55"
+            Visibility="{Binding CameraVisibility}" 
+            TargetVisual ="{Binding ElementName=ControlRoot, Mode=OneWay}"
+            BitmapEncoder ="{Binding PngBitmapEncoder, Mode=TwoWay}"/>
     </Grid>
 </Window>

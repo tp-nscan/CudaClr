@@ -18,7 +18,7 @@ namespace Sponge.ViewModel.Common
 
         public UpdateIsingDualTempVm(SimGrid<int> data)
         {
-            UpdateVm = new UpdateVm(proc: Proc, containingVm: this)
+            UpdateVm = new UpdateVm(proc: Proc, containingVm: this, update_params: Update)
             {
                 StepsPerUpdate = 1
             };
@@ -58,6 +58,8 @@ namespace Sponge.ViewModel.Common
             //return IsingBitsDual.UpdateE(steps, temp: BetaHigh);
             return null;
         }
+
+        void Update(object o) { }
 
         public UpdateVm UpdateVm { get; private set; }
 

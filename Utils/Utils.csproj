@@ -63,6 +63,7 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DateTimeExt.cs" />
     <Compile Include="FloatArrayGen.cs" />
     <Compile Include="FloatFuncs.cs" />
     <Compile Include="GridFuncs.cs" />

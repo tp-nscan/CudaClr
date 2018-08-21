@@ -12,12 +12,16 @@ namespace Sponge.Model
     public static class ThermalIsing_bp
     {
         private const int SEED = 123;
+        public const int _tempSteps = 256;
+        public const int _allTempSteps = _tempSteps + 1;
+
         private static IntPtr d_flipData;
+        private static IntPtr d_tempData;
         private static IntPtr d_indexRands;
         private static IntPtr d_flipRands;
         private static IntPtr d_threshes;
-        
-        private static IntPtr d_grid;
+        private static IntPtr d_heatBlocks;
+
         private static uint _span;
         private static uint _block_size;
         private static uint _blocks_per_span;
@@ -28,7 +32,7 @@ namespace Sponge.Model
         private static RandoProcs _randoProcs;
         private static Stopwatch _stopwatch = new Stopwatch();
 
-        public static string Init(float[] inputs, uint span, uint blockSize)
+        public static string Init(float[] temp_inputs, int[] flip_inputs, uint span, uint blockSize)
         {
             _span = span;
             _block_size = blockSize;
@@ -37,8 +41,13 @@ namespace Sponge.Model
             _blocks_per_span = span / blockSize;
             _blockCount = _blocks_per_span * _blocks_per_span;
 
+            d_flipData = new IntPtr();
+            d_tempData = new IntPtr();
+
+            d_flipRands = new IntPtr();
             d_indexRands = new IntPtr();
-            d_grid = new IntPtr();
+            d_threshes = new IntPtr();
+
 
             _cudaArray = new CudaArray();
             _gridProcs = new GridProcs();
@@ -46,25 +55,43 @@ namespace Sponge.Model
 
             var strRet = _cudaArray.ResetDevice();
             strRet = strRet + _randoProcs.MakeGenerator32(SEED);
-            strRet = strRet + _cudaArray.MallocFloatsOnDevice(ref d_grid, _area);
-            strRet = strRet + _cudaArray.CopyFloatsToDevice(inputs, d_grid, _area);
+            strRet = strRet + _cudaArray.MallocFloatsOnDevice(ref d_tempData, _area);
+            strRet = strRet + _cudaArray.MallocFloatsOnDevice(ref d_heatBlocks, _area / 1024);
+            strRet = strRet + _cudaArray.MallocIntsOnDevice(ref d_flipData, _area);
+
             strRet = strRet + _cudaArray.MallocIntsOnDevice(ref d_indexRands, _blockCount);
+            strRet = strRet + _cudaArray.MallocIntsOnDevice(ref d_flipRands, _blockCount);
+            strRet = strRet + _cudaArray.MallocFloatsOnDevice(ref d_threshes, _allTempSteps);
+
+            strRet = strRet + _cudaArray.CopyIntsToDevice(flip_inputs, d_flipData, _area);
+            strRet = strRet + _cudaArray.CopyFloatsToDevice(temp_inputs, d_tempData, _area);
+
+
+            var res9 = new int[_area];
+            strRet = strRet + _cudaArray.CopyIntsFromDevice(res9, d_flipData, _area);
 
             return strRet;
         }
 
-        public static ProcResult UpdateH(int steps, float qRate, float filpEnergy)
+        public static ProcResult UpdateH(int steps, float qRate, float filpEnergy, float beta)
         {
             var strRet = String.Empty;
 
             _stopwatch.Reset();
             _stopwatch.Start();
+
             for (var s = 0; s < steps; s++)
             {
+                var res9 = new int[_area];
+                strRet = strRet + _cudaArray.CopyIntsFromDevice(res9, d_flipData, _area);
+
+                var bbs = FloatFuncs.Betas(_tempSteps, beta);
+                strRet = strRet + _cudaArray.CopyFloatsToDevice(bbs, d_threshes, _allTempSteps);
                 strRet = strRet + _randoProcs.MakeRandomInts(d_indexRands, _blockCount);
+                strRet = strRet + _randoProcs.MakeUniformRands(d_flipRands, _blockCount);
 
                 strRet = strRet + _gridProcs.Run_k_ThermoIsing_bp(
-                        temp_data: d_grid,
+                        temp_data: d_tempData,
                         flip_data: d_flipData,
                         index_rands: d_indexRands,
                         flip_rands: d_flipRands,
@@ -75,18 +102,43 @@ namespace Sponge.Model
                         q_rate: qRate,
                         fixed_colA: _span / 4,
                         fixed_colB: 3 * _span / 4);
-            }
 
-            var res = new float[_area];
-            strRet = strRet + _cudaArray.CopyFloatsFromDevice(res, d_grid, _area);
+
+            }
 
             _stopwatch.Stop();
 
             var dRet = new Dictionary<string, object>();
-            dRet["Grid"] = new SimGrid<float>(name: "UpdateH",
-                                              width: _span,
-                                              height: _span,
-                                              data: res);
+
+
+            float[] bhts = new float[_area / 1024];
+            strRet = strRet + _cudaArray.RunBlockAddFloats_32_Kernel(
+                                    destPtr: d_heatBlocks,
+                                    srcPtr: d_tempData,
+                                    span: _span
+                );
+
+            strRet = strRet + _cudaArray.CopyFloatsFromDevice(bhts, d_heatBlocks, _area / 1024);
+            float tot = bhts.Sum();
+            tot /= _area;
+            dRet["TotalHeat"] = tot;
+
+
+            var tres = new float[_area];
+            strRet = strRet + _cudaArray.CopyFloatsFromDevice(tres, d_tempData, _area);
+            dRet["ThermGrid"] = new SimGrid<float>(name: "Therms",
+                                                   width: _span,
+                                                   height: _span,
+                                                   data: tres);
+
+
+            var fres = new int[_area];
+            strRet = strRet + _cudaArray.CopyIntsFromDevice(fres, d_flipData, _area);
+            dRet["FlipGrid"] = new SimGrid<int>(name: "Flips",
+                                                width: _span,
+                                                height: _span,
+                                                data: fres);
+
 
             return new ProcResult(data: dRet,
                                   err: strRet,
