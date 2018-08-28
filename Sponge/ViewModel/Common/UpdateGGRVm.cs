@@ -98,7 +98,10 @@ namespace Sponge.ViewModel.Common
     {
         public static UpdateGGRVm Thermo()
         {
-            var initTemps = SimGridFloatSamples.HiLow(GridSpan, 0.99f, 0.01f);
+            //var initTemps = SimGridFloatSamples.HiLow(GridSpan, 0.99f, 0.01f);
+            var initTemps = SimGridFloatSamples.LeftRightGradient(GridSpan);
+
+
             var initFlips = SimGridIntSamples.SquareRandBits(GridSpan, 5213);
             var ggRet = new UpdateGGRVm(
                 width: GridSpan, 
@@ -114,11 +117,11 @@ namespace Sponge.ViewModel.Common
 
             ggRet.UpdateVm.OnUpdateUI.Subscribe(p => UpdateGGView(p, ggRet));
 
-            ThermalIsing_bp.Init(initTemps.Data, initFlips.Data, initTemps.Width, BlockSize);
+            ThermalIsing_bp.Init(initTemps.Data, initFlips.Data, initTemps.Width, BlockSize, 5566);
             return ggRet;
         }
 
-        public static uint GridSpan = 512;
+        public static uint GridSpan = 1024;
         public static uint BlockSize = 4;
         public static float qRate = 0.50f;
         public static float Beta = 9.0f;

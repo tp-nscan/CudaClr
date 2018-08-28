@@ -172,7 +172,7 @@ extern "C" __declspec(dllexport) BSTR DllRun_k_Thermo_bp(float *dataOut, unsigne
 
 extern "C" __declspec(dllexport) BSTR DllRun_k_ThermoIsing_bp(float *temp_data, int *flip_data,
 	unsigned int *index_rands, float *flip_rands, float *threshes, float flip_energy, unsigned int block_size,
-	unsigned int blocks_per_span, float q_rate, unsigned int fixed_colA, unsigned int fixed_colB)
+	unsigned int blocks_per_span, float q_rate)
 {
 	std::string funcName = "DllRun_k_ThermoIsing_bp";
 	try
@@ -182,7 +182,7 @@ extern "C" __declspec(dllexport) BSTR DllRun_k_ThermoIsing_bp(float *temp_data, 
 		dim3 t = dim3(td, td);
 		dim3 b = dim3(blocks_per_span / td, blocks_per_span / td);
 
-		k_ThermoIsing_bp<<<b, t>>>(temp_data, flip_data, index_rands, flip_rands, threshes, flip_energy, block_size, q_rate, fixed_colA, fixed_colB);
+		k_ThermoIsing_bp<<<b, t>>>(temp_data, flip_data, index_rands, flip_rands, threshes, flip_energy, block_size, q_rate);
 		return BSTR();
 	}
 	catch (std::runtime_error &e)

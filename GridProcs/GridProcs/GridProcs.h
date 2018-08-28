@@ -18,4 +18,4 @@ extern "C" __declspec(dllexport) BSTR DllRun_k_Thermo_dg(float *dataOut, float *
 extern "C" __declspec(dllexport) BSTR DllRun_k_Thermo_bp(float *dataOut, unsigned int *index_rands, unsigned int block_size, unsigned int blocks_per_span, float rate, unsigned int fixed_colA, unsigned int fixed_colB);
 
 extern "C" __declspec(dllexport) BSTR DllRun_k_ThermoIsing_bp(float *temp_data, int *flip_data,	unsigned int *index_rands, float *flip_rands, float *threshes, float flip_energy, unsigned int block_size,
-															  unsigned int blocks_per_span, float q_rate, unsigned int fixed_colA, unsigned int fixed_colB);
+															  unsigned int blocks_per_span, float q_rate);

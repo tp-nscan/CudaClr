@@ -406,7 +406,7 @@ namespace Sponge.ViewModel.Common
             
             ggRet.UpdateVm.OnUpdateUI.Subscribe(p => UpdateGGView(p, ggRet));
 
-            ThermalIsing_bp.Init(initTemps.Data, initFlips.Data, initTemps.Width, BlockSize);
+            ThermalIsing_bp.Init(initTemps.Data, initFlips.Data, initTemps.Width, BlockSize, 4456);
 
             return ggRet;
         }

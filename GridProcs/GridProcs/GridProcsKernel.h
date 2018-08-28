@@ -19,4 +19,4 @@ __global__ void k_Thermo_dg(float *dataOut, float *dataIn, unsigned int span, in
 __global__ void k_Thermo_bp(float *dataOut, unsigned int *index_rands, unsigned int block_size, float rate, int fixed_colA, int fixed_colB);
 
 __global__ void k_ThermoIsing_bp(float *temp_data, int *flip_data, unsigned int *index_rands, float *flip_rands,
-	float *threshes, float flip_energy, unsigned int block_size, float q_rate, int fixed_colA, int fixed_colB);
+	float *threshes, float flip_energy, unsigned int block_size, float q_rate);

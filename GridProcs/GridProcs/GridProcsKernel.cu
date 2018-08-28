@@ -2,6 +2,7 @@
 #include "device_launch_parameters.h"
 #include <stdio.h>
 #include "GridProcsKernel.h"
+#include <math.h>
 
 
 __global__ void k_Gol(int *output, int *input, unsigned int span)
@@ -368,7 +369,7 @@ __global__ void k_Thermo_bp(float *grid_data, unsigned int *index_rands, unsigne
 
 
 __global__ void k_ThermoIsing_bp(float *temp_data, int *flip_data, unsigned int *index_rands, float *flip_rands,
-	float *threshes, float flip_energy, unsigned int block_size, float q_rate, int fixed_colA, int fixed_colB)
+	float *threshes, float flip_energy, unsigned int block_size, float q_rate)
 {
 	unsigned int blocks_per_span = gridDim.x * blockDim.x;
 	unsigned int span = blocks_per_span * block_size;
@@ -430,6 +431,95 @@ __global__ void k_ThermoIsing_bp(float *temp_data, int *flip_data, unsigned int 
 
 	flip_data[index] = res_f;
 
+	//float d_top_t = top_t - c_t;
+	//float d_l_t = l_t - c_t;
+	//float d_r_t = r_t - c_t;
+	//float d_bot_t = bot_t - c_t;
+
+	//float d2_top_t = d_top_t * d_top_t;
+	//float d2_l_t = d_l_t * d_l_t;
+	//float d2_r_t = d_r_t * d_r_t;
+	//float d2_bot_t = d_bot_t * d_bot_t;
+
+	//float res_t = c_t + (
+	//		d2_top_t * fabsf(d_top_t) + 
+	//		d2_l_t * fabsf(d_l_t) +
+	//		d2_r_t * fabsf(d_r_t) +
+	//		d2_bot_t * fabsf(d_bot_t)
+	//	) * q_rate - flip_t;
+
+	float res_t = c_t + (top_t + l_t + r_t + bot_t - 4 * c_t) * q_rate - flip_t;
+
+	if (res_t < 0.0) res_t = 0.0;
+	if (res_t > 0.99) res_t = 0.99;
+
+	temp_data[index] = res_t;
+}
+
+ 
+__global__ void k_ThermoIsing_bp0(float *temp_data, int *flip_data, unsigned int *index_rands, float *flip_rands,
+	float *threshes, float flip_energy, unsigned int block_size, float q_rate, int fixed_colA, int fixed_colB)
+{
+	unsigned int blocks_per_span = gridDim.x * blockDim.x;
+	unsigned int span = blocks_per_span * block_size;
+	unsigned int block_row = threadIdx.y + blockIdx.y * blockDim.y;
+	unsigned int block_col = threadIdx.x + blockIdx.x * blockDim.x;
+	unsigned int indexIn = block_col + block_row * blocks_per_span;
+
+	unsigned int block_mask = block_size - 1;
+	unsigned int randy = index_rands[indexIn];
+	unsigned int randy2 = randy >> 8;
+	unsigned int in_block_row = randy & block_mask;
+	unsigned int in_block_col = randy2 & block_mask;
+
+	unsigned int row = in_block_row + block_row * block_size;
+	unsigned int col = in_block_col + block_col * block_size;
+	unsigned int index = col + row * span;
+
+	float c_t = temp_data[index];
+	int c_f = flip_data[index];
+
+	unsigned int row_m = (row - 1 + span) % span;
+	unsigned int row_p = (row + 1) % span;
+	unsigned int col_m = (col - 1 + span) % span;
+	unsigned int col_p = (col + 1) % span;
+
+	unsigned int t_dex = row_m * span + col;
+	unsigned int l_dex = row * span + col_m;
+	unsigned int r_dex = row * span + col_p;
+	unsigned int b_dex = row_p * span + col;
+
+	float top_t = temp_data[t_dex];
+	float l_t = temp_data[l_dex];
+	float r_t = temp_data[r_dex];
+	float bot_t = temp_data[b_dex];
+
+	int top_f = flip_data[t_dex];
+	int l_f = flip_data[l_dex];
+	int r_f = flip_data[r_dex];
+	int bot_f = flip_data[b_dex];
+
+	int q_f = (top_f + l_f + r_f + bot_f) * c_f;
+	float flip_t = 0;
+
+	float rr = flip_rands[indexIn];
+	int threshDex = q_f * (1 - c_t) * 32.0 + 128;
+	float thresh = threshes[threshDex];
+	int res_f = c_f;
+
+	if (rr < thresh)
+	{
+		res_f = c_f * (-1);
+		flip_t = flip_energy;
+		flip_t *= q_f;
+	}
+	else
+	{
+		flip_t = 0;
+	}
+
+	flip_data[index] = res_f;
+
 	float res_t = c_t + (top_t + l_t + r_t + bot_t - 4 * c_t) * q_rate - flip_t;
 	if (res_t < 0.0) res_t = 0.0;
 	if (res_t > 1.0) res_t = 1.0;
@@ -444,3 +534,4 @@ __global__ void k_ThermoIsing_bp(float *temp_data, int *flip_data, unsigned int 
 	}
 
 }
+
