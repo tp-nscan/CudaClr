@@ -57,6 +57,16 @@ namespace Utils
             return 8 - HotCount((byte)(a ^ b));
         }
 
+        public static int BitOverlap9(this byte[] a, byte b)
+        {
+            return a.Select(aa => aa.BitOverlap(b)).Sum();
+        }
+
+        public static int BitOverlap(this byte[] a, byte[] b)
+        {
+            return a.Zip(b, (s, t) => s.BitOverlap(t)).Sum();
+        }
+
         public static int TryThis()
         {
             byte[] bytes = { 0, 0, 0, 25 };

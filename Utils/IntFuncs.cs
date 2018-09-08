@@ -23,5 +23,33 @@
             if (md > -ms) return md;
             return - md - modulus/2;
         }
+
+        public static long Factorial(int f)
+        {
+            long lRet = 1;
+            for (var i = 2; i < f + 1; i++)
+            {
+                lRet *= i;
+            }
+            return lRet;
+        }
+
+
+        public static long TwoCycleCount(int f)
+        {
+            long lRet = 1;
+            for (var i = 2; i < f + 1; i++)
+            {
+                lRet *= i;
+            }
+
+            for (var i = 2; i < f + 1; i+=2)
+            {
+                lRet /= 2;
+            }
+
+            return lRet;
+        }
+
     }
 }

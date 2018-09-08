@@ -1,0 +1,123 @@
+﻿using System;
+using System.Linq;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Utils;
+
+namespace SpongeTester
+{
+    [TestClass]
+    public class SorterFixture
+    {
+
+        [TestMethod]
+        public void TestSortliness()
+        {
+            const int order = 24;
+            const int trials = 5000;
+            var randy = Rando.Standard(1444);
+
+            for (var i = 0; i < trials; i++)
+            {
+                var stagey = randy.RandomFullSorterStage(order, -1);
+                var stagey2 = randy.RandomFullSorterStage(order, -1);
+                var stagey3 = randy.RandomFullSorterStage(order, -1);
+                var stagey4 = randy.RandomFullSorterStage(order, -1);
+
+                var permy = randy.RandomPermutation(order);
+
+                var strey0 = stagey.Sort(permy);
+                var strey2 = stagey2.Sort(strey0.Item2);
+                var strey3 = stagey3.Sort(strey2.Item2);
+                var strey4 = stagey4.Sort(strey3.Item2);
+                var strey5 = stagey.Sort(strey4.Item2);
+                var strey6 = stagey2.Sort(strey5.Item2);
+                var strey7 = stagey3.Sort(strey6.Item2);
+                var strey8 = stagey4.Sort(strey7.Item2);
+
+                var pr = permy.Sortedness();
+                var psr0 = strey0.Item2.Sortedness();
+                var psr2 = strey8.Item2.Sortedness();
+
+                Console.WriteLine($"{pr} {psr0} {psr2}");
+            }
+        }
+
+
+        [TestMethod]
+        public void TestSorterSort()
+        {
+            const int order = 24;
+            int permCount = 2000;
+            int sorterCount = 200;
+            ///int stagesPerSorter = 20;
+
+            var randy = Rando.Standard(1444);
+
+            var permies = Enumerable.Range(0, permCount)
+                .Select(i => randy.RandomPermutation(order).ToSortable())
+                .ToList();
+
+            var sorters = Enumerable.Range(0, sorterCount)
+                .Select(i => randy.RandomSorter(order, i))
+                .ToList();
+
+            for (var i = 0; i < sorterCount; i++)
+            {
+                var res = permies.Select(p => sorters[i].Sort(p)).ToList();
+                for (var j = 0; j < res.Count(); j++)
+                {
+                    Console.WriteLine($"{j} {i} {res[j].Sortedness}");
+                }
+            }
+        }
+
+
+        [TestMethod]
+        public void TestReplaceStage()
+        {
+            const int order = 24;
+            const int stageCount = 5;
+            const int beforeIndex = 4;
+            var randy = Rando.Standard(1444);
+            var oldSorter = randy.RandomSorter(order, stageCount);
+            var mutato = randy.RandomFullSorterStage(order, -1);
+
+            var newSorter = oldSorter.ReplaceStage(
+                sorterStage: mutato,
+                beforeIndex: beforeIndex);
+
+        }
+
+        [TestMethod]
+        public void TestSorterDistr()
+        {
+            const int order = 3;
+            const int stageCount = 1;
+            const int sorterCount = 100000;
+
+            var randy = Rando.Standard(1444);
+            var sorterO = randy.RandomSorter(order, stageCount);
+            var sorterC = sorterO.Copy();
+
+            var sorterPool = new SorterPool(Guid.NewGuid(), new [] {sorterO, sorterC});
+
+            var distr = sorterPool.ToSorterDistr();
+
+        }
+
+
+        [TestMethod]
+        public void TestSorterDistr2()
+        {
+            const int order = 5;
+            const int stageCount = 2;
+            const int sorterCount = 100000;
+
+            var randy = Rando.Standard(1444);
+            var p1 = randy.RandomSorterPool(order, stageCount, sorterCount);
+
+            var distr = p1.ToSorterDistr();
+
+        }
+    }
+}

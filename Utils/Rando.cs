@@ -7,8 +7,14 @@ using System.Threading.Tasks;
 namespace Utils
 {
     public interface IRando
-    {
+    {   
+        /// <summary>
+        /// returns a double between 0.0 and 1.0
+        /// </summary>
         double NextDouble();
+        /// <summary>
+        /// returns an int between 0 and < Int.Max
+        /// </summary>
         int NextInt();
         int NextInt(int maxVal);
         int Seed { get; }
@@ -124,10 +130,32 @@ namespace Utils
             return retArray;
         }
 
+        public static int FixedValue(this int[] map)
+        {
+            for (var i = 0; i < map.Length; i++)
+            {
+                if (map[i] == i) return i;
+            }
+            throw new Exception("FixedValue: no fixed value");
+        }
+
+        public static int SelectFromRemaining(this IRando rando, int[] values, bool[] rem)
+        {
+            while (true)
+            {
+                var dex = rando.NextInt(values.Length);
+                if (rem[dex])
+                {
+                    rem[dex] = false;
+                    return dex;
+                }
+            }
+        }
+
         static int WalkAndTag(int[] lane, int start, int steps)
         {
-            int curSpot = start;
-            int remainingSteps = steps;
+            var curSpot = start;
+            var remainingSteps = steps;
             while (remainingSteps > 0)
             {
                 curSpot++;
@@ -147,34 +175,31 @@ namespace Utils
             return curSpot;
         }
 
-        public static int[] RandomTwoCycle(this IRando rando, int order)
+        public static int[] RandomFullTwoCycle(this IRando rando, int order)
         {
             var aRet = Enumerable.Repeat(-1, order).ToArray();
-            int curDex = 0;
-            int rem = order;
+            var rem = order;
+            if (order % 2 == 1)
+            {
+                var cd = rando.NextInt(rem);
+                aRet[cd] = cd;
+                rem--;
+            }
+
+            var curDex = 0;
             while (rem > 0)
             {
                 if (aRet[curDex] == -1)
                 {
-                    var steps = rando.NextInt(rem);
-                    if (steps == 0)
-                    {
-                        aRet[curDex] = curDex;
-                        rem--;
-                    }
-                    else
-                    {
-                        var wr = WalkAndTag(aRet, curDex, steps);
-                        aRet[curDex] = wr;
-                        rem -= 2;
-                    }
+                    var steps = rando.NextInt(rem - 1) + 1;
+                    var wr = WalkAndTag(aRet, curDex, steps);
+                    aRet[curDex] = wr;
+                    rem -= 2;
                 }
-
                 curDex++;
             }
             return aRet;
         }
-
 
         public static IEnumerable<double> ExpDist(this IRando rando, double max)
         {
@@ -192,8 +217,8 @@ namespace Utils
                 yield return Math.Pow(rando.NextDouble(), pow) * max;
             }
         }
-
     }
+
 
     internal class RandoReg : IRando
     {

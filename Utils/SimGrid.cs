@@ -12,37 +12,17 @@ namespace Utils
             Data = data;
         }
 
-        string _name;
-        public string Name
-        {
-            get { return _name; }
-            private set { _name = value; }
-        }
+        public string Name { get; private set; }
 
-        uint _width;
-        public uint Width
-        {
-            get { return _width; }
-            private set { _width = value; }
-        }
+        public uint Width { get; private set; }
 
-        uint _height;
-        public uint Height
-        {
-            get { return _height; }
-            private set { _height = value; }
-        }
+        public uint Height { get; private set; }
 
-        T[] _data;
-        public T[] Data
-        {
-            get { return _data; }
-            private set { _data = value; }
-        }
+        public T[] Data { get; private set; }
 
-        public uint Area { get { return Width * Height; } }
-
+        public uint Area => Width * Height;
     }
+
 
     public static class SimGridIntSamples
     {

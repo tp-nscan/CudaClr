@@ -12,6 +12,13 @@ namespace Utils
 
     public static class PermutationEx
     {
+        public static int[] GetMap(this IPermutation permutation)
+        {
+            return Enumerable.Range(0, permutation.Order)
+                             .Select(i => permutation[i])
+                              .ToArray();
+        }
+
         public static Permutation Identity(int order)
         {
             return new Permutation(
@@ -24,12 +31,33 @@ namespace Utils
             return new Permutation(terms.Length, terms);
         }
 
+        public static int GetHashCode(this IPermutation perm)
+        {
+            int hCode = 0;
+            for (var i = 0; i < perm.Order; i++)
+            {
+                hCode ^= perm[i];
+
+            }
+            return hCode;
+        }
+
+        public static IPermutation Mutate(this Permutation permutation, IRando rando, float mutationRate)
+        {
+            if (rando.NextDouble() < mutationRate)
+            {
+                return rando.RandomPermutation(permutation.Order);
+            }
+            return permutation;
+        }
+
+
         public static Func<IPermutation, object> PermutationIndexComp(int index)
         {
             return p => p[index];
         }
 
-        public static CompositeDictionary<IPermutation, int> MakeCompositeDictionaryForPermutation(int order)
+        public static CompositeDictionary<IPermutation, int> PermutationDictionary(int order)
         {
             return new CompositeDictionary<IPermutation, int>(
                     Enumerable.Range(0, order).Select(PermutationIndexComp).ToArray()
@@ -54,7 +82,51 @@ namespace Utils
             return true;
         }
 
-        public static Permutation RandomPermutation(this IRando rando, int order)
+        public static CompositeDictionary<IPermutation, int> GetOrbit(this IPermutation perm, int maxSize = 1000)
+        {
+            var pd = PermutationEx.PermutationDictionary(perm.Order);
+            var cume = perm;
+            for (var i = 0; i < maxSize; i++)
+            {
+                if (pd.ContainsKey(cume))
+                {
+                    return pd;
+                }
+                else
+                {
+                    pd.Add(cume, 1);
+                }
+                cume = cume.Multiply(perm);
+            }
+
+            return pd;
+        }
+
+        public static CompositeDictionary<IPermutation, int> ToDistr(this IEnumerable<IPermutation> perms)
+        {
+            CompositeDictionary<IPermutation, int> pd = null;
+            foreach (var perm in perms)
+            {
+                if(pd == null) pd = PermutationDictionary(perm.Order);
+                if (pd.ContainsKey(perm))
+                {
+                    pd[perm]++;
+                }
+                else
+                {
+                    pd.Add(perm, 1);
+                }
+            }
+            return pd;
+        }
+
+        public static int OrbitLengthFor(this IPermutation perm, int maxSize = 1000)
+        {
+            return GetOrbit(perm, maxSize).Count;
+        }
+
+
+        public static IPermutation RandomPermutation(this IRando rando, int order)
         {
             return new Permutation(
                 order: order,
@@ -62,7 +134,7 @@ namespace Utils
         }
 
 
-        public static int OutOfOrderliness(this IPermutation perm)
+        public static int Sortedness(this IPermutation perm)
         {
             var tot = 0;
             for (var i = 0; i < perm.Order; i++)
