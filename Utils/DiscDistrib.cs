@@ -1,14 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Utils
 {
-    public class DiscDist<T>
+    public class DiscDistrib<T>
     {
-        public DiscDist(IEnumerable<Tuple<double, T>> bins)
+        public DiscDistrib(IEnumerable<Tuple<double, T>> bins)
         {
             var lb = bins.ToList();
             var sum = lb.Sum(b => b.Item1);
@@ -31,7 +29,7 @@ namespace Utils
                     return _bins[i].Item2;
                 }
             }
-            throw new Exception("bin not selected in DiscDist.Draw");
+            throw new Exception("bin not selected in DiscDistrib.Draw");
         }
 
         private readonly List<Tuple<double, T>> _bins 

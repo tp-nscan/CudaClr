@@ -6,9 +6,9 @@ namespace Utils
 {
     public class SorterResult
     {
-        public SorterResult(IEnumerable<SortResult> SortResults, bool saveResults)
+        public SorterResult(IEnumerable<SortResult> sortResults, bool saveResults)
         {
-            var _sortResults = SortResults.ToList();
+            var _sortResults = sortResults.ToList();
             Sorter = _sortResults[0].Sorter;
             float totNess = _sortResults.Sum(r => r.Sortedness);
             AverageSortedness = totNess / _sortResults.Count;
@@ -48,7 +48,7 @@ namespace Utils
             IEnumerable<ISortable> sortables, bool storeSortableResult)
         {
             return new SorterResult(
-                SortResults: sortables.Select(sorter.Sort),
+                sortResults: sortables.Select(sorter.Sort),
                 saveResults: storeSortableResult);
 
         }

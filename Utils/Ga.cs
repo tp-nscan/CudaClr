@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -17,6 +18,7 @@ namespace Utils
         public SortablePool SortablePool { get; }
 
     }
+
 
     public class GaResult
     {
@@ -41,16 +43,30 @@ namespace Utils
         public Dictionary<Guid, SorterResult> SorterResults { get; }
 
         public Dictionary<Guid, SortableResult> SortableResults { get; }
-
     }
+
 
     public static class GaExt
     {
+        public static GaResult Eval1(this Ga ga, bool saveSortResults)
+        {
+            var cb = new ConcurrentBag<SortResult>();
+
+            var sr = ga.SortablePool.AsParallel()
+                .SelectMany(
+                sb => ga.SorterPool.Select(st => new {st, sb }));
+
+
+            sr.ForAll(t=> cb.Add(t.st.Sort(t.sb)));
+
+            return new GaResult(ga, cb, saveSortResults);
+        }
+
         public static GaResult Eval(this Ga ga, bool saveSortResults)
         {
             var sr = ga.SortablePool.AsParallel()
                 .SelectMany(
-                sb => ga.SorterPool.Select(st => st.Sort(sb)));
+                    sb => ga.SorterPool.Select(st => st.Sort(sb)));
 
             return new GaResult(ga, sr, saveSortResults);
         }
@@ -67,9 +83,9 @@ namespace Utils
         {
             var winSortersCount = res.Ga.SorterPool.Count() / selectionFactor;
             var bestSorters = res.SorterResults.Values
-                           .OrderBy(r => r.AverageSortedness)
-                           .Take(winSortersCount)
-                           .ToList();
+                                 .OrderBy(r => r.AverageSortedness)
+                                 .Take(winSortersCount)
+                                 .ToList();
 
             var newSorters = bestSorters.SelectMany(b => b.Sorter.NextGen(randy, selectionFactor)).ToList();
             return new Ga(

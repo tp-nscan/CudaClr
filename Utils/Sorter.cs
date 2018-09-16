@@ -7,6 +7,7 @@ namespace Utils
     public interface ISorter
     {
         Guid Id { get; }
+        Guid GenomeId { get; }
         ISorterStage this[int index] { get; }
         int StageCount { get; }
         IEnumerable<ISorterStage> SorterStages { get; }
@@ -14,9 +15,10 @@ namespace Utils
 
     public class Sorter : ISorter
     {
-        public Sorter(Guid id, IEnumerable<ISorterStage> stages)
+        public Sorter(Guid id, Guid genomeId, IEnumerable<ISorterStage> stages)
         {
             Id = id;
+            GenomeId = genomeId;
 
             var curStageNumber = 0;
             _sorterStages = stages.Select(
@@ -30,6 +32,8 @@ namespace Utils
         readonly List<ISorterStage> _sorterStages;
 
         public Guid Id { get; }
+
+        public Guid GenomeId { get; }
 
         public ISorterStage this[int index] => _sorterStages[index];
 
@@ -66,11 +70,10 @@ namespace Utils
         public static int GetHashCode(ISorter obj)
         {
             int hCode = 113377;
-            int fixo = 733211;
             for (var i = 0; i < obj.StageCount; i++)
             {
 
-                hCode = (hCode * (SorterStageEx.GetHashCode(obj[i]) + fixo)) % hCode;
+                hCode = 31 * hCode + SorterStageEx.GetHashCode(obj[i]);
             }
             return hCode;
         }
@@ -80,12 +83,30 @@ namespace Utils
     public static class SorterEx
     {
 
-        public static ISorter RandomSorter(this IRando randy, int order, int stageCount)
+        public static ISorter ToSorter(this IRando randy, int order, int stageCount)
         {
             return new Sorter(
-                id:Guid.NewGuid(), 
+                id:Guid.NewGuid(),
+                genomeId: Guid.Empty, 
                 stages: Enumerable.Range(0, stageCount)
                                   .Select(i => randy.RandomFullSorterStage(order, i)));
+        }
+
+        public static bool IsEqualTo(this ISorter lhs, ISorter rhs)
+        {
+            if (lhs.StageCount != rhs.StageCount)
+            {
+                return false;
+            }
+
+            for (var i = 0; i < lhs.StageCount; i++)
+            {
+                if (!lhs[i].IsEqualTo(rhs[i]))
+                {
+                    return false;
+                }
+            }
+            return true;
         }
 
         public static SortResult Sort(this ISorter sorter, ISortable sortable)
@@ -107,29 +128,13 @@ namespace Utils
                 output:null);
         }
 
-
-        public static ISorter MakeSorter(this IEnumerable<ISorterStage> stages)
+        public static ISorter MakeSorter(this IEnumerable<ISorterStage> stages, Guid id,
+                                         Guid genomeId)
         {
             return new Sorter(
-                id: Guid.NewGuid(), 
+                id: id,
+                genomeId: genomeId,
                 stages:stages);
-        }
-
-        public static ISorter Copy(this ISorter sorter)
-        {
-            return MakeSorter(sorter.SorterStages);
-        }
-
-
-        public static ISorter ReplaceStage(this ISorter sorter, ISorterStage sorterStage, int beforeIndex)
-        {
-            var stages = 
-                sorter.SorterStages
-                      .Take(beforeIndex)
-                      .Concat(sorterStage.AsEnumerable())
-                      .Concat(sorter.SorterStages.Skip(beforeIndex + 1));
-
-            return MakeSorter(stages: stages);
         }
 
 
@@ -137,11 +142,14 @@ namespace Utils
         {
             var mutantIndex = rando.NextInt(sorter.StageCount);
             var mutantStage = rando.MutateSorterStage(sorter[mutantIndex]);
-            return ReplaceStage(sorter, mutantStage, mutantIndex);
+            return MakeSorter(
+                stages: sorter.SorterStages.ReplaceAtIndex(mutantIndex, mutantStage), 
+                id: Guid.NewGuid(), genomeId:Guid.Empty);
         }
 
 
-        public static IEnumerable<ISorter> NextGen(this ISorter sorter, IRando rando, int childCount)
+        public static IEnumerable<ISorter> NextGen(this ISorter sorter, 
+            IRando rando, int childCount)
         {
             yield return sorter;
             for (var i = 0; i < childCount - 1; i++)

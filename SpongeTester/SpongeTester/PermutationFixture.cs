@@ -11,11 +11,23 @@ namespace SpongeTester
     {
 
         [TestMethod]
-        public void TestMethod1()
+        public void TestLowerTriangularIndex()
         {
-            Console.WriteLine("hi");
+            var r1 = EnumerableExt.LowerTriangularIndex(3, 2);
+            var r2 = EnumerableExt.LowerTriangularIndex(2, 2);
+
         }
 
+        [TestMethod]
+        public void TestFromLowerTriangularIndex()
+        {
+            var r1 = EnumerableExt.FromLowerTriangularIndex(2);
+            var r2 = EnumerableExt.FromLowerTriangularIndex(5);
+            var r3 = EnumerableExt.FromLowerTriangularIndex(8);
+            var r4 = EnumerableExt.FromLowerTriangularIndex(12);
+            var r5 = EnumerableExt.FromLowerTriangularIndex(14);
+            var r6 = EnumerableExt.FromLowerTriangularIndex(16);
+        }
 
         [TestMethod]
         public void TestRandomTwoCycleSquared()
@@ -110,6 +122,28 @@ namespace SpongeTester
                 var perm = randy.RandomPermutation(order);
                 Console.WriteLine($"{perm.OrbitLengthFor()} {perm.Sortedness()}");
             }
+        }
+
+        [TestMethod]
+        public void TestToRandomPairs()
+        {
+            const int order = 24;
+            var randy = Rando.Standard(1444);
+
+            var src = Enumerable.Range(0, order).ToRandomPairs(randy).ToList();
+
+        }
+
+        [TestMethod]
+        public void TestRecombine()
+        {
+            const int order = 24;
+            var randy = Rando.Standard(1444);
+            var lhs = Enumerable.Range(0, order).ToList();
+            var rhs = Enumerable.Range(order, order).ToList();
+
+            var src = randy.Recombo(lhs, rhs);
+
         }
 
     }

@@ -18,7 +18,7 @@ namespace SpongeTester
 
             };
 
-            var dd = new DiscDist<int>(tcs);
+            var dd = new DiscDistrib<int>(tcs);
             var randy = Rando.Standard(1444);
 
             var res = dd.Draw(randy);

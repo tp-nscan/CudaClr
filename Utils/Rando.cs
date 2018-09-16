@@ -17,6 +17,8 @@ namespace Utils
         /// </summary>
         int NextInt();
         int NextInt(int maxVal);
+        uint NextUint();
+        bool NextBool(double trueProb);
         int Seed { get; }
         long UseCount { get; }
     }
@@ -53,6 +55,15 @@ namespace Utils
             while (true)
             {
                 yield return rando.NextDouble() < trueProbability;
+            }
+        }
+
+        public static IEnumerable<Tuple<int, bool>> ToIndexedBoolEnumerator(this IRando rando, double trueProbability)
+        {
+            var curdex = 0;
+            while (true)
+            {
+                yield return new Tuple<int, bool>(curdex++, rando.NextDouble() < trueProbability);
             }
         }
 
@@ -230,10 +241,25 @@ namespace Utils
             _random = new Random(seed);
         }
 
+        public uint NextUint()
+        {
+            _useCount++;
+            var rv = (uint) _random.Next();
+            var lb = (uint) (_random.Next() % 2);
+            return (rv << 1) + lb;
+        }
+
+        public bool NextBool(double trueProb)
+        {
+            _useCount++;
+            return (_random.NextDouble() < trueProb);
+        }
+
         public int Seed { get; }
 
         public int NextInt(int maxVal)
         {
+            _useCount++;
             return _random.Next(maxVal);
         }
 

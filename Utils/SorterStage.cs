@@ -93,6 +93,13 @@ namespace Utils
                 stageNumber: sorterStage.StageNumber);
         }
 
+        //public static IEnumerable<ISorterStage> ReplaceAtIndex(this IEnumerable<ISorterStage> source, int index,
+        //    ISorterStage replacement)
+        //{
+        //    var lst = source.ToList();
+        //    lst[index] = replacement;
+        //    return lst;
+        //}
 
         public static Tuple<bool, IPermutation> Sort(this ISorterStage stage, IPermutation perm)
         {

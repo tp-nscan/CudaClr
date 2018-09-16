@@ -17,9 +17,9 @@
                     var c = grid[i * stride + j];
 
                     tot += c * (grid[iu * stride + j] +
-                               grid[id * stride + j] +
-                               grid[i * stride + jr] +
-                               grid[i * stride + jl]);
+                                grid[id * stride + j] +
+                                grid[i * stride + jr] +
+                                grid[i * stride + jl]);
                 }
             }
             return tot;

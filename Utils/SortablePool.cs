@@ -33,10 +33,10 @@ namespace Utils
 
     public static class SortablePoolExt
     {
-        public static SortablePool RandomSortablePool(this IRando rando, int order, int sortableCount)
+        public static SortablePool RandomSortablePool(this IRando rando, int order, int poolCount)
         {
             return new SortablePool(Guid.NewGuid(),
-                Enumerable.Range(0, sortableCount).Select(i=>
+                Enumerable.Range(0, poolCount).Select(i=>
                 rando.RandomPermutation(order).ToSortable()));
         }
 
@@ -50,8 +50,7 @@ namespace Utils
         {
             return new SorterResult(sortablePool.Select(sorter.Sort), false);
         }
-
-       // public static 
+        
     }
 
 }

@@ -54,6 +54,8 @@
     <Compile Include="BitsFixture.cs" />
     <Compile Include="DiscDistFixture.cs" />
     <Compile Include="GaFixture.cs" />
+    <Compile Include="SorterGenomeFixture.cs" />
+    <Compile Include="GaDualSorterFixture.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

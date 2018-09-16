@@ -67,11 +67,13 @@
     <Compile Include="CompositeDictionary.cs" />
     <Compile Include="CompositeEqualityComparer.cs" />
     <Compile Include="DateTimeExt.cs" />
-    <Compile Include="DiscDist.cs" />
+    <Compile Include="DiscDistrib.cs" />
     <Compile Include="EnumerableExt.cs" />
     <Compile Include="FloatArrayGen.cs" />
     <Compile Include="FloatFuncs.cs" />
     <Compile Include="Ga.cs" />
+    <Compile Include="GaDualSorter.cs" />
+    <Compile Include="StageBits.cs" />
     <Compile Include="GridFuncs.cs" />
     <Compile Include="IntArrayGen.cs" />
     <Compile Include="BitmapEx.cs" />
@@ -86,6 +88,8 @@
     <Compile Include="SimGrid.cs" />
     <Compile Include="SortablePool.cs" />
     <Compile Include="SortableResult.cs" />
+    <Compile Include="GenomeDualSorter.cs" />
+    <Compile Include="GenomePoolDualSorter.cs" />
     <Compile Include="SortResult.cs" />
     <Compile Include="Sorter.cs" />
     <Compile Include="SorterPool.cs" />

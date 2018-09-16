@@ -42,26 +42,8 @@ namespace Utils
             return new SorterPool(
                 Guid.NewGuid(),
                 Enumerable.Range(0,sorterCount)
-                          .Select(i=>rando.RandomSorter(order, stageCount))
+                          .Select(i=>rando.ToSorter(order, stageCount))
                 );
-        }
-
-        public static bool IsEqualTo(this ISorter lhs, ISorter rhs)
-        {
-            if (lhs.StageCount != rhs.StageCount)
-            {
-                return false;
-            }
-
-            for (var i = 0; i < lhs.StageCount; i++)
-            {
-                if (! lhs[i].IsEqualTo(rhs[i]))
-                {
-                    return false;
-                }
-            }
-
-            return true;
         }
 
         public static Dictionary<ISorter, int> MakeSorterDictionary()

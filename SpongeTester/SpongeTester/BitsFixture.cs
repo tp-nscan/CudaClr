@@ -9,7 +9,25 @@ namespace SpongeTester
     {
 
         [TestMethod]
-        public void TestBitly()
+        public void TestOneHotInts()
+        {
+            var res = Bitly.OneHotInts;
+        }
+
+        [TestMethod]
+        public void TestMutateAbit()
+        {
+            var randy = Rando.Standard(1444);
+            uint start = 213533;
+            var mutato = start.MutateAbit(randy);
+            var startArray = start.ToIntArray();
+            var mutArray = mutato.ToIntArray();
+            var diff = start ^ mutato;
+            var diffArray = diff.ToIntArray();
+        }
+
+        [TestMethod]
+        public void TestTryThis()
         {
             const uint one = 1;
             const uint two = 2;
@@ -24,13 +42,17 @@ namespace SpongeTester
             var restt = Bitly.TryThis();
         }
 
+
         [TestMethod]
         public void TestHotCount()
         {
             const byte tB = 211;
-            var ints = tB.ToIntArray();
-            var hc = tB.HotCount();
+            var bints = tB.ToIntArray();
+            var hcb = tB.HotCount();
 
+            const uint tU = 1442342;
+            var uints = tU.ToIntArray();
+            var hcu = tU.HotCount();
         }
 
         [TestMethod]
@@ -46,6 +68,7 @@ namespace SpongeTester
             var res = a_b.BitOverlap(b_b);
         }
 
+
         [TestMethod]
         public void TestByteArrayOverlap()
         {
@@ -53,10 +76,10 @@ namespace SpongeTester
             int b_i = 1 + 2 + 16 + 128;
 
             byte[] a_b = { (byte)a_i, (byte)b_i };
-            byte[] b_b = { (byte)~a_i, (byte)~b_i };
+            byte[] b_b = { (byte)a_i, (byte)b_i };
 
 
-            var res = a_b.BitOverlap(b_b);
+            var res = a_b.BitOverlaps(b_b);
         }
 
 
@@ -69,7 +92,15 @@ namespace SpongeTester
             }
         }
 
-
+        [TestMethod]
+        public void TestNextUint()
+        {
+            IRando randy = Rando.Standard(123);
+            for (var i = 0; i < 16; i++)
+            {
+                Console.WriteLine($"{randy.NextUint()}");
+            }
+        }
 
     }
 }

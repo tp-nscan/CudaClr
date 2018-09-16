@@ -1,15 +1,58 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Utils
 {
     public static class Bitly
     {
-        public static int[] ToIntArray(uint bits)
+        static Bitly()
         {
+            OneHotInts = new uint[32];
+            uint uintBit = 1;
+            for (var i = 0; i < 32; i++)
+            {
+                OneHotInts[i] = uintBit << i;
+            }
+
+            OneHotBytes = new byte[8];
+            byte byteBit = 1;
+            for (var i = 0; i < 8; i++)
+            {
+                OneHotBytes[i] = (byte)(byteBit << i);
+            }
+        }
+
+        public static uint[] OneHotInts;
+
+        public static byte[] OneHotBytes;
+
+        //public static uint[] OneHotInts()
+        //{
+        //    var ret = new uint[32];
+        //    uint bit = 1;
+        //    for (var i = 0; i < 32; i++)
+        //    {
+        //        ret[i] = bit << i;
+        //    }
+        //    return ret;
+        //}
+
+        public static uint MutateAbit(this uint bits, IRando randy)
+        {
+            var mask = OneHotInts[randy.NextInt(32)];
+            return bits ^ mask;
+        }
+
+        public static uint MutateAbit(this byte bits, IRando randy)
+        {
+            var mask = OneHotInts[randy.NextInt(32)];
+            return bits ^ mask;
+        }
+
+        public static int[] ToIntArray(this uint bits)
+        {
+            
             var aRet = new int[32];
             uint mask = 1;
 
@@ -38,10 +81,22 @@ namespace Utils
             return aRet;
         }
 
+        public static int HotCount(this uint bits)
+        {
+            var totRet = 0;
+            for (var i = 0; i < 32; i++)
+            {
+                var masked = OneHotInts[i] & bits;
+                var sw = masked ^ OneHotInts[i];
+                if (sw == 0) totRet++;
+            }
+            return totRet;
+        }
+
         public static int HotCount(this byte bits)
         {
             byte mask = 1;
-            int totRet = 0;
+            var totRet = 0;
             for (var i = 0; i < 8; i++)
             {
                 var masked = mask & bits;
@@ -57,14 +112,24 @@ namespace Utils
             return 8 - HotCount((byte)(a ^ b));
         }
 
-        public static int BitOverlap9(this byte[] a, byte b)
+        public static int BitOverlap(this uint a, uint b)
         {
-            return a.Select(aa => aa.BitOverlap(b)).Sum();
+            return 32 - HotCount((byte)(a ^ b));
         }
 
-        public static int BitOverlap(this byte[] a, byte[] b)
+        public static IEnumerable<int> BitOverlaps(this byte[] a, byte[] b)
         {
-            return a.Zip(b, (s, t) => s.BitOverlap(t)).Sum();
+            return a.Zip(b, (s, t) => s.BitOverlap(t));
+        }
+
+        public static IEnumerable<int> BitOverlaps(this uint[] a, uint[] b)
+        {
+            return a.Zip(b, (s, t) => s.BitOverlap(t));
+        }
+
+        public static IEnumerable<uint> BitOverlaps(this uint[] a, uint b)
+        {
+            return a.Select(s => (uint)s.BitOverlap(b));
         }
 
         public static int TryThis()

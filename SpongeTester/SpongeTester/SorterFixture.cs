@@ -58,7 +58,7 @@ namespace SpongeTester
                 .ToList();
 
             var sorters = Enumerable.Range(0, sorterCount)
-                .Select(i => randy.RandomSorter(order, i))
+                .Select(i => randy.ToSorter(order, i))
                 .ToList();
 
             for (var i = 0; i < sorterCount; i++)
@@ -79,30 +79,8 @@ namespace SpongeTester
             const int stageCount = 5;
             const int beforeIndex = 4;
             var randy = Rando.Standard(1444);
-            var oldSorter = randy.RandomSorter(order, stageCount);
-            var mutato = randy.RandomFullSorterStage(order, -1);
-
-            var newSorter = oldSorter.ReplaceStage(
-                sorterStage: mutato,
-                beforeIndex: beforeIndex);
-
-        }
-
-        [TestMethod]
-        public void TestSorterDistr()
-        {
-            const int order = 3;
-            const int stageCount = 1;
-            const int sorterCount = 100000;
-
-            var randy = Rando.Standard(1444);
-            var sorterO = randy.RandomSorter(order, stageCount);
-            var sorterC = sorterO.Copy();
-
-            var sorterPool = new SorterPool(Guid.NewGuid(), new [] {sorterO, sorterC});
-
-            var distr = sorterPool.ToSorterDistr();
-
+            var oldSorter = randy.ToSorter(order, stageCount);
+            var newSorter = oldSorter.Mutate(randy);
         }
 
 
