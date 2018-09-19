@@ -7,18 +7,18 @@ namespace Utils
 
     public interface ISorterStage : IPermutation
     {
-        int StageNumber { get; }
+        uint StageNumber { get; }
     }
 
 
     public class SorterStage : Permutation, ISorterStage
     {
-        public SorterStage(int order, IEnumerable<int> terms, int stageNumber) : base(order, terms)
+        public SorterStage(uint order, IEnumerable<uint> terms, uint stageNumber) : base(order, terms)
         {
             StageNumber = stageNumber;
         }
 
-        public int StageNumber { get; }
+        public uint StageNumber { get; }
     }
 
 
@@ -30,7 +30,7 @@ namespace Utils
             return PermutationEx.GetHashCode(sorterStage);
         }
 
-        public static ISorterStage RandomFullSorterStage(this IRando rando, int order, int stageNumber)
+        public static ISorterStage RandomFullSorterStage(this IRando rando, uint order, uint stageNumber)
         {
             var perm = new SorterStage(
                 order: order,
@@ -57,8 +57,8 @@ namespace Utils
             var fv = map.FixedValue();
             var rems = map.Select(i => true).ToArray();
             rems[fv] = false;
-            int lv = rando.SelectFromRemaining(map, rems);
-            int hv = sorterStage[lv];
+            var lv = rando.SelectFromRemaining(map, rems);
+            var hv = sorterStage[lv];
 
             map[lv] = fv;
             map[fv] = lv;
@@ -103,15 +103,15 @@ namespace Utils
 
         public static Tuple<bool, IPermutation> Sort(this ISorterStage stage, IPermutation perm)
         {
-            var aRet = new int[stage.Order];
+            var aRet = new uint[stage.Order];
 
-            for (var i = 0; i < stage.Order; i++)
+            for (uint i = 0; i < stage.Order; i++)
             {
                 aRet[i] = perm[i];
             }
 
             var wasUsed = false;
-            for (var i = 0; i < stage.Order; i++)
+            for (uint i = 0; i < stage.Order; i++)
             {
                 var m = stage[i];
                 if (m > i)

@@ -1,19 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Utils
 {
     public class StageBits
     {
-        public StageBits(uint order, uint mask, uint[] bits)
+        public StageBits(uint order, uint mask, IEnumerable<uint> bits)
         {
             Mask = mask;
-            Bits = bits;
+            Bits = bits.ToArray();
             Order = order;
-            _maskOverlaps = bits.BitOverlaps(Mask).ToArray();
+            _maskOverlaps = Bits.BitOverlaps(Mask).ToArray();
         }
 
         public uint[] Bits { get; }
@@ -25,74 +23,37 @@ namespace Utils
 
         public uint Overlap(uint row, uint col)
         {
-            return (row > col) ? _maskOverlaps[row * Order + col] : 
-                                 _maskOverlaps[col * Order + row];
+            return _maskOverlaps[EnumerableExt.LowerTriangularIndex(row, col)];
         }
-
-    }
-
-    public class SbScratchPad
-    {
-        public SbScratchPad(IEnumerable<SbSpItem> overlaps, uint order)
-        {
-            Overlaps = overlaps.ToArray();
-            Order = order;
-        }
-
-        private SbSpItem[] Overlaps { get; }
-
-        private SbSpItem Overlap(int row, int col)
-        {
-            return Overlaps[row * Order + col];
-        }
-
-        public uint Order { get; }
-
-        public SbSpItem BestRow(int col)
-        {
-            return Enumerable.Range(0, (int) Order)
-                .Select(i => Overlap(i, col))
-                .Where(o => !o.IsUsed)
-                .Aggregate((i1, i2) => i1.Overlap > i2.Overlap ? i1 : i2);
-        }
-
-        public void Mark(SbSpItem sbSp)
-        {
-            Overlap(sbSp.Row, sbSp.Col).IsUsed = true;
-            Overlap(sbSp.Col, sbSp.Row).IsUsed = true;
-        }
-    }
-
-    public class SbSpItem
-    {
-        public SbSpItem(int row, int col, int overlap)
-        {
-            Row = row;
-            Col = col;
-            Overlap = overlap;
-            IsUsed = (row != col);
-        }
-
-        public bool IsUsed { get; set; }
-        public int Row { get; }
-        public int Col { get; }
-        public int Overlap { get; }
     }
 
     public static class StageBitsExt
     {
 
-        public static StageBits ToStageBits(this IRando randy, uint order)
+        public static StageBits ToStageBits(this IRando randy, uint order, uint mask)
         {
-            return new StageBits(order:order, mask:1, bits:new uint[]{});
+            return new StageBits(
+                    order:order, 
+                    mask: mask, 
+                    bits: Enumerable.Range(0, (int)(order * (order + 1) / 2))
+                        .Select(i => randy.NextUint())
+                );
         }
 
         public static IPermutation ToPermutation(this StageBits stageBits)
         {
-            var scratchPad = new SbScratchPad(
-                overlaps: Enumerable.Empty<SbSpItem>(),
-                order:stageBits.Order);
-            return PermutationEx.MakePermutation(new int[]{});
+            var permArray = new uint[stageBits.Order];
+            var sbScratchPad = stageBits.ToSbScratchPad();
+
+            while (!sbScratchPad.IsSpent())
+            {
+                var dSbSp = sbScratchPad.BestOnDiag();
+                var bSpSp = sbScratchPad.BestOnCol(dSbSp.Col);
+                permArray[bSpSp.Col] = bSpSp.Row;
+                sbScratchPad.Mark(bSpSp);
+            }
+
+            return PermutationEx.MakePermutation(permArray);
         }
 
 

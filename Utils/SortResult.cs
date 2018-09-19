@@ -2,7 +2,7 @@
 {
     public class SortResult
     {
-        public SortResult(ISorter sorter, int sortedness, bool[] stageUse,
+        public SortResult(ISorter sorter, uint sortedness, bool[] stageUse,
             ISortable input, IPermutation output)
         {
             Sortedness = sortedness;
@@ -12,7 +12,7 @@
             Sorter = sorter;
         }
 
-        public int Sortedness { get; }
+        public uint Sortedness { get; }
 
         public bool[] StageUse { get; }
 

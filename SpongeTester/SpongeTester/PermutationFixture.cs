@@ -49,7 +49,7 @@ namespace SpongeTester
             var randy = Rando.Standard(5123);
             for (var i = 0; i < 1000; i++)
             {
-                var perm = randy.RandomFullSorterStage(order, -1);
+                var perm = randy.RandomFullSorterStage(order, 0);
                 var p2 = perm.Multiply(perm);
                 Assert.IsTrue(p2.IsEqualTo(PermutationEx.Identity(order)));
             }
@@ -59,13 +59,13 @@ namespace SpongeTester
         [TestMethod]
         public void TestHc()
         {
-            var orderly = 11;
+            uint orderly = 11;
             var pd = PermutationEx.PermutationDictionary(orderly);
             var randy = Rando.Standard(51323);
 
             for (var i = 0; i < 1000; i++)
             {
-                var perm = randy.RandomFullSorterStage(orderly, -1);
+                var perm = randy.RandomFullSorterStage(orderly, 0);
                 var perm2 = randy.MutateSorterStage(perm);
 
                 if (perm.IsEqualTo(perm2))

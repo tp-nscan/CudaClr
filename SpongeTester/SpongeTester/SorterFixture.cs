@@ -18,10 +18,10 @@ namespace SpongeTester
 
             for (var i = 0; i < trials; i++)
             {
-                var stagey = randy.RandomFullSorterStage(order, -1);
-                var stagey2 = randy.RandomFullSorterStage(order, -1);
-                var stagey3 = randy.RandomFullSorterStage(order, -1);
-                var stagey4 = randy.RandomFullSorterStage(order, -1);
+                var stagey = randy.RandomFullSorterStage(order, 0);
+                var stagey2 = randy.RandomFullSorterStage(order, 0);
+                var stagey3 = randy.RandomFullSorterStage(order, 0);
+                var stagey4 = randy.RandomFullSorterStage(order, 0);
 
                 var permy = randy.RandomPermutation(order);
 
@@ -46,18 +46,16 @@ namespace SpongeTester
         [TestMethod]
         public void TestSorterSort()
         {
-            const int order = 24;
-            int permCount = 2000;
-            int sorterCount = 200;
-            ///int stagesPerSorter = 20;
-
+            const uint order = 24;
+            var permCount = 2000u;
+            var sorterCount = 200u;
             var randy = Rando.Standard(1444);
 
-            var permies = Enumerable.Range(0, permCount)
+            var permies = 0u.CountUp(permCount)
                 .Select(i => randy.RandomPermutation(order).ToSortable())
                 .ToList();
 
-            var sorters = Enumerable.Range(0, sorterCount)
+            var sorters = 0u.CountUp(sorterCount)
                 .Select(i => randy.ToSorter(order, i))
                 .ToList();
 
@@ -75,9 +73,9 @@ namespace SpongeTester
         [TestMethod]
         public void TestReplaceStage()
         {
-            const int order = 24;
-            const int stageCount = 5;
-            const int beforeIndex = 4;
+            const uint order = 24;
+            const uint stageCount = 5;
+            const uint beforeIndex = 4;
             var randy = Rando.Standard(1444);
             var oldSorter = randy.ToSorter(order, stageCount);
             var newSorter = oldSorter.Mutate(randy);

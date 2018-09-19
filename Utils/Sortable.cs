@@ -10,7 +10,7 @@ namespace Utils
 
     public class Sortable : Permutation, ISortable
     {
-        public Sortable(Guid id, int order, IEnumerable<int> terms) : base(order, terms)
+        public Sortable(Guid id, uint order, IEnumerable<uint> terms) : base(order, terms)
         {
             Id = id;
         }

@@ -6,40 +6,60 @@ namespace Utils
 {
     public interface IPermutation
     {
-        int Order { get; }
-        int this[int index] { get; }
+        uint Order { get; }
+        uint this[uint index] { get; }
     }
+
+    public class Permutation : IPermutation
+    {
+        public Permutation(uint order, IEnumerable<uint> terms)
+        {
+            _elements = terms.ToArray();
+            if (Order != order)
+            {
+                throw new ArgumentException("Order is not equal to length of terms");
+            }
+        }
+
+        private readonly uint[] _elements;
+
+        public uint Order => (uint) _elements.Length;
+
+        public uint this[uint index] => _elements[index];
+        
+    }
+
 
     public static class PermutationEx
     {
-        public static int[] GetMap(this IPermutation permutation)
+        public static uint[] GetMap(this IPermutation permutation)
         {
-            return Enumerable.Range(0, permutation.Order)
+            return 0u.CountUp(permutation.Order)
                              .Select(i => permutation[i])
-                              .ToArray();
+                             .ToArray();
         }
 
-        public static Permutation Identity(int order)
+        public static Permutation Identity(uint order)
         {
             return new Permutation(
                 order: order,
-                terms: Enumerable.Range(0, order).ToArray());
+                terms: 0u.CountUp(order));
         }
 
-        public static IPermutation MakePermutation(int[] terms)
+        public static IPermutation MakePermutation(uint[] terms)
         {
-            return new Permutation(terms.Length, terms);
+            return new Permutation((uint) terms.Length, terms);
         }
 
         public static int GetHashCode(this IPermutation perm)
         {
-            int hCode = 0;
-            for (var i = 0; i < perm.Order; i++)
+            uint hCode = 0;
+            for (uint i = 0; i < perm.Order; i++)
             {
                 hCode ^= perm[i];
 
             }
-            return hCode;
+            return (int)hCode;
         }
 
         public static IPermutation Mutate(this Permutation permutation, IRando rando, float mutationRate)
@@ -52,16 +72,16 @@ namespace Utils
         }
 
 
-        public static Func<IPermutation, object> PermutationIndexComp(int index)
+        public static Func<IPermutation, object> PermutationIndexComp(uint index)
         {
             return p => p[index];
         }
 
-        public static CompositeDictionary<IPermutation, int> PermutationDictionary(int order)
+        public static CompositeDictionary<IPermutation, int> PermutationDictionary(uint order)
         {
             return new CompositeDictionary<IPermutation, int>(
-                    Enumerable.Range(0, order).Select(PermutationIndexComp).ToArray()
-                );
+                0u.CountUp(order).Select(PermutationIndexComp).ToArray()
+            );
         }
 
         public static bool IsEqualTo(this IPermutation lhs, IPermutation rhs)
@@ -71,7 +91,7 @@ namespace Utils
                 return false;
             }
 
-            for (var i = 0; i < lhs.Order; i++)
+            for (uint i = 0; i < lhs.Order; i++)
             {
                 if (lhs[i] != rhs[i])
                 {
@@ -107,7 +127,7 @@ namespace Utils
             CompositeDictionary<IPermutation, int> pd = null;
             foreach (var perm in perms)
             {
-                if(pd == null) pd = PermutationDictionary(perm.Order);
+                if (pd == null) pd = PermutationDictionary(perm.Order);
                 if (pd.ContainsKey(perm))
                 {
                     pd[perm]++;
@@ -126,20 +146,21 @@ namespace Utils
         }
 
 
-        public static IPermutation RandomPermutation(this IRando rando, int order)
+        public static IPermutation RandomPermutation(this IRando rando, uint order)
         {
             return new Permutation(
                 order: order,
-                terms: rando.FisherYatesShuffle(Enumerable.Range(0, order).ToArray()));
+                terms: rando.FisherYatesShuffle(0u.CountUp(order).ToArray())
+                    .ToArray());
         }
 
 
-        public static int Sortedness(this IPermutation perm)
+        public static uint Sortedness(this IPermutation perm)
         {
-            var tot = 0;
-            for (var i = 0; i < perm.Order; i++)
+            var tot = 0u;
+            for (uint i = 0; i < perm.Order; i++)
             {
-                tot += (int)Math.Pow((i - perm[i]), 2);
+                tot += (uint)Math.Pow((i - perm[i]), 2);
             }
             return tot;
         }
@@ -151,38 +172,19 @@ namespace Utils
             {
                 throw new ArgumentException("The two Permutation must have the same Order");
             }
-            var aRet = new int[lhs.Order];
+            var aRet = new uint[lhs.Order];
 
-            for (var i = 0; i < lhs.Order; i++)
+            for (uint i = 0; i < lhs.Order; i++)
             {
                 aRet[i] = lhs[rhs[i]];
             }
-            
+
             return new Permutation(
                 order: lhs.Order,
                 terms: aRet
                 );
         }
 
-    }
-
-    public class Permutation : IPermutation
-    {
-        public Permutation(int order, IEnumerable<int> terms)
-        {
-            _elements = terms.ToArray();
-            if (Order != order)
-            {
-                throw new ArgumentException("Order is not equal to length of terms");
-            }
-        }
-
-        private readonly int[] _elements;
-
-        public int Order => _elements.Length;
-
-        public int this[int index] => _elements[index];
-        
     }
 
 }

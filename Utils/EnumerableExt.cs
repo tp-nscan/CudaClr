@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.InteropServices.ComTypes;
 
 namespace Utils
 {
@@ -20,7 +19,6 @@ namespace Utils
         {
                 yield return item;
         }
-
 
         public static int KeyOverlap<K, V>(this Dictionary<K, V> dict, Dictionary<K, V> comp)
         {
@@ -66,7 +64,7 @@ namespace Utils
         }
 
         //For a symmetric matrix represented as lower triangular in row major order.
-        public static int LowerTriangularIndex(int row, int col)
+        public static uint LowerTriangularIndex(uint row, uint col)
         {
             var r = row;
             var c = col;
@@ -89,6 +87,37 @@ namespace Utils
             }
 
             return new Tuple<int, int>(lb, index - lf - 1);
+        }
+
+        //Lower triangular matrix coords in row major order.
+        public static IEnumerable<Tuple<uint, uint>> SquareArrayCoords(this uint span)
+        {
+            return 0u.CountUp(span).SelectMany(r => 0u.CountUp(span)
+                .Select(c => new Tuple<uint, uint>(r, c)));
+        }
+
+        //Lower triangular matrix coords in row major order.
+        public static IEnumerable<Tuple<uint, uint>> LowerTriangularCoords(this uint span)
+        {
+            return 0u.CountUp(span).SelectMany(r=> r.CountUp(span)
+                                  .Select(c=> new Tuple<uint, uint>(r, c)));
+        }
+
+        // Counts from [start-1 ... min], descending
+        public static IEnumerable<uint> CountDown(this uint start, uint min)
+        {
+            for (var i = start-1; i >= min; i--) yield return i;
+        }
+
+        // Counts from [start ... max], ascending
+        public static IEnumerable<uint> CountUp(this uint start, uint max)
+        {
+            for (var i = start; i < max; i++) yield return i;
+        }
+
+        public static IEnumerable<uint> Repeat(this uint item, uint count)
+        {
+            for (var i = 0; i < count; i++) yield return item;
         }
     }
 }

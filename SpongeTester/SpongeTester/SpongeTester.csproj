@@ -56,6 +56,8 @@
     <Compile Include="GaFixture.cs" />
     <Compile Include="SorterGenomeFixture.cs" />
     <Compile Include="GaDualSorterFixture.cs" />
+    <Compile Include="StageBitsFixture.cs" />
+    <Compile Include="EnumerableFixture.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

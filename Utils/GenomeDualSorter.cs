@@ -23,7 +23,7 @@ namespace Utils
         {
             Id = id;
 
-            var curStageNumber = 0;
+            var curStageNumber = 0u;
             _chromosomeA = chromA.Select(
                 s => new SorterStage(
                     order: s.Order,
@@ -61,28 +61,28 @@ namespace Utils
 
     public static class DualSorterGenomeExt
     {
-        public static GenomeDualSorter ToDualSorterGenome(this IRando randy, int order, int stageCount)
+        public static GenomeDualSorter ToDualSorterGenome(this IRando randy, uint order, uint stageCount)
         {
             return new GenomeDualSorter(
                 id: Guid.NewGuid(),
-                chromA: Enumerable.Range(0, stageCount)
+                chromA: 0u.CountUp(stageCount)
                     .Select(i => randy.RandomFullSorterStage(order, i)),
-                chromB: Enumerable.Range(0, stageCount)
+                chromB: 0u.CountUp(stageCount)
                     .Select(i => randy.RandomFullSorterStage(order, i)),
-                choices: Enumerable.Range(0, stageCount)
+                choices: 0u.CountUp(stageCount)
                     .Select(i => randy.NextBool(0.5))
                 );
         }
 
-        public static GenomeDualSorter ToDualSorterGenomeUniform(this IRando randy, int order, int stageCount)
+        public static GenomeDualSorter ToDualSorterGenomeUniform(this IRando randy, uint order, uint stageCount)
         {
-            var ch = Enumerable.Range(0, stageCount)
+            var ch = 0u.CountUp(stageCount)
                 .Select(i => randy.RandomFullSorterStage(order, i)).ToList();
             return new GenomeDualSorter(
                 id: Guid.NewGuid(),
                 chromA: ch,
                 chromB: ch,
-                choices: Enumerable.Range(0, stageCount)
+                choices: 0u.CountUp(stageCount)
                     .Select(i => randy.NextBool(0.5))
                 );
         }

@@ -28,7 +28,7 @@ namespace Utils
             return GetEnumerator();
         }
 
-        public int Order { get; }
+        public uint Order { get; }
 
         public ISorter this[int index] => Sorters.Values.ElementAt(index);
     }
@@ -36,8 +36,8 @@ namespace Utils
 
     public static class SorterPoolExt
     {
-        public static SorterPool RandomSorterPool(this IRando rando, int order, 
-                                                  int stageCount, int sorterCount)
+        public static SorterPool RandomSorterPool(this IRando rando, uint order, 
+                                                  uint stageCount, int sorterCount)
         {
             return new SorterPool(
                 Guid.NewGuid(),

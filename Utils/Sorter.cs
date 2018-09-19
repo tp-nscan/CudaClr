@@ -20,7 +20,7 @@ namespace Utils
             Id = id;
             GenomeId = genomeId;
 
-            var curStageNumber = 0;
+            var curStageNumber = 0u;
             _sorterStages = stages.Select(
                     s => new SorterStage(
                     order: s.Order,
@@ -72,7 +72,6 @@ namespace Utils
             int hCode = 113377;
             for (var i = 0; i < obj.StageCount; i++)
             {
-
                 hCode = 31 * hCode + SorterStageEx.GetHashCode(obj[i]);
             }
             return hCode;
@@ -83,13 +82,13 @@ namespace Utils
     public static class SorterEx
     {
 
-        public static ISorter ToSorter(this IRando randy, int order, int stageCount)
+        public static ISorter ToSorter(this IRando randy, uint order, uint stageCount)
         {
             return new Sorter(
                 id:Guid.NewGuid(),
                 genomeId: Guid.Empty, 
-                stages: Enumerable.Range(0, stageCount)
-                                  .Select(i => randy.RandomFullSorterStage(order, i)));
+                stages: 0u.CountUp(stageCount)
+                          .Select(i => randy.RandomFullSorterStage(order, i)));
         }
 
         public static bool IsEqualTo(this ISorter lhs, ISorter rhs)

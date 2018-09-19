@@ -8,6 +8,13 @@ namespace Utils
     {
         static Bitly()
         {
+            OneHotBytes = new byte[8];
+            byte byteBit = 1;
+            for (var i = 0; i < 8; i++)
+            {
+                OneHotBytes[i] = (byte)(byteBit << i);
+            }
+
             OneHotInts = new uint[32];
             uint uintBit = 1;
             for (var i = 0; i < 32; i++)
@@ -15,28 +22,19 @@ namespace Utils
                 OneHotInts[i] = uintBit << i;
             }
 
-            OneHotBytes = new byte[8];
-            byte byteBit = 1;
-            for (var i = 0; i < 8; i++)
+            OneHotLongs = new ulong[64];
+            ulong ulongBit = 1;
+            for (var i = 0; i < 64; i++)
             {
-                OneHotBytes[i] = (byte)(byteBit << i);
+                OneHotLongs[i] = ulongBit << i;
             }
         }
 
-        public static uint[] OneHotInts;
-
         public static byte[] OneHotBytes;
 
-        //public static uint[] OneHotInts()
-        //{
-        //    var ret = new uint[32];
-        //    uint bit = 1;
-        //    for (var i = 0; i < 32; i++)
-        //    {
-        //        ret[i] = bit << i;
-        //    }
-        //    return ret;
-        //}
+        public static uint[] OneHotInts;
+
+        public static ulong[] OneHotLongs;
 
         public static uint MutateAbit(this uint bits, IRando randy)
         {
@@ -81,22 +79,10 @@ namespace Utils
             return aRet;
         }
 
-        public static int HotCount(this uint bits)
-        {
-            var totRet = 0;
-            for (var i = 0; i < 32; i++)
-            {
-                var masked = OneHotInts[i] & bits;
-                var sw = masked ^ OneHotInts[i];
-                if (sw == 0) totRet++;
-            }
-            return totRet;
-        }
-
-        public static int HotCount(this byte bits)
+        public static uint HotCount(this byte bits)
         {
             byte mask = 1;
-            var totRet = 0;
+            uint totRet = 0;
             for (var i = 0; i < 8; i++)
             {
                 var masked = mask & bits;
@@ -107,22 +93,53 @@ namespace Utils
             return totRet;
         }
 
-        public static int BitOverlap(this byte a, byte b)
+        public static uint HotCount(this uint bits)
+        {
+            uint totRet = 0;
+            for (var i = 0; i < 32; i++)
+            {
+                var masked = OneHotInts[i] & bits;
+                var sw = masked ^ OneHotInts[i];
+                if (sw == 0) totRet++;
+            }
+            return totRet;
+        }
+
+        public static uint HotCount(this ulong bits)
+        {
+            uint totRet = 0;
+            for (var i = 0; i < 64; i++)
+            {
+                var masked = OneHotInts[i] & bits;
+                var sw = masked ^ OneHotInts[i];
+                if (sw == 0) totRet++;
+            }
+            return totRet;
+        }
+
+        public static uint BitOverlap(this byte a, byte b)
         {
             return 8 - HotCount((byte)(a ^ b));
         }
 
-        public static int BitOverlap(this uint a, uint b)
-        {
-            return 32 - HotCount((byte)(a ^ b));
-        }
-
-        public static IEnumerable<int> BitOverlaps(this byte[] a, byte[] b)
+        public static IEnumerable<uint> BitOverlaps(this byte[] a, byte[] b)
         {
             return a.Zip(b, (s, t) => s.BitOverlap(t));
         }
 
-        public static IEnumerable<int> BitOverlaps(this uint[] a, uint[] b)
+        public static IEnumerable<uint> BitOverlaps(this byte[] a, byte b)
+        {
+            return a.Select(s => s.BitOverlap(b));
+        }
+
+
+
+        public static uint BitOverlap(this uint a, uint b)
+        {
+            return 32 - HotCount(a ^ b);
+        }
+
+        public static IEnumerable<uint> BitOverlaps(this uint[] a, uint[] b)
         {
             return a.Zip(b, (s, t) => s.BitOverlap(t));
         }
@@ -131,6 +148,36 @@ namespace Utils
         {
             return a.Select(s => (uint)s.BitOverlap(b));
         }
+
+
+
+        public static uint BitOverlap(this ulong a, ulong b)
+        {
+            return 64 - HotCount((a ^ b));
+        }
+
+        public static IEnumerable<uint> BitOverlaps(this ulong[] a, ulong[] b)
+        {
+            return a.Zip(b, (s, t) => s.BitOverlap(t));
+        }
+
+        public static IEnumerable<uint> BitOverlaps(this ulong[] a, ulong b)
+        {
+            return a.Select(s => s.BitOverlap(b));
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+
 
         public static int TryThis()
         {

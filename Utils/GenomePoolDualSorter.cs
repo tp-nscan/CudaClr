@@ -34,14 +34,12 @@ namespace Utils
 
     public static class GenomePoolDualSorterExt
     {
-        public static GenomePoolDualSorter ToGenomePoolDualSorter(this IRando rando, int order, 
-            int stageCount, int poolCount)
+        public static GenomePoolDualSorter ToGenomePoolDualSorter(this IRando rando, uint order, 
+            uint stageCount, uint poolCount)
         {
             return new GenomePoolDualSorter(Guid.NewGuid(),
-                    Enumerable.Range(0, poolCount).Select(i =>
+                    0u.CountUp(poolCount).Select(i =>
                     rando.ToDualSorterGenome(order, stageCount)));
         }
-
-
     }
 }

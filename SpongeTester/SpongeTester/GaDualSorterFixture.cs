@@ -40,7 +40,7 @@ namespace SpongeTester
             const int genomeCount = 256;
             const int sortableCount = 128;
             const int selectionFactor = 16;
-            const int rounds = 7500;
+            const int rounds = 75;
             const int srounds = 4;
 
             var sw = new Stopwatch();

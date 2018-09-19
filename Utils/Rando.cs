@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Utils
 {
@@ -17,6 +15,7 @@ namespace Utils
         /// </summary>
         int NextInt();
         int NextInt(int maxVal);
+        uint NextUint(uint maxVal);
         uint NextUint();
         bool NextBool(double trueProb);
         int Seed { get; }
@@ -141,16 +140,16 @@ namespace Utils
             return retArray;
         }
 
-        public static int FixedValue(this int[] map)
+        public static uint FixedValue(this uint[] map)
         {
-            for (var i = 0; i < map.Length; i++)
+            for (uint i = 0; i < map.Length; i++)
             {
                 if (map[i] == i) return i;
             }
             throw new Exception("FixedValue: no fixed value");
         }
 
-        public static int SelectFromRemaining(this IRando rando, int[] values, bool[] rem)
+        public static T SelectFromRemaining<T>(this IRando rando, T[] values, bool[] rem)
         {
             while (true)
             {
@@ -158,19 +157,19 @@ namespace Utils
                 if (rem[dex])
                 {
                     rem[dex] = false;
-                    return dex;
+                    return values[dex];
                 }
             }
         }
 
-        static int WalkAndTag(int[] lane, int start, int steps)
+        static uint WalkAndTag(uint[] lane, uint start, uint steps)
         {
             var curSpot = start;
             var remainingSteps = steps;
             while (remainingSteps > 0)
             {
                 curSpot++;
-                if (lane[curSpot] == -1)
+                if (lane[curSpot] == uint.MaxValue)
                 {
                     remainingSteps--;
                 }
@@ -180,29 +179,29 @@ namespace Utils
                     throw new Exception("curSpot > lane.Length");
                 }
             }
-
             lane[curSpot] = start;
 
             return curSpot;
         }
 
-        public static int[] RandomFullTwoCycle(this IRando rando, int order)
+        public static uint[] RandomFullTwoCycle(this IRando rando, uint order)
         {
-            var aRet = Enumerable.Repeat(-1, order).ToArray();
+            var aRet = uint.MaxValue.Repeat(order).ToArray();
+
             var rem = order;
             if (order % 2 == 1)
             {
-                var cd = rando.NextInt(rem);
+                var cd = rando.NextUint(rem);
                 aRet[cd] = cd;
                 rem--;
             }
 
-            var curDex = 0;
+            var curDex = 0u;
             while (rem > 0)
             {
-                if (aRet[curDex] == -1)
+                if (aRet[curDex] == uint.MaxValue)
                 {
-                    var steps = rando.NextInt(rem - 1) + 1;
+                    var steps = rando.NextUint(rem - 1) + 1;
                     var wr = WalkAndTag(aRet, curDex, steps);
                     aRet[curDex] = wr;
                     rem -= 2;
@@ -230,7 +229,6 @@ namespace Utils
         }
     }
 
-
     internal class RandoReg : IRando
     {
         private readonly Random _random;
@@ -239,6 +237,11 @@ namespace Utils
         {
             Seed = seed;
             _random = new Random(seed);
+        }
+
+        public uint NextUint(uint maxVal)
+        {
+            return (uint)_random.Next((int)maxVal);
         }
 
         public uint NextUint()

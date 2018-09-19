@@ -73,6 +73,7 @@
     <Compile Include="FloatFuncs.cs" />
     <Compile Include="Ga.cs" />
     <Compile Include="GaDualSorter.cs" />
+    <Compile Include="SbScratchPad.cs" />
     <Compile Include="StageBits.cs" />
     <Compile Include="GridFuncs.cs" />
     <Compile Include="IntArrayGen.cs" />
