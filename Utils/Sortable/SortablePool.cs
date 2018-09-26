@@ -2,8 +2,9 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using Utils.Sorter;
 
-namespace Utils
+namespace Utils.Sortable
 {
     public class SortablePool : IEnumerable<ISortable>
     {
@@ -37,7 +38,7 @@ namespace Utils
         {
             return new SortablePool(Guid.NewGuid(),
                 0u.CountUp(poolCount).Select(i=>
-                rando.RandomPermutation(order).ToSortable()));
+                rando.ToPermutation(order).ToSortable()));
         }
 
         public static SortablePool OrbitSortablePool(IPermutation seed, int maxSize)

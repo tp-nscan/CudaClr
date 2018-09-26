@@ -25,11 +25,11 @@ namespace Utils
             return comp.Keys.Sum(k => (dict.ContainsKey(k) ? 1 : 0));
         }
 
-        public static IEnumerable<T> ReplaceAtIndex<T>(this IEnumerable<T> source, int index,
+        public static IEnumerable<T> ReplaceAtIndex<T>(this IEnumerable<T> source, uint index,
             T replacement)
         {
             var lst = source.ToList();
-            lst[index] = replacement;
+            lst[(int) index] = replacement;
             return lst;
         }
 
@@ -73,7 +73,7 @@ namespace Utils
                 r = col;
                 c = row;
             }
-            return (r * (r + 1)) / 2 + col;
+            return (r * (r + 1)) / 2 + c;
         }
 
         //For a symmetric matrix represented as lower triangular in row major order.

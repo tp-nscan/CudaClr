@@ -3,6 +3,9 @@ using System.Diagnostics;
 using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Utils;
+using Utils.Ga;
+using Utils.Genome;
+using Utils.Sortable;
 
 namespace SpongeTester
 {
@@ -68,8 +71,8 @@ namespace SpongeTester
 
             for (var i = 0; i < rounds; i++)
             {
-                GaGenomeDualSorterResult eval = null;
-                GaGenomeDualSorterResult evalR = null;
+                GaDualSorterResult eval = null;
+                GaDualSorterResult evalR = null;
                 for (var j = 0; j < srounds; j++)
                 {
                     eval = gaDualSorter.Eval(false);

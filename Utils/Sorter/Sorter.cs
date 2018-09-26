@@ -1,16 +1,26 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Utils.Sortable;
 
-namespace Utils
+namespace Utils.Sorter
 {
     public interface ISorter
     {
         Guid Id { get; }
         Guid GenomeId { get; }
         ISorterStage this[int index] { get; }
-        int StageCount { get; }
+        uint Order { get; }
+        uint StageCount { get; }
         IEnumerable<ISorterStage> SorterStages { get; }
+    }
+
+    public enum StageReplacementMode
+    {
+        RandomReplace,
+        RandomRewire,
+        RandomConjugate,
+        RCTC
     }
 
     public class Sorter : ISorter
@@ -37,7 +47,9 @@ namespace Utils
 
         public ISorterStage this[int index] => _sorterStages[index];
 
-        public int StageCount => _sorterStages.Count();
+        public uint Order => _sorterStages.First().Order;
+
+        public uint StageCount => (uint) _sorterStages.Count();
 
         public IEnumerable<ISorterStage> SorterStages => _sorterStages;
     }
@@ -88,7 +100,7 @@ namespace Utils
                 id:Guid.NewGuid(),
                 genomeId: Guid.Empty, 
                 stages: 0u.CountUp(stageCount)
-                          .Select(i => randy.RandomFullSorterStage(order, i)));
+                          .Select(i => randy.ToFullSorterStage(order, i)));
         }
 
         public static bool IsEqualTo(this ISorter lhs, ISorter rhs)
@@ -136,27 +148,52 @@ namespace Utils
                 stages:stages);
         }
 
-
-        public static ISorter Mutate(this ISorter sorter, IRando rando)
+        public static ISorter Mutate(this ISorter sorter, IRando rando, StageReplacementMode stageReplacementMode)
         {
-            var mutantIndex = rando.NextInt(sorter.StageCount);
-            var mutantStage = rando.MutateSorterStage(sorter[mutantIndex]);
+            var mutantIndex = rando.NextUint(sorter.StageCount);
+            var stageToReplace = sorter[(int) mutantIndex];
+            ISorterStage mutantStage = null;
+
+            switch (stageReplacementMode)
+            {
+                case StageReplacementMode.RandomReplace:
+                    mutantStage = rando.ToFullSorterStage(order: sorter.Order, stageNumber: mutantIndex);
+                    break;
+                case StageReplacementMode.RandomRewire:
+                    mutantStage = rando.RewireSorterStage(stageToReplace);
+                    break;
+                case StageReplacementMode.RandomConjugate:
+                    mutantStage = stageToReplace.Conjugate(rando).ToSorterStage(mutantIndex);
+                    break;
+                case StageReplacementMode.RCTC:
+                    mutantStage = stageToReplace.C2c(rando).ToSorterStage(mutantIndex);
+                    break;
+                default:
+                    throw new Exception($"{stageReplacementMode.ToString()}");
+            }
+
             return MakeSorter(
-                stages: sorter.SorterStages.ReplaceAtIndex(mutantIndex, mutantStage), 
-                id: Guid.NewGuid(), genomeId:Guid.Empty);
+                stages: sorter.SorterStages.ReplaceAtIndex(mutantIndex, mutantStage),
+                id: Guid.NewGuid(), 
+                genomeId: Guid.Empty);
+
         }
 
-
-        public static IEnumerable<ISorter> NextGen(this ISorter sorter, 
-            IRando rando, int childCount)
+        public static IEnumerable<ISorter> NextGen(this ISorter sorter,
+            IRando rando, int childCount, StageReplacementMode stageReplacementMode, bool cloneOrig)
         {
-            yield return sorter;
-            for (var i = 0; i < childCount - 1; i++)
+            var mutantCount = (cloneOrig) ? childCount - 1 : childCount;
+
+            if (cloneOrig)
             {
-                yield return sorter.Mutate(rando);
+                yield return sorter;
+            }
+
+            for (var i = 0; i < mutantCount; i++)
+            {
+                yield return sorter.Mutate(rando, stageReplacementMode);
             }
         }
-
 
     }
 }

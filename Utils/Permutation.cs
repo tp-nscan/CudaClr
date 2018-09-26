@@ -41,9 +41,43 @@ namespace Utils
 
         public static Permutation Identity(uint order)
         {
-            return new Permutation(
-                order: order,
-                terms: 0u.CountUp(order));
+            return new Permutation( order: order, terms: 0u.CountUp(order));
+        }
+
+        public static IPermutation ToInverse(this IPermutation perm)
+        {
+            var invs = new uint[perm.Order];
+            for (uint i = 0; i < perm.Order; i++)
+            {
+                invs[perm[i]] = i;
+            }
+            return new Permutation(order:perm.Order, terms: invs);
+        }
+
+        public static IPermutation ToConjugate(this IPermutation perm, IPermutation conj)
+        {
+            return conj.ToInverse().Multiply(perm.Multiply(conj));
+        }
+
+        public static IPermutation Conjugate(this IPermutation perm, IRando randy)
+        {
+            return perm.ToConjugate(randy.ToPermutation(perm.Order));
+        }
+
+        public static IPermutation C2c(this IPermutation perm, IRando randy)
+        {
+            return perm.ToConjugate(randy.ToSingleTwoCyclePermutation(perm.Order));
+           // return perm.ToConjugate(randy.ToFullTwoCyclePermutation(perm.Order));
+        }
+
+        public static IPermutation ToFullTwoCyclePermutation(this IRando randy, uint order)
+        {
+            return new Permutation(order, randy.ToFullTwoCycleArray(order));
+        }
+
+        public static IPermutation ToSingleTwoCyclePermutation(this IRando randy, uint order)
+        {
+            return new Permutation(order, randy.ToSingleTwoCycleArray(order));
         }
 
         public static IPermutation MakePermutation(uint[] terms)
@@ -66,7 +100,7 @@ namespace Utils
         {
             if (rando.NextDouble() < mutationRate)
             {
-                return rando.RandomPermutation(permutation.Order);
+                return rando.ToPermutation(permutation.Order);
             }
             return permutation;
         }
@@ -86,19 +120,12 @@ namespace Utils
 
         public static bool IsEqualTo(this IPermutation lhs, IPermutation rhs)
         {
-            if (lhs.Order != rhs.Order)
-            {
-                return false;
-            }
+            if (lhs.Order != rhs.Order) { return false; }
 
             for (uint i = 0; i < lhs.Order; i++)
             {
-                if (lhs[i] != rhs[i])
-                {
-                    return false;
-                }
+                if (lhs[i] != rhs[i]) { return false; }
             }
-
             return true;
         }
 
@@ -108,14 +135,9 @@ namespace Utils
             var cume = perm;
             for (var i = 0; i < maxSize; i++)
             {
-                if (pd.ContainsKey(cume))
-                {
-                    return pd;
-                }
-                else
-                {
-                    pd.Add(cume, 1);
-                }
+                if (pd.ContainsKey(cume)) { return pd; }
+
+                pd.Add(cume, 1);
                 cume = cume.Multiply(perm);
             }
 
@@ -146,7 +168,7 @@ namespace Utils
         }
 
 
-        public static IPermutation RandomPermutation(this IRando rando, uint order)
+        public static IPermutation ToPermutation(this IRando rando, uint order)
         {
             return new Permutation(
                 order: order,
@@ -179,12 +201,70 @@ namespace Utils
                 aRet[i] = lhs[rhs[i]];
             }
 
-            return new Permutation(
-                order: lhs.Order,
-                terms: aRet
-                );
+            return new Permutation(order: lhs.Order, terms: aRet );
         }
 
+        static uint WalkAndTag(uint[] lane, uint start, uint steps)
+        {
+            var curSpot = start;
+            var remainingSteps = steps;
+            while (remainingSteps > 0)
+            {
+                curSpot++;
+                if (lane[curSpot] == uint.MaxValue)
+                {
+                    remainingSteps--;
+                }
+
+                if (curSpot > lane.Length)
+                {
+                    throw new Exception("curSpot > lane.Length");
+                }
+            }
+            lane[curSpot] = start;
+
+            return curSpot;
+        }
+
+        public static uint[] ToFullTwoCycleArray(this IRando rando, uint order)
+        {
+            var aRet = uint.MaxValue.Repeat(order).ToArray();
+
+            var rem = order;
+            if (order % 2 == 1)
+            {
+                var cd = rando.NextUint(rem);
+                aRet[cd] = cd;
+                rem--;
+            }
+
+            var curDex = 0u;
+            while (rem > 0)
+            {
+                if (aRet[curDex] == uint.MaxValue)
+                {
+                    var steps = rando.NextUint(rem - 1) + 1;
+                    var wr = WalkAndTag(aRet, curDex, steps);
+                    aRet[curDex] = wr;
+                    rem -= 2;
+                }
+                curDex++;
+            }
+            return aRet;
+        }
+
+
+        public static uint[] ToSingleTwoCycleArray(this IRando rando, uint order)
+        {
+            var pair = new uint[3];
+            var id = 0u.CountUp(order).ToArray();
+            rando.SelectWithoutReplacement(id, pair);
+            id[pair[0]] = pair[1];
+            id[pair[1]] = pair[2];
+            id[pair[2]] = pair[0];
+
+            return id;
+        }
     }
 
 }

@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 
-namespace Utils
+namespace Utils.Genome.Utils
 {
     public class SbScratchPad
     {
@@ -13,44 +13,51 @@ namespace Utils
 
         private SbSpItem[] Overlaps { get; }
 
-        private SbSpItem Overlap(uint row, uint col)
+        public SbSpItem Overlap(uint row, uint col)
         {
             return Overlaps[row * Order + col];
         }
 
         public uint Order { get; }
-
-        // search the lower triangle for the best item in col
+        
         public SbSpItem BestOnCol(uint col)
         {
-            return col.CountUp(Order)
+            var items = 0u.CountUp(Order)
+                .Select(i => Overlap(i, col)).ToArray();
+
+            return 0u.CountUp(Order)
                 .Select(i => Overlap(i, col))
-                .Where(o => !o.IsUsed && (o.Row != col))
-                .Aggregate((i1, i2) => i1.Overlap > i2.Overlap ? i1 : i2);
+                .Where(o => !o.IsUsed)
+                .OrderByDescending(o => o.Overlap)
+                .First();
         }
 
         public bool IsSpent()
         {
-            return Order
-                       .CountUp(Order)
-                       .Select(i => Overlap(i, i))
-                       .Count(o => !o.IsUsed) < 2;
+            return 0u
+                   .CountUp(Order)
+                   .Select(i => Overlap(i, i))
+                   .Count(o => !o.IsUsed) < 2;
         }
 
         public SbSpItem BestOnDiag()
         {
-            return Order.CountUp(Order)
+            return 0u.CountUp(Order)
                 .Select(i => Overlap(i, i))
                 .Where(o => !o.IsUsed)
-                .Aggregate((i1, i2) => i1.Overlap > i2.Overlap ? i1 : i2);
+                .OrderByDescending(o => o.Overlap)
+                .First();
         }
 
-        public void Mark(SbSpItem sbSp)
+        public void Mark(SbSpItem sbSp, uint order)
         {
-            Overlap(sbSp.Row, sbSp.Col).IsUsed = true;
-            Overlap(sbSp.Col, sbSp.Row).IsUsed = true;
-            Overlap(sbSp.Col, sbSp.Col).IsUsed = true;
-            Overlap(sbSp.Row, sbSp.Row).IsUsed = true;
+            for (uint i = 0; i < order; i++)
+            {
+                Overlap(sbSp.Row, i).IsUsed = true;
+                Overlap(i, sbSp.Col).IsUsed = true;
+                Overlap(sbSp.Col, i).IsUsed = true;
+                Overlap(i, sbSp.Row).IsUsed = true;
+            }
         }
     }
 
@@ -87,19 +94,31 @@ namespace Utils
             return scratchPad;
         }
 
-        public static SbScratchPad ToSbScratchPadA(this StageBits stageBits)
+        public static SbScratchPad ToSbScratchPad2(this StageBits2 stageBits)
         {
             var overlaps = stageBits.Order.SquareArrayCoords()
                 .Select(t =>
                     new SbSpItem(row: t.Item1,
                         col: t.Item2,
-                        overlap: stageBits.Overlap(row: t.Item1, col: t.Item2)));                   
+                        overlap: stageBits.Overlap(row: t.Item1, col: t.Item2)));
 
             var scratchPad = new SbScratchPad(
                 overlaps: overlaps,
                 order: stageBits.Order);
 
             return scratchPad;
+        }
+
+        public static string PrintUsed(this SbScratchPad sbScratchPad)
+        {
+            return StringFuncs.GridFormat(sbScratchPad.Order, sbScratchPad.Order,
+                (r, c) => $"{sbScratchPad.Overlap(r,c).IsUsed}");
+        }
+
+        public static string PrintOverlaps(this SbScratchPad sbScratchPad)
+        {
+            return StringFuncs.GridFormat(sbScratchPad.Order, sbScratchPad.Order,
+                (r, c) => $"{sbScratchPad.Overlap(r, c).Overlap}");
         }
 
     }

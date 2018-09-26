@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Utils.Sorter;
 
-namespace Utils
+namespace Utils.Sortable
 {
     public class SortableResult
     {
@@ -10,7 +11,7 @@ namespace Utils
         {
             var _sortResults = SortResults.ToList();
             Sorter = _sortResults[0].Sorter;
-            Sortable = _sortResults[0].Input;
+            Sortable = _sortResults[0].Sortable;
             float totNess = _sortResults.Sum(r => r.Sortedness);
             AverageSortedness = totNess / _sortResults.Count;
             StageUse = new int[Sorter.StageCount];

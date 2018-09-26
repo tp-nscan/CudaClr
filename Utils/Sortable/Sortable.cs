@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Utils
+namespace Utils.Sortable
 {
     public interface ISortable : IPermutation
     {
@@ -38,7 +38,7 @@ namespace Utils
         {
             if (rando.NextDouble() < replacementRate)
             {
-                return rando.RandomPermutation(sortable.Order).ToSortable();
+                return rando.ToPermutation(sortable.Order).ToSortable();
             }
             return sortable;
         }

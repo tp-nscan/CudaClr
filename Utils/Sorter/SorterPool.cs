@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Utils
+namespace Utils.Sorter
 {
     public class SorterPool : IEnumerable<ISorter>
     {
@@ -36,7 +36,7 @@ namespace Utils
 
     public static class SorterPoolExt
     {
-        public static SorterPool RandomSorterPool(this IRando rando, uint order, 
+        public static SorterPool ToSorterPool(this IRando rando, uint order, 
                                                   uint stageCount, int sorterCount)
         {
             return new SorterPool(

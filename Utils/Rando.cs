@@ -149,6 +149,21 @@ namespace Utils
             throw new Exception("FixedValue: no fixed value");
         }
 
+        public static void SelectWithoutReplacement<T>(this IRando rando, T[] values, T[] trs)
+        {
+            if (trs.Length > values.Length)
+            {
+                throw new Exception("(trs.Length > values.Length) in SelectWithoutReplacement");
+            }
+            var l = values.ToList();
+            while (values.Length - l.Count < trs.Length)
+            {
+                var np = rando.NextInt(l.Count - 1);
+                trs[values.Length - l.Count] = values[np];
+                l.RemoveAt(np);
+            }
+        }
+
         public static T SelectFromRemaining<T>(this IRando rando, T[] values, bool[] rem)
         {
             while (true)
@@ -160,55 +175,6 @@ namespace Utils
                     return values[dex];
                 }
             }
-        }
-
-        static uint WalkAndTag(uint[] lane, uint start, uint steps)
-        {
-            var curSpot = start;
-            var remainingSteps = steps;
-            while (remainingSteps > 0)
-            {
-                curSpot++;
-                if (lane[curSpot] == uint.MaxValue)
-                {
-                    remainingSteps--;
-                }
-
-                if (curSpot > lane.Length)
-                {
-                    throw new Exception("curSpot > lane.Length");
-                }
-            }
-            lane[curSpot] = start;
-
-            return curSpot;
-        }
-
-        public static uint[] RandomFullTwoCycle(this IRando rando, uint order)
-        {
-            var aRet = uint.MaxValue.Repeat(order).ToArray();
-
-            var rem = order;
-            if (order % 2 == 1)
-            {
-                var cd = rando.NextUint(rem);
-                aRet[cd] = cd;
-                rem--;
-            }
-
-            var curDex = 0u;
-            while (rem > 0)
-            {
-                if (aRet[curDex] == uint.MaxValue)
-                {
-                    var steps = rando.NextUint(rem - 1) + 1;
-                    var wr = WalkAndTag(aRet, curDex, steps);
-                    aRet[curDex] = wr;
-                    rem -= 2;
-                }
-                curDex++;
-            }
-            return aRet;
         }
 
         public static IEnumerable<double> ExpDist(this IRando rando, double max)

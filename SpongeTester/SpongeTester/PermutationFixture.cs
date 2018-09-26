@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Utils;
+using Utils.Sorter;
 
 namespace SpongeTester
 {
@@ -20,7 +21,7 @@ namespace SpongeTester
 
         [TestMethod]
         public void TestFromLowerTriangularIndex()
-        {
+        {https://www.youtube.com/watch?v=YdYN3nCjiU0
             var r1 = EnumerableExt.FromLowerTriangularIndex(2);
             var r2 = EnumerableExt.FromLowerTriangularIndex(5);
             var r3 = EnumerableExt.FromLowerTriangularIndex(8);
@@ -34,7 +35,7 @@ namespace SpongeTester
         {
             const int order = 24;
             var rando = Rando.Standard(5123);
-            var perm = rando.RandomPermutation(order);
+            var perm = rando.ToPermutation(order);
 
             var p2 = perm.Multiply(perm);
 
@@ -43,18 +44,59 @@ namespace SpongeTester
 
 
         [TestMethod]
+        public void TestInverse()
+        {
+            const int order = 23;
+            var randy = Rando.Standard(5123);
+            for (var i = 0; i < 1000; i++)
+            {
+                var perm = randy.ToPermutation(order);
+                var permI = perm.ToInverse();
+                var prod = perm.Multiply(permI);
+                Assert.IsTrue(prod.IsEqualTo(PermutationEx.Identity(order)));
+            }
+        }
+
+        [TestMethod]
         public void TestRandomTwoCycleStage()
         {
             const int order = 24;
             var randy = Rando.Standard(5123);
             for (var i = 0; i < 1000; i++)
             {
-                var perm = randy.RandomFullSorterStage(order, 0);
-                var p2 = perm.Multiply(perm);
+                var twoCycle = randy.ToFullTwoCyclePermutation(order);
+                var twoCycleSq = twoCycle.Multiply(twoCycle);
+                Assert.IsTrue(twoCycleSq.IsEqualTo(PermutationEx.Identity(order)));
+            }
+        }
+
+
+        [TestMethod]
+        public void TestFullTwoCyclePermutationConjugateIsATwoCycle()
+        {
+            const int order = 24;
+            var randy = Rando.Standard(5123);
+            for (var i = 0; i < 1000; i++)
+            {
+                var twoCycle = randy.ToFullTwoCyclePermutation(order);
+                var conjugate = twoCycle.Conjugate(randy);
+                var p2 = conjugate.Multiply(conjugate);
                 Assert.IsTrue(p2.IsEqualTo(PermutationEx.Identity(order)));
             }
         }
 
+        [TestMethod]
+        public void TestSingleTwoCyclePermutationConjugateIsATwoCycle()
+        {
+            const int order = 24;
+            var randy = Rando.Standard(5123);
+            for (var i = 0; i < 1000; i++)
+            {
+                var twoCycle = randy.ToSingleTwoCyclePermutation(order);
+                var twoCycleSq = twoCycle.Multiply(twoCycle);
+                Assert.IsTrue(twoCycleSq.IsEqualTo(PermutationEx.Identity(order)));
+            }
+        }
 
         [TestMethod]
         public void TestHc()
@@ -65,8 +107,8 @@ namespace SpongeTester
 
             for (var i = 0; i < 1000; i++)
             {
-                var perm = randy.RandomFullSorterStage(orderly, 0);
-                var perm2 = randy.MutateSorterStage(perm);
+                var perm = randy.ToFullSorterStage(orderly, 0);
+                var perm2 = randy.RewireSorterStage(perm);
 
                 if (perm.IsEqualTo(perm2))
                 {
@@ -96,7 +138,7 @@ namespace SpongeTester
 
             for (var i = 0; i < trials; i++)
             {
-                var perm = randy.RandomPermutation(order);
+                var perm = randy.ToPermutation(order);
                 res.Add(perm.OrbitLengthFor(1000000));
             }
 
@@ -119,7 +161,7 @@ namespace SpongeTester
 
             for (var i = 0; i < trials; i++)
             {
-                var perm = randy.RandomPermutation(order);
+                var perm = randy.ToPermutation(order);
                 Console.WriteLine($"{perm.OrbitLengthFor()} {perm.Sortedness()}");
             }
         }

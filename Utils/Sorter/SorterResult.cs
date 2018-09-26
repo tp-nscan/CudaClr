@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Utils.Sortable;
 
-namespace Utils
+namespace Utils.Sorter
 {
     public class SorterResult
     {
@@ -25,7 +26,7 @@ namespace Utils
 
             if (saveResults)
             {
-                this.SortResults = _sortResults.ToDictionary(r=>r.Input.Id);
+                SortResults = _sortResults.ToDictionary(r=>r.Input.Id);
             }
         }
 

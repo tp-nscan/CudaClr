@@ -1,20 +1,21 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Utils.Sorter;
 
-namespace Utils
+namespace Utils.Genome
 {
-    public interface ISorterGenome
+    public interface IGenomeDualSorter
     {
         Guid Id { get; }
-        int StageCount { get; }
-        ISorterStage ChromoA(int index);
-        ISorterStage ChromoB(int index);
+        uint StageCount { get; }
+        ISorterStage ChromoA(uint index);
+        ISorterStage ChromoB(uint index);
         IEnumerable<ISorterStage> ChromosomeA { get; }
         IEnumerable<ISorterStage> ChromosomeB { get; }
     }
 
-    public class GenomeDualSorter : ISorterGenome
+    public class GenomeDualSorter : IGenomeDualSorter
     {
         public GenomeDualSorter(Guid id, 
                                 IEnumerable<ISorterStage> chromA,
@@ -48,11 +49,11 @@ namespace Utils
 
         public Guid Id { get; }
 
-        public int StageCount => _chromosomeA.Count();
+        public uint StageCount => (uint) _chromosomeA.Count();
 
-        public ISorterStage ChromoA(int index) => _chromosomeA[index];
-        public ISorterStage ChromoB(int index) => _chromosomeB[index];
-        public bool Choice(int index) => _choices[index];
+        public ISorterStage ChromoA(uint index) => _chromosomeA[(int) index];
+        public ISorterStage ChromoB(uint index) => _chromosomeB[(int) index];
+        public bool Choice(uint index) => _choices[(int) index];
 
         public IEnumerable<ISorterStage> ChromosomeA => _chromosomeA;
         public IEnumerable<ISorterStage> ChromosomeB => _chromosomeB;
@@ -66,9 +67,9 @@ namespace Utils
             return new GenomeDualSorter(
                 id: Guid.NewGuid(),
                 chromA: 0u.CountUp(stageCount)
-                    .Select(i => randy.RandomFullSorterStage(order, i)),
+                    .Select(i => randy.ToFullSorterStage(order, i)),
                 chromB: 0u.CountUp(stageCount)
-                    .Select(i => randy.RandomFullSorterStage(order, i)),
+                    .Select(i => randy.ToFullSorterStage(order, i)),
                 choices: 0u.CountUp(stageCount)
                     .Select(i => randy.NextBool(0.5))
                 );
@@ -77,7 +78,7 @@ namespace Utils
         public static GenomeDualSorter ToDualSorterGenomeUniform(this IRando randy, uint order, uint stageCount)
         {
             var ch = 0u.CountUp(stageCount)
-                .Select(i => randy.RandomFullSorterStage(order, i)).ToList();
+                .Select(i => randy.ToFullSorterStage(order, i)).ToList();
             return new GenomeDualSorter(
                 id: Guid.NewGuid(),
                 chromA: ch,
@@ -159,27 +160,20 @@ namespace Utils
         public static GenomeDualSorter Mutate(this 
             GenomeDualSorter genomeDualSorter, IRando randy)
         {
-            var mutantIndex = randy.NextInt(genomeDualSorter.StageCount);
-            var mutantChoiceIndex = randy.NextInt(genomeDualSorter.StageCount);
+            var mutantIndex = randy.NextUint(genomeDualSorter.StageCount);
             var newChromA = genomeDualSorter.ChromosomeA;
             var newChromB = genomeDualSorter.ChromosomeB;
 
             var newChoices = genomeDualSorter.Choices;
 
-            //if (randy.NextBool(0.1))
-            //{
-            //    newChoices = genomeDualSorter.Choices.ReplaceAtIndex(mutantChoiceIndex,
-            //        !genomeDualSorter.Choice(mutantChoiceIndex));
-            //}
-
             if (randy.NextBool(0.5))
             {
-                var mutantStage = randy.MutateSorterStage(genomeDualSorter.ChromoA(mutantIndex));
+                var mutantStage = randy.RewireSorterStage(genomeDualSorter.ChromoA(mutantIndex));
                 newChromA = newChromA.ReplaceAtIndex(mutantIndex, mutantStage);
             }
             else
             {
-                var mutantStage = randy.MutateSorterStage(genomeDualSorter.ChromoB(mutantIndex));
+                var mutantStage = randy.RewireSorterStage(genomeDualSorter.ChromoB(mutantIndex));
                 newChromB = newChromB.ReplaceAtIndex(mutantIndex, mutantStage);
             }
 
@@ -193,30 +187,15 @@ namespace Utils
         public static IEnumerable<ISorter> MakePhenotypes(this GenomeDualSorter genomeDualSorter,
             IRando randy, int count)
         {
-            for (var i = 0; i < count; i++)
+            for (uint i = 0; i < count; i++)
             {
-                yield return Enumerable.Range(0, genomeDualSorter.StageCount)
+                yield return 0u.CountUp(genomeDualSorter.StageCount)
                     .Select(d => genomeDualSorter.Choice(d)
                         ? genomeDualSorter.ChromoA(d)
                         : genomeDualSorter.ChromoB(d))
                     .MakeSorter(id: Guid.NewGuid(), genomeId: genomeDualSorter.Id);
             }
         }
-
-        //public static IEnumerable<ISorter> MakePhenotypes(this GenomeDualSorter genomeDualSorter,
-        //    IRando randy, int count)
-        //{
-        //    for (var i = 0; i < count; i++)
-        //    {
-        //        yield return randy.ToIndexedBoolEnumerator(0.5)
-        //            .Take(genomeDualSorter.StageCount)
-        //            .Select(b => b.Item2
-        //                ? genomeDualSorter.ChromoA(b.Item1)
-        //                : genomeDualSorter.ChromoB(b.Item1))
-        //            .MakeSorter(id: Guid.NewGuid(), genomeId: genomeDualSorter.Id);
-        //    }
-        //}
-
 
     }
 }

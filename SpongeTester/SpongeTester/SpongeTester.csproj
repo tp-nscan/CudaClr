@@ -58,6 +58,8 @@
     <Compile Include="GaDualSorterFixture.cs" />
     <Compile Include="StageBitsFixture.cs" />
     <Compile Include="EnumerableFixture.cs" />
+    <Compile Include="StringFuncsFixture.cs" />
+    <Compile Include="GaSorterBitsFixture.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

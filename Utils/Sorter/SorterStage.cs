@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Utils
+namespace Utils.Sorter
 {
 
     public interface ISorterStage : IPermutation
@@ -30,18 +30,24 @@ namespace Utils
             return PermutationEx.GetHashCode(sorterStage);
         }
 
-        public static ISorterStage RandomFullSorterStage(this IRando rando, uint order, uint stageNumber)
+        public static ISorterStage ToSorterStage(this IPermutation permutation, 
+            uint stageNumber)
         {
-            var perm = new SorterStage(
+            return new SorterStage(permutation.Order, permutation.GetMap(), stageNumber);
+        }
+
+        public static ISorterStage ToFullSorterStage(this IRando rando, uint order, uint stageNumber)
+        {
+            var perm = new SorterStage( 
                 order: order,
-                terms: rando.RandomFullTwoCycle(order),
+                terms: rando.ToFullTwoCycleArray(order),
                 stageNumber: stageNumber
             );
 
             return perm;
         }
 
-        public static ISorterStage MutateSorterStage(this IRando rando, ISorterStage sorterStage)
+        public static ISorterStage RewireSorterStage(this IRando rando, ISorterStage sorterStage)
         {
             if (sorterStage.Order % 2 == 1)
             {

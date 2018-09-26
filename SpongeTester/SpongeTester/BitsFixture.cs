@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Utils;
 
@@ -15,31 +16,22 @@ namespace SpongeTester
         }
 
         [TestMethod]
-        public void TestMutateAbit()
+        public void TestBitFlip()
         {
             var randy = Rando.Standard(1444);
             uint start = 213533;
-            var mutato = start.MutateAbit(randy);
+            var mutato = start.BitFlip(2);
             var startArray = start.ToIntArray();
             var mutArray = mutato.ToIntArray();
             var diff = start ^ mutato;
             var diffArray = diff.ToIntArray();
         }
 
+
         [TestMethod]
-        public void TestTryThis()
+        public void TestTryBitConverter()
         {
-            const uint one = 1;
-            const uint two = 2;
-            const uint three = 3;
-            const uint max = UInt32.MaxValue;
-
-            var res = Bitly.ToIntArray(one);
-            res = Bitly.ToIntArray(two);
-            res = Bitly.ToIntArray(three);
-            res = Bitly.ToIntArray(max);
-
-            var restt = Bitly.TryThis();
+            var restt = Bitly.TryBitConverter();
         }
 
 
@@ -54,6 +46,7 @@ namespace SpongeTester
             var uints = tU.ToIntArray();
             var hcu = tU.HotCount();
         }
+
 
         [TestMethod]
         public void TestByteOverlap()
@@ -92,14 +85,28 @@ namespace SpongeTester
             }
         }
 
+
         [TestMethod]
         public void TestNextUint()
         {
-            IRando randy = Rando.Standard(123);
+            var randy = Rando.Standard(123);
             for (var i = 0; i < 16; i++)
             {
                 Console.WriteLine($"{randy.NextUint()}");
             }
+        }
+
+
+        [TestMethod]
+        public void TestMutate()
+        {
+            const uint arrayLen = 1000;
+            const double mutationRate = 0.1;
+            var randy = Rando.Standard(123);
+            var ulongA = 0u.CountUp(arrayLen).Select(i => randy.NextUint()).ToArray();
+            var ulongAm = ulongA.Mutate(randy, mutationRate).ToArray();
+
+            var diff = arrayLen * 32 - ulongA.BitOverlaps(ulongAm).Sum(i=>i);
         }
 
     }

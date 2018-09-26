@@ -71,32 +71,40 @@
     <Compile Include="EnumerableExt.cs" />
     <Compile Include="FloatArrayGen.cs" />
     <Compile Include="FloatFuncs.cs" />
-    <Compile Include="Ga.cs" />
-    <Compile Include="GaDualSorter.cs" />
-    <Compile Include="SbScratchPad.cs" />
-    <Compile Include="StageBits.cs" />
+    <Compile Include="Ga\Ga.cs" />
+    <Compile Include="Ga\GaDualSorter.cs" />
+    <Compile Include="Ga\GaSorterBits.cs" />
+    <Compile Include="Genome\GenomeDimer.cs" />
+    <Compile Include="Genome\GenomePoolSorterBits.cs" />
+    <Compile Include="Genome\GenomeSorterBits.cs" />
+    <Compile Include="Genome\Utils\SbScratchPad.cs" />
+    <Compile Include="Genome\Utils\StageBits.cs" />
+    <Compile Include="Genome\Utils\StageBits2.cs" />
+    <Compile Include="Genome\Utils\StageDimer.cs" />
     <Compile Include="GridFuncs.cs" />
     <Compile Include="IntArrayGen.cs" />
     <Compile Include="BitmapEx.cs" />
     <Compile Include="ColorSeq.cs" />
     <Compile Include="IntFuncs.cs" />
-    <Compile Include="Sortable.cs" />
+    <Compile Include="Sortable\Sortable.cs" />
     <Compile Include="LegendExt.cs" />
     <Compile Include="Permutation.cs" />
     <Compile Include="ProcResult.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Rando.cs" />
     <Compile Include="SimGrid.cs" />
-    <Compile Include="SortablePool.cs" />
-    <Compile Include="SortableResult.cs" />
-    <Compile Include="GenomeDualSorter.cs" />
-    <Compile Include="GenomePoolDualSorter.cs" />
-    <Compile Include="SortResult.cs" />
-    <Compile Include="Sorter.cs" />
-    <Compile Include="SorterPool.cs" />
-    <Compile Include="SorterResult.cs" />
-    <Compile Include="SorterStage.cs" />
+    <Compile Include="Sortable\SortablePool.cs" />
+    <Compile Include="Sortable\SortableResult.cs" />
+    <Compile Include="Genome\GenomeDualSorter.cs" />
+    <Compile Include="Genome\GenomePoolDualSorter.cs" />
+    <Compile Include="Sorter\SortResult.cs" />
+    <Compile Include="Sorter\Sorter.cs" />
+    <Compile Include="Sorter\SorterPool.cs" />
+    <Compile Include="Sorter\SorterResult.cs" />
+    <Compile Include="Sorter\SorterStage.cs" />
+    <Compile Include="StringFuncs.cs" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

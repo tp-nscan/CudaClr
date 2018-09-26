@@ -3,23 +3,23 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Utils
+namespace Utils.Genome
 {
     public class GenomePoolDualSorter : IEnumerable<GenomeDualSorter>
     {
         public GenomePoolDualSorter(Guid id, IEnumerable<GenomeDualSorter> dualSorterGenomes)
         {
             Id = id;
-            DualSorterGenomes = dualSorterGenomes.ToDictionary(r => r.Id);
+            GenomeDualSorters = dualSorterGenomes.ToDictionary(r => r.Id);
         }
 
-        public Dictionary<Guid, GenomeDualSorter> DualSorterGenomes { get; }
+        public Dictionary<Guid, GenomeDualSorter> GenomeDualSorters { get; }
 
         public Guid Id { get; }
 
         public IEnumerator<GenomeDualSorter> GetEnumerator()
         {
-            return DualSorterGenomes.Values.GetEnumerator();
+            return GenomeDualSorters.Values.GetEnumerator();
         }
 
         IEnumerator IEnumerable.GetEnumerator()
@@ -27,7 +27,7 @@ namespace Utils
             return GetEnumerator();
         }
 
-        public GenomeDualSorter this[int index] => DualSorterGenomes.Values.ElementAt(index);
+        public GenomeDualSorter this[int index] => GenomeDualSorters.Values.ElementAt(index);
 
     }
 

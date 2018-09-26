@@ -2,6 +2,8 @@
 using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Utils;
+using Utils.Sortable;
+using Utils.Sorter;
 
 namespace SpongeTester
 {
@@ -18,12 +20,12 @@ namespace SpongeTester
 
             for (var i = 0; i < trials; i++)
             {
-                var stagey = randy.RandomFullSorterStage(order, 0);
-                var stagey2 = randy.RandomFullSorterStage(order, 0);
-                var stagey3 = randy.RandomFullSorterStage(order, 0);
-                var stagey4 = randy.RandomFullSorterStage(order, 0);
+                var stagey = randy.ToFullSorterStage(order, 0);
+                var stagey2 = randy.ToFullSorterStage(order, 0);
+                var stagey3 = randy.ToFullSorterStage(order, 0);
+                var stagey4 = randy.ToFullSorterStage(order, 0);
 
-                var permy = randy.RandomPermutation(order);
+                var permy = randy.ToPermutation(order);
 
                 var strey0 = stagey.Sort(permy);
                 var strey2 = stagey2.Sort(strey0.Item2);
@@ -52,7 +54,7 @@ namespace SpongeTester
             var randy = Rando.Standard(1444);
 
             var permies = 0u.CountUp(permCount)
-                .Select(i => randy.RandomPermutation(order).ToSortable())
+                .Select(i => randy.ToPermutation(order).ToSortable())
                 .ToList();
 
             var sorters = 0u.CountUp(sorterCount)
@@ -78,7 +80,7 @@ namespace SpongeTester
             const uint beforeIndex = 4;
             var randy = Rando.Standard(1444);
             var oldSorter = randy.ToSorter(order, stageCount);
-            var newSorter = oldSorter.Mutate(randy);
+            var newSorter = oldSorter.Mutate(randy, StageReplacementMode.RandomConjugate);
         }
 
 
@@ -90,7 +92,7 @@ namespace SpongeTester
             const int sorterCount = 100000;
 
             var randy = Rando.Standard(1444);
-            var p1 = randy.RandomSorterPool(order, stageCount, sorterCount);
+            var p1 = randy.ToSorterPool(order, stageCount, sorterCount);
 
             var distr = p1.ToSorterDistr();
 

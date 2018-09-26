@@ -36,33 +36,75 @@ namespace Utils
 
         public static ulong[] OneHotLongs;
 
-        public static uint MutateAbit(this uint bits, IRando randy)
+
+        public static byte BitFlip(this byte bits, uint pos)
         {
-            var mask = OneHotInts[randy.NextInt(32)];
-            return bits ^ mask;
+            return (byte) (bits ^ OneHotBytes[pos]);
         }
 
-        public static uint MutateAbit(this byte bits, IRando randy)
+        public static uint BitFlip(this uint bits, uint pos)
         {
-            var mask = OneHotInts[randy.NextInt(32)];
-            return bits ^ mask;
+            return bits ^ OneHotInts[pos];
         }
 
-        public static int[] ToIntArray(this uint bits)
+        public static ulong BitFlip(this ulong bits, uint pos)
         {
-            
-            var aRet = new int[32];
-            uint mask = 1;
+            return bits ^ OneHotLongs[pos];
+        }
 
-            for (var i = 0; i < 32; i++)
+
+        public static IEnumerable<byte> Mutate(this IEnumerable<byte> bits, IRando randy, double mutationRate)
+        {
+            const int bitsLen = 8;
+            return bits.Select(b =>
             {
-                var masked = mask & bits;
-                var sw = masked ^ mask;
-                aRet[i] = (sw == 0) ? 1 : 0;
-                mask <<= 1;
-            }
-            return aRet;
+                var bp = b;
+                for (uint i = 0; i < bitsLen; i++)
+                {
+                    if (randy.NextDouble() < mutationRate)
+                    {
+                        bp = bp.BitFlip(i);
+                    }
+                }
+                return bp;
+            });
         }
+
+        public static IEnumerable<uint> Mutate(this IEnumerable<uint> bits, IRando randy, double mutationRate)
+        {
+            const int bitsLen = 32;
+            return bits.Select(b =>
+            {
+                var bp = b;
+                for (uint i = 0; i < bitsLen; i++)
+                {
+                    if (randy.NextDouble() < mutationRate)
+                    {
+                        bp = bp.BitFlip(i);
+                    }
+                }
+                return bp;
+            });
+        }
+
+
+        public static IEnumerable<ulong> Mutate(this IEnumerable<ulong> bits, IRando randy, double mutationRate)
+        {
+            const int bitsLen = 64;
+            return bits.Select(b =>
+            {
+                var bp = b;
+                for (uint i = 0; i < bitsLen; i++)
+                {
+                    if (randy.NextDouble() < mutationRate)
+                    {
+                        bp = bp.BitFlip(i);
+                    }
+                }
+                return bp;
+            });
+        }
+
 
         public static int[] ToIntArray(this byte bits)
         {
@@ -78,6 +120,39 @@ namespace Utils
             }
             return aRet;
         }
+
+        public static int[] ToIntArray(this uint bits)
+        {
+
+            var aRet = new int[32];
+            uint mask = 1;
+
+            for (var i = 0; i < 32; i++)
+            {
+                var masked = mask & bits;
+                var sw = masked ^ mask;
+                aRet[i] = (sw == 0) ? 1 : 0;
+                mask <<= 1;
+            }
+            return aRet;
+        }
+
+        public static int[] ToIntArray(this ulong bits)
+        {
+
+            var aRet = new int[64];
+            uint mask = 1;
+
+            for (var i = 0; i < 64; i++)
+            {
+                var masked = mask & bits;
+                var sw = masked ^ mask;
+                aRet[i] = (sw == 0) ? 1 : 0;
+                mask <<= 1;
+            }
+            return aRet;
+        }
+
 
         public static uint HotCount(this byte bits)
         {
@@ -116,6 +191,7 @@ namespace Utils
             }
             return totRet;
         }
+
 
         public static uint BitOverlap(this byte a, byte b)
         {
@@ -168,41 +244,9 @@ namespace Utils
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-        public static int TryThis()
+        public static int TryBitConverter()
         {
             byte[] bytes = { 0, 0, 0, 25 };
-            byte[] bytes2 = { 0, 0, 25, 0 };
-
-            var bv = (bytes[3] ^ bytes2[3]);
-            byte[] bytesOr = new byte[4];
-
-            bytesOr[0] = (byte) bv;
-
-
-            uint z = 25;
-            uint w = 400;
-            uint x = 25 ^ 400;
-
-            //byte[] bytes3 =
-            //{
-            //    bytes[0] ^ bytes2[0],
-            //    bytes[0] ^ bytes2[0],
-            //    bytes[0] ^ bytes2[0],
-            //    bytes[0] ^ bytes2[0]
-
-            //};
-
             // If the system architecture is little-endian (that is, little end first),
             // reverse the byte array.
             if (BitConverter.IsLittleEndian)
@@ -211,7 +255,6 @@ namespace Utils
             var i = BitConverter.ToInt32(bytes, 0);
             var j = BitConverter.ToUInt32(bytes, 0);
             return i;
-
         }
 
     }
