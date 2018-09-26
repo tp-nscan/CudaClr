@@ -6,25 +6,7 @@ using Utils.Sorter;
 
 namespace Utils.Genome
 {
-    //public class GenomeSorterBits
-    //{
-    //    public GenomeSorterBits(Guid id, IEnumerable<StageBits> stageBits)
-    //    {
-    //        Id = id;
-    //        StageBits = stageBits.ToArray();
-
-    //    }
-
-    //    public Guid Id { get; }
-
-    //    public StageBits[] StageBits { get; }
-
-    //    public uint Order => StageBits[0].Order;
-
-    //    public uint StageBitsCount => (uint) StageBits.Length;
-    //}
-
-    public class GenomeSorterBits
+    public class GenomeSorterBits : IGuid
     {
         public GenomeSorterBits(Guid id, IEnumerable<StageBits2> stageBits)
         {

@@ -71,14 +71,14 @@ namespace SpongeTester
 
             for (var i = 0; i < rounds; i++)
             {
-                GaDualSorterResult eval = null;
-                GaDualSorterResult evalR = null;
+                GaSortingResults eval = null;
+                GaSortingResults evalR = null;
                 for (var j = 0; j < srounds; j++)
                 {
                     eval = gaDualSorter.Eval(false);
                     evalR = gaDualSorterR.Eval(false);
-                    gaDualSorter = eval.EvolveSorters(randy, selectionFactor);
-                    gaDualSorterR = eval.EvolveSortersRecomb(randy, selectionFactor);
+                    gaDualSorter = gaDualSorter.EvolveSorters(eval.SorterResults, randy, selectionFactor);
+                    gaDualSorterR = gaDualSorterR.EvolveSortersRecomb(eval.SorterResults, randy, selectionFactor);
                 }
 
                 var avgE = eval.SorterResults.Select(sr => sr.Value.AverageSortedness).ToList();

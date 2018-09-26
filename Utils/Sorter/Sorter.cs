@@ -54,6 +54,7 @@ namespace Utils.Sorter
         public IEnumerable<ISorterStage> SorterStages => _sorterStages;
     }
 
+
     public class SorterEqualityComparer : IEqualityComparer<ISorter>
     {
         public bool Equals(ISorter lhs, ISorter rhs)
@@ -135,8 +136,8 @@ namespace Utils.Sorter
                 sorter: sorter,
                 sortedness: curPerm.Sortedness(), 
                 stageUse: stageUse, 
-                input: sortable, 
-                output:null);
+                sortable: sortable, 
+                result: curPerm);
         }
 
         public static ISorter MakeSorter(this IEnumerable<ISorterStage> stages, Guid id,

@@ -5,9 +5,8 @@ using Utils.Sorter;
 
 namespace Utils.Genome
 {
-    public interface IGenomeDualSorter
+    public interface IGenomeDualSorter : IGuid
     {
-        Guid Id { get; }
         uint StageCount { get; }
         ISorterStage ChromoA(uint index);
         ISorterStage ChromoB(uint index);

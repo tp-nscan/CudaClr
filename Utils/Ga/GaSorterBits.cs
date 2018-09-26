@@ -10,9 +10,9 @@ namespace Utils.Ga
     public class GaSorterBits
     {
         public GaSorterBits(
-                            GenomePoolSorterBits genomePoolSorterBits,
-                            SortablePool sortablePool,
-                            IRando randy)
+            GenomePool<GenomeSorterBits> genomePoolSorterBits,
+            SortablePool sortablePool,
+            IRando randy)
         {
             SortablePool = sortablePool;
             GenomePoolSorterBits = genomePoolSorterBits;
@@ -27,40 +27,14 @@ namespace Utils.Ga
 
         public SortablePool SortablePool { get; }
 
-        public GenomePoolSorterBits GenomePoolSorterBits { get; }
-    }
+        public GenomePool<GenomeSorterBits> GenomePoolSorterBits { get; }
 
-
-    public class GaSorterBitsResult
-    {
-        public GaSorterBitsResult(GaSorterBits gaSorterBits,
-            IEnumerable<SortResult> sortResults, bool saveSortResults)
-        {
-            GaSorterBits = gaSorterBits;
-
-            var srl = sortResults.ToList();
-
-            var gbSorter = srl.GroupBy(sr => sr.Sorter).ToList();
-            SorterResults = gbSorter.Select(
-                g => new SorterResult(g, saveSortResults)).ToDictionary(g => g.Sorter.Id);
-
-            var gbSortable = srl.GroupBy(sr => sr.Input).ToList();
-            SortableResults = gbSortable.Select(
-                g => new SortableResult(g, saveSortResults)).ToDictionary(g => g.Sortable.Id);
-
-        }
-
-        public GaSorterBits GaSorterBits { get; }
-
-        public Dictionary<Guid, SorterResult> SorterResults { get; }
-
-        public Dictionary<Guid, SortableResult> SortableResults { get; }
     }
 
 
     public static class GaSorterBitsExt
     {
-        public static GaSorterBitsResult Eval(this GaSorterBits gaSorterBits,
+        public static GaSortingResults Eval(this GaSorterBits gaSorterBits,
             bool saveSortResults)
         {
             var srs = gaSorterBits.SortablePool
@@ -68,35 +42,34 @@ namespace Utils.Ga
                 .SelectMany(
                     sb => gaSorterBits.SorterPool.Select(st => st.Sort(sb)));
 
-            return new GaSorterBitsResult(
-                gaSorterBits: gaSorterBits,
+            return new GaSortingResults(
                 sortResults: srs,
                 saveSortResults: saveSortResults);
         }
 
-        public static GaSorterBits EvolveSorters(this GaSorterBitsResult res, IRando randy, 
-            int selectionFactor, double mutationRate)
+        public static GaSorterBits EvolveSorters(this GaSorterBits gaSorterBits, GaSortingResults res, 
+            IRando randy, int selectionFactor, double mutationRate)
         {
-            var winSortersCount = res.GaSorterBits.SorterPool.Count() / selectionFactor;
+            var winSortersCount = gaSorterBits.SorterPool.Count() / selectionFactor;
             var bestSorterResults = res.SorterResults.Values
                                        .OrderBy(r => r.AverageSortedness)
                                        .Take(winSortersCount)
                                        .ToList();
 
             var bestGenomes = bestSorterResults.GroupBy(s => s.Sorter.GenomeId)
-                .Select(g => res.GaSorterBits.GenomePoolSorterBits.GenomeSorterBitses[g.Key]);
+                .Select(g => gaSorterBits.GenomePoolSorterBits.SorterGenomes[g.Key]);
 
             var newGenomes = bestGenomes.Concat(bestGenomes.SelectMany(g =>
                 Enumerable.Range(0, selectionFactor - 1).Select(i => g.Mutate(id:Guid.NewGuid(), 
                     randy: randy, mutationRate: mutationRate))));
 
             return new GaSorterBits(
-                genomePoolSorterBits: new GenomePoolSorterBits(Guid.NewGuid(), newGenomes),
-                sortablePool: res.GaSorterBits.SortablePool,
+                genomePoolSorterBits: new GenomePool<GenomeSorterBits>(Guid.NewGuid(), newGenomes),
+                sortablePool: gaSorterBits.SortablePool,
                 randy: randy);
         }
 
-        //public static GaDualSorter EvolveSortersRecomb(this GaDualSorterResult res, IRando randy, int selectionFactor)
+        //public static GaDualSorter EvolveSortersRecomb(this GaSortingResults res, IRando randy, int selectionFactor)
         //{
         //    var winSortersCount = res.GaDualSorter.SorterPool.Count() / selectionFactor;
         //    var bestSorterResults = res.SorterResults.Values
@@ -121,12 +94,13 @@ namespace Utils.Ga
         //}
 
 
-        public static GaSorterBits EvolveSortables(this GaSorterBitsResult res, IRando randy, double replacementRate)
+        public static GaSorterBits EvolveSortables(this GaSorterBits gaSorterBits, GaSortingResults res, 
+            IRando randy, double replacementRate)
         {
-            var winSortablesCount = (int)(res.GaSorterBits.SortablePool.Count() * (1.0 - replacementRate));
-            var looseSortablesCount = res.GaSorterBits.SortablePool.Count() - winSortablesCount;
+            var winSortablesCount = (int)(gaSorterBits.SortablePool.Count() * (1.0 - replacementRate));
+            var looseSortablesCount = gaSorterBits.SortablePool.Count() - winSortablesCount;
             var newSortables = Enumerable.Range(0, looseSortablesCount)
-                .Select(i => randy.ToPermutation(res.GaSorterBits.SorterPool.Order).ToSortable());
+                .Select(i => randy.ToPermutation(gaSorterBits.SorterPool.Order).ToSortable());
 
             var bestSortables = res.SortableResults.Values
                 .OrderByDescending(r => r.AverageSortedness)
@@ -136,12 +110,9 @@ namespace Utils.Ga
             var newSortablePool = new SortablePool(Guid.NewGuid(), bestSortables.Concat(newSortables));
 
             return new GaSorterBits(
-                genomePoolSorterBits: res.GaSorterBits.GenomePoolSorterBits,
+                genomePoolSorterBits: gaSorterBits.GenomePoolSorterBits,
                 sortablePool: newSortablePool,
                 randy: randy);
         }
-
     }
-
-
 }

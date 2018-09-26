@@ -6,8 +6,8 @@ using System.Threading.Tasks;
 
 namespace Utils.Genome
 {
-    public class GenomeDimer
+    public class GenomeDimer : IGuid
     {
-
+        public Guid Id => throw new NotImplementedException();
     }
 }

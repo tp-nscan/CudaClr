@@ -9,7 +9,7 @@ namespace Utils.Ga
 {
     public class GaDualSorter
     {
-        public GaDualSorter(GenomePoolDualSorter genomePoolDualSorter, 
+        public GaDualSorter(GenomePool<GenomeDualSorter> genomePoolDualSorter, 
              SortablePool sortablePool,
              IRando randy)
         {
@@ -24,40 +24,13 @@ namespace Utils.Ga
 
         public SortablePool SortablePool { get; }
 
-        public GenomePoolDualSorter GenomePoolDualSorter { get; }
-    }
-
-
-    public class GaDualSorterResult
-    {
-        public GaDualSorterResult(GaDualSorter gaDualSorter, 
-            IEnumerable<SortResult> sortResults, bool saveSortResults)
-        {
-            GaDualSorter = gaDualSorter;
-
-            var srl = sortResults.ToList();
-
-            var gbSorter = srl.GroupBy(sr => sr.Sorter).ToList();
-            SorterResults = gbSorter.Select(
-                g => new SorterResult(g, saveSortResults)).ToDictionary(g => g.Sorter.Id);
-
-            var gbSortable = srl.GroupBy(sr => sr.Sortable).ToList();
-            SortableResults = gbSortable.Select(
-                g => new SortableResult(g, saveSortResults)).ToDictionary(g => g.Sortable.Id);
-
-        }
-
-        public GaDualSorter GaDualSorter { get; }
-
-        public Dictionary<Guid, SorterResult> SorterResults { get; }
-
-        public Dictionary<Guid, SortableResult> SortableResults { get; }
+        public GenomePool<GenomeDualSorter> GenomePoolDualSorter { get; }
     }
 
 
     public static class GaDualSorterExt
     {
-        public static GaDualSorterResult Eval(this GaDualSorter gaDualSorter, 
+        public static GaSortingResults Eval(this GaDualSorter gaDualSorter, 
             bool saveSortResults)
         {
             var srs = gaDualSorter.SortablePool
@@ -65,42 +38,47 @@ namespace Utils.Ga
                 .SelectMany(
                     sb => gaDualSorter.SorterPool.Select(st => st.Sort(sb)));
 
-            return new GaDualSorterResult(
-                gaDualSorter: gaDualSorter,
+            return new GaSortingResults(
                 sortResults:srs, 
                 saveSortResults: saveSortResults);
         }
 
-        public static GaDualSorter EvolveSorters(this GaDualSorterResult res, IRando randy, int selectionFactor)
+        public static GaDualSorter EvolveSorters(this GaDualSorter gaDualSorter,
+            Dictionary<Guid, SorterResult> sorterResults,
+            IRando randy, 
+            int selectionFactor)
         {
-            var winSortersCount = res.GaDualSorter.SorterPool.Count() / selectionFactor;
-            var bestSorterResults = res.SorterResults.Values
+            var winSortersCount = gaDualSorter.SorterPool.Count() / selectionFactor;
+            var bestSorterResults = sorterResults.Values
                                        .OrderBy(r => r.AverageSortedness)
                                        .Take(winSortersCount)
                                        .ToList();
             
             var bestGenomes = bestSorterResults.GroupBy(s => s.Sorter.GenomeId)
-                .Select(g => res.GaDualSorter.GenomePoolDualSorter.GenomeDualSorters[g.Key]);
+                .Select(g => gaDualSorter.GenomePoolDualSorter.SorterGenomes[g.Key]);
 
             var newGenomes = bestGenomes.SelectMany(g =>
                 Enumerable.Range(0, selectionFactor).Select(i => g.Mutate(randy)));
 
             return new GaDualSorter(
-                genomePoolDualSorter: new GenomePoolDualSorter(Guid.NewGuid(), newGenomes),
-                sortablePool: res.GaDualSorter.SortablePool,
+                genomePoolDualSorter: newGenomes.ToGenomePoolDualSorter(Guid.NewGuid()),
+                sortablePool: gaDualSorter.SortablePool,
                 randy: randy);
         }
 
-        public static GaDualSorter EvolveSortersRecomb(this GaDualSorterResult res, IRando randy, int selectionFactor)
+        public static GaDualSorter EvolveSortersRecomb(this GaDualSorter gaDualSorter,
+            Dictionary<Guid, SorterResult> sorterResults,
+            IRando randy,
+            int selectionFactor)
         {
-            var winSortersCount = res.GaDualSorter.SorterPool.Count() / selectionFactor;
-            var bestSorterResults = res.SorterResults.Values
+            var winSortersCount = gaDualSorter.SorterPool.Count() / selectionFactor;
+            var bestSorterResults = sorterResults.Values
                 .OrderBy(r => r.AverageSortedness)
                 .Take(winSortersCount)
                 .ToList();
 
             var bestGenomes = bestSorterResults.GroupBy(s => s.Sorter.GenomeId)
-                .Select(g => res.GaDualSorter.GenomePoolDualSorter.GenomeDualSorters[g.Key]);
+                .Select(g => gaDualSorter.GenomePoolDualSorter.SorterGenomes[g.Key]);
 
             var bestPairs = bestGenomes.ToRandomPairs(randy);
 
@@ -110,20 +88,23 @@ namespace Utils.Ga
                 Enumerable.Range(0, selectionFactor).Select(i => g.Mutate(randy)));
 
             return new GaDualSorter(
-                genomePoolDualSorter: new GenomePoolDualSorter(Guid.NewGuid(), newGenomes),
-                sortablePool: res.GaDualSorter.SortablePool,
+                genomePoolDualSorter: newGenomes.ToGenomePoolDualSorter(Guid.NewGuid()),
+                sortablePool: gaDualSorter.SortablePool,
                 randy: randy);
         }
 
 
-        public static GaDualSorter EvolveSortables(this GaDualSorterResult res, IRando randy, double replacementRate)
+        public static GaDualSorter EvolveSortables(this GaDualSorter gaDualSorter,
+            Dictionary<Guid, SortableResult> sortableResults,
+            IRando randy, 
+            double replacementRate)
         {
-            var winSortablesCount = (int)(res.GaDualSorter.SortablePool.Count() * (1.0 - replacementRate));
-            var looseSortablesCount = res.GaDualSorter.SortablePool.Count() - winSortablesCount;
+            var winSortablesCount = (int)(gaDualSorter.SortablePool.Count() * (1.0 - replacementRate));
+            var looseSortablesCount = gaDualSorter.SortablePool.Count() - winSortablesCount;
             var newSortables = Enumerable.Range(0, looseSortablesCount)
-                .Select(i => randy.ToPermutation(res.GaDualSorter.SorterPool.Order).ToSortable());
+                .Select(i => randy.ToPermutation(gaDualSorter.SorterPool.Order).ToSortable());
 
-            var bestSortables = res.SortableResults.Values
+            var bestSortables = sortableResults.Values
                 .OrderByDescending(r => r.AverageSortedness)
                 .Take(winSortablesCount)
                 .Select(sr => sr.Sortable);
@@ -131,7 +112,7 @@ namespace Utils.Ga
             var newSortablePool = new SortablePool(Guid.NewGuid(), bestSortables.Concat(newSortables));
 
             return new GaDualSorter(
-                genomePoolDualSorter: res.GaDualSorter.GenomePoolDualSorter,
+                genomePoolDualSorter: gaDualSorter.GenomePoolDualSorter,
                 sortablePool: newSortablePool,
                 randy: randy);
         }

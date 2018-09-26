@@ -26,7 +26,7 @@ namespace Utils.Sorter
 
             if (saveResults)
             {
-                SortResults = _sortResults.ToDictionary(r=>r.Input.Id);
+                SortResults = _sortResults.ToDictionary(r=>r.Sortable.Id);
             }
         }
 

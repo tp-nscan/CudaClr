@@ -74,14 +74,16 @@
     <Compile Include="Ga\Ga.cs" />
     <Compile Include="Ga\GaDualSorter.cs" />
     <Compile Include="Ga\GaSorterBits.cs" />
+    <Compile Include="Ga\GaSortingResults.cs" />
+    <Compile Include="Genome\GenomePool.cs" />
     <Compile Include="Genome\GenomeDimer.cs" />
-    <Compile Include="Genome\GenomePoolSorterBits.cs" />
     <Compile Include="Genome\GenomeSorterBits.cs" />
     <Compile Include="Genome\Utils\SbScratchPad.cs" />
     <Compile Include="Genome\Utils\StageBits.cs" />
     <Compile Include="Genome\Utils\StageBits2.cs" />
     <Compile Include="Genome\Utils\StageDimer.cs" />
     <Compile Include="GridFuncs.cs" />
+    <Compile Include="IGuid.cs" />
     <Compile Include="IntArrayGen.cs" />
     <Compile Include="BitmapEx.cs" />
     <Compile Include="ColorSeq.cs" />
@@ -96,7 +98,6 @@
     <Compile Include="Sortable\SortablePool.cs" />
     <Compile Include="Sortable\SortableResult.cs" />
     <Compile Include="Genome\GenomeDualSorter.cs" />
-    <Compile Include="Genome\GenomePoolDualSorter.cs" />
     <Compile Include="Sorter\SortResult.cs" />
     <Compile Include="Sorter\Sorter.cs" />
     <Compile Include="Sorter\SorterPool.cs" />

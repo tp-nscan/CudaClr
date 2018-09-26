@@ -5,12 +5,12 @@ namespace Utils.Sorter
     public class SortResult
     {
         public SortResult(ISorter sorter, uint sortedness, bool[] stageUse,
-            ISortable sortable, IPermutation output)
+            ISortable sortable, IPermutation result)
         {
             Sortedness = sortedness;
             StageUse = stageUse;
             Sortable = sortable;
-            Output = output;
+            Result = result;
             Sorter = sorter;
         }
 
@@ -22,7 +22,7 @@ namespace Utils.Sorter
 
         public ISorter Sorter { get; }
 
-        public IPermutation Output { get; }
+        public IPermutation Result { get; }
 
     }
 }

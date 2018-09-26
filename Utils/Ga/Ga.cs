@@ -18,39 +18,11 @@ namespace Utils.Ga
         public SorterPool SorterPool { get; }
 
         public SortablePool SortablePool { get; }
-
     }
-
-
-    public class GaResult
-    {
-        public GaResult(Ga ga, IEnumerable<SortResult> sortResults, bool saveSortResults)
-        {
-            Ga = ga;
-
-            var srl = sortResults.ToList();
-
-            var gbSorter = srl.GroupBy(sr => sr.Sorter).ToList();
-            SorterResults = gbSorter.Select(
-                g => new SorterResult(g, saveSortResults)).ToDictionary(g=>g.Sorter.Id);
-
-            var gbSortable = srl.GroupBy(sr => sr.Input).ToList();
-            SortableResults = gbSortable.Select(
-                g => new SortableResult(g, saveSortResults)).ToDictionary(g => g.Sortable.Id);
-
-        }
-
-        public Ga Ga { get; }
-
-        public Dictionary<Guid, SorterResult> SorterResults { get; }
-
-        public Dictionary<Guid, SortableResult> SortableResults { get; }
-    }
-
 
     public static class GaExt
     {
-        public static GaResult Eval1(this Ga ga, bool saveSortResults)
+        public static GaSortingResults Eval1(this Ga ga, bool saveSortResults)
         {
             var cb = new ConcurrentBag<SortResult>();
 
@@ -58,34 +30,36 @@ namespace Utils.Ga
                 .SelectMany(
                 sb => ga.SorterPool.Select(st => new {st, sb }));
 
-
             sr.ForAll(t=> cb.Add(t.st.Sort(t.sb)));
 
-            return new GaResult(ga, cb, saveSortResults);
+            return new GaSortingResults(cb, saveSortResults);
         }
 
-        public static GaResult Eval(this Ga ga, bool saveSortResults)
+        public static GaSortingResults Eval(this Ga ga, bool saveSortResults)
         {
             var sr = ga.SortablePool.AsParallel()
                 .SelectMany(
                     sb => ga.SorterPool.Select(st => st.Sort(sb)));
 
-            return new GaResult(ga, sr, saveSortResults);
+            return new GaSortingResults(sr, saveSortResults);
         }
 
-        public static GaResult Evalo(this Ga ga, bool saveSortResults)
+        public static GaSortingResults Evalo(this Ga ga, bool saveSortResults)
         {
             var sr = ga.SortablePool.SelectMany(
                 sb => ga.SorterPool.Select(st => st.Sort(sb)));
 
-            return new GaResult(ga, sr, saveSortResults);
+            return new GaSortingResults(sr, saveSortResults);
         }
 
-        public static Ga EvolveSorters(this GaResult res, IRando randy, int selectionFactor,
+        public static Ga EvolveSorters(this Ga ga,
+            Dictionary<Guid, SorterResult> sorterResults,
+            IRando randy,
+            int selectionFactor,
             StageReplacementMode stageReplacementMode, bool cloneWinners)
         {
-            var winSortersCount = res.Ga.SorterPool.Count() / selectionFactor;
-            var bestSorters = res.SorterResults.Values
+            var winSortersCount = ga.SorterPool.Count() / selectionFactor;
+            var bestSorters = sorterResults.Values
                 .OrderBy(r => r.AverageSortedness)
                 .Take(winSortersCount)
                 .ToList();
@@ -95,26 +69,33 @@ namespace Utils.Ga
 
             return new Ga(
                 sorterPool: new SorterPool(Guid.NewGuid(), newSorters),
-                sortablePool: res.Ga.SortablePool);
+                sortablePool: ga.SortablePool);
         }
 
 
-        public static Ga EvolveSortables(this GaResult res, IRando randy, double replacementRate, bool cloneWinners)
+        public static Ga EvolveSortables(this Ga ga,
+            Dictionary<Guid, SortableResult> sortableResults,
+            IRando randy, 
+            double replacementRate, 
+            bool cloneWinners)
         {
             return (cloneWinners)
-                ? EvolveSortablesAndCloneWinners(res, randy, replacementRate)
-                : EvolveSortables(res, randy, replacementRate);
+                ? ga.EvolveSortablesAndCloneWinners(sortableResults, randy, replacementRate)
+                : ga.EvolveSortables(sortableResults, randy, replacementRate);
         }
 
 
-        static Ga EvolveSortablesAndCloneWinners(this GaResult res, IRando randy, double replacementRate)
+        static Ga EvolveSortablesAndCloneWinners(this Ga ga,
+            Dictionary<Guid, SortableResult> sortableResults,
+            IRando randy, 
+            double replacementRate)
         {
-            var winSortablesCount = (int)(res.Ga.SortablePool.Count() * (1.0 - replacementRate));
-            var looseSortablesCount = res.Ga.SortablePool.Count() - winSortablesCount;
+            var winSortablesCount = (int)(ga.SortablePool.Count() * (1.0 - replacementRate));
+            var looseSortablesCount = ga.SortablePool.Count() - winSortablesCount;
             var newSortables = Enumerable.Range(0, looseSortablesCount)
-                .Select(i => randy.ToPermutation(res.Ga.SorterPool.Order).ToSortable());
+                .Select(i => randy.ToPermutation(ga.SorterPool.Order).ToSortable());
 
-            var bestSortables = res.SortableResults.Values
+            var bestSortables = sortableResults.Values
                 .OrderByDescending(r => r.AverageSortedness)
                 .Take(winSortablesCount)
                 .Select(sr => sr.Sortable);
@@ -122,19 +103,21 @@ namespace Utils.Ga
             var newSortablePool = new SortablePool(Guid.NewGuid(), bestSortables.Concat(newSortables));
 
             return new Ga(
-                sorterPool: res.Ga.SorterPool,
+                sorterPool: ga.SorterPool,
                 sortablePool: newSortablePool);
         }
 
 
-        static Ga EvolveSortables(this GaResult res, IRando randy, double replacementRate)
+        static Ga EvolveSortables(this Ga ga,
+            Dictionary<Guid, SortableResult> sortableResults,
+            IRando randy, double replacementRate)
         {
-            var winSortablesCount = (int)(res.Ga.SortablePool.Count() * (1.0 - replacementRate));
-            var looseSortablesCount = res.Ga.SortablePool.Count() - winSortablesCount;
+            var winSortablesCount = (int)(ga.SortablePool.Count() * (1.0 - replacementRate));
+            var looseSortablesCount = ga.SortablePool.Count() - winSortablesCount;
             var newSortables = Enumerable.Range(0, looseSortablesCount)
-                .Select(i => randy.ToPermutation(res.Ga.SorterPool.Order).ToSortable());
+                .Select(i => randy.ToPermutation(ga.SorterPool.Order).ToSortable());
 
-            var bestSortables = res.SortableResults.Values
+            var bestSortables = sortableResults.Values
                 .OrderByDescending(r => r.AverageSortedness)
                 .Take(winSortablesCount)
                 .Select(sr => sr.Sortable);
@@ -142,7 +125,7 @@ namespace Utils.Ga
             var newSortablePool = new SortablePool(Guid.NewGuid(), bestSortables.Concat(newSortables));
 
             return new Ga(
-                sorterPool: res.Ga.SorterPool,
+                sorterPool: ga.SorterPool,
                 sortablePool: newSortablePool);
         }
 

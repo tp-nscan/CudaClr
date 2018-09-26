@@ -44,7 +44,7 @@ namespace SpongeTester
             var sr = randomSortablePool.SelectMany(
                 sb => randomSorterPool.Select(st=>st.Sort(sb)));
 
-            var gar = new GaResult(ga, sr, false);
+            var gar = new GaSortingResults(sr, false);
 
             var best = gar.SorterResults.Values.OrderBy(r => r.AverageSortedness);
         }
@@ -92,7 +92,7 @@ namespace SpongeTester
                 {
                     var eval = curGa.Eval(false);
                     Console.WriteLine(eval.SorterResults.Average(sr => sr.Value.AverageSortedness));
-                    curGa = eval.EvolveSorters(randy, selectionFactor, StageReplacementMode.RandomRewire, true);
+                    curGa = curGa.EvolveSorters(eval.SorterResults, randy,  selectionFactor, StageReplacementMode.RandomRewire, true);
                 }
                 SorterGa.Add(curGa);
 
@@ -102,7 +102,7 @@ namespace SpongeTester
                 {
                     var eval = curGa.Eval(false);
                     Console.WriteLine(eval.SortableResults.Average(sr => sr.Value.AverageSortedness));
-                    curGa = eval.EvolveSortables(randy, replacementRate, true);
+                    curGa = curGa.EvolveSortables(eval.SortableResults, randy, replacementRate, true);
                 }
                 SortableGa.Add(curGa);
             }
@@ -166,7 +166,7 @@ namespace SpongeTester
             {
                 var eval = curGa.Eval(false);
                 Console.WriteLine(eval.SorterResults.Average(sr => sr.Value.AverageSortedness));
-                curGa = eval.EvolveSorters(randy, selectionFactor, StageReplacementMode.RandomRewire, true);
+                curGa = curGa.EvolveSorters(eval.SorterResults, randy,  selectionFactor, StageReplacementMode.RandomRewire, true);
             }
 
         }
@@ -227,7 +227,7 @@ namespace SpongeTester
                         eval = curGa.Eval(false);
                         avgSorterPerformance = eval.SorterResults.Average(sr => sr.Value.AverageSortedness);
                         Console.WriteLine($"{avgSorterPerformance} {sorterOverlap} {sortableOverlap}");
-                        curGa = eval.EvolveSorters(randy, selectionFactor, StageReplacementMode.RandomRewire, true);
+                        curGa = curGa.EvolveSorters(eval.SorterResults, randy, selectionFactor, StageReplacementMode.RandomRewire, true);
                     }
                     blSorters = curGa.SorterPool.Sorters;
                     blSortables = curGa.SortablePool.Sortables;
@@ -238,7 +238,7 @@ namespace SpongeTester
                         eval = curGa.Eval(false);
                         avgSorterPerformance = eval.SorterResults.Average(sr => sr.Value.AverageSortedness);
                         Console.WriteLine($"{avgSorterPerformance} {sorterOverlap} {sortableOverlap}");
-                        curGa = eval.EvolveSortables(randy, replacementRate, true);
+                        curGa = curGa.EvolveSortables(eval.SortableResults, randy, replacementRate, true);
                     }
                 }
 
@@ -254,7 +254,7 @@ namespace SpongeTester
                         eval = curGa.Eval(false);
                         avgSorterPerformance = eval.SorterResults.Average(sr => sr.Value.AverageSortedness);
                         Console.WriteLine($"{avgSorterPerformance} {sorterOverlap} {sortableOverlap}");
-                        curGa = eval.EvolveSorters(randy, selectionFactor, StageReplacementMode.RandomRewire, true);
+                        curGa = curGa.EvolveSorters(eval.SorterResults, randy, selectionFactor, StageReplacementMode.RandomRewire, true);
                     }
                 }
             }
@@ -271,7 +271,7 @@ namespace SpongeTester
                     eval = curGa.Eval(false);
                     avgSorterPerformance = eval.SorterResults.Average(sr => sr.Value.AverageSortedness);
                     Console.WriteLine($"{avgSorterPerformance} {sorterOverlap} {sortableOverlap}");
-                    curGa = eval.EvolveSorters(randy, selectionFactor, StageReplacementMode.RandomRewire, true);
+                    curGa = curGa.EvolveSorters(eval.SorterResults, randy, selectionFactor, StageReplacementMode.RandomRewire, true);
                 }
             }
 
@@ -320,14 +320,14 @@ namespace SpongeTester
                 {
                     var eval = curGa.Eval(false);
                     Console.WriteLine(eval.SorterResults.Average(sr => sr.Value.AverageSortedness));
-                    curGa = eval.EvolveSorters(randy, selectionFactor, StageReplacementMode.RandomRewire, true);
+                    curGa = curGa.EvolveSorters(eval.SorterResults, randy, selectionFactor, StageReplacementMode.RandomRewire, true);
                 }
 
                 for (var i = 0; i < batchSize; i++)
                 {
                     var eval = curGa.Eval(false);
                     // Console.WriteLine(eval.SortableResults.Average(sr => sr.Value.AverageSortedness));
-                    curGa = eval.EvolveSortables(randy, replacementRate, true);
+                    curGa = curGa.EvolveSortables(eval.SortableResults, randy, replacementRate, true);
                 }
             }
 
@@ -339,7 +339,7 @@ namespace SpongeTester
                 {
                     var eval = curGa.Eval(false);
                     Console.WriteLine(eval.SorterResults.Average(sr => sr.Value.AverageSortedness));
-                    curGa = eval.EvolveSorters(randy, selectionFactor, StageReplacementMode.RandomRewire, true);
+                    curGa = curGa.EvolveSorters(eval.SorterResults, randy, selectionFactor, StageReplacementMode.RandomRewire, true);
                 }
             }
 
