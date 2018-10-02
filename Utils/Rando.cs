@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Utils.Sorter;
 
 namespace Utils
 {
@@ -20,7 +21,8 @@ namespace Utils
         bool NextBool(double trueProb);
         int Seed { get; }
         long UseCount { get; }
-    }
+
+   }
 
     public static class Rando
     {

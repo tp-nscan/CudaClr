@@ -5,8 +5,9 @@ using Utils.Genome;
 namespace SpongeTester
 {
     [TestClass]
-    public class SorterGenomeFixture
+    public class DualSorterGenomeFixture
     {
+
         [TestMethod]
         public void MakeDualSorterGenome()
         {
@@ -20,6 +21,7 @@ namespace SpongeTester
             var mutant = dsg.Mutate(randy);
         }
 
+
         [TestMethod]
         public void MakeDualSorterGenomePool()
         {
@@ -32,9 +34,6 @@ namespace SpongeTester
             var dsg = randy.ToGenomePoolDualSorter(order, stageCount, poolCount);
             
         }
-
-
-
 
     }
 }

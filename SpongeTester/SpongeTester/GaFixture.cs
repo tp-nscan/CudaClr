@@ -24,18 +24,18 @@ namespace SpongeTester
 
             var randy = Rando.Standard(seed);
 
-            var randomSorterPool = randy.ToSorterPool(
+            var randomSorterPool = randy.ToRandomSorterPool(
                 order: order,
                 stageCount: stageCount,
                 sorterCount: sorterCount);
 
 
-            var randomSortablePool = randy.RandomSortablePool(
+            var randomSortablePool = randy.ToRandomSortablePool(
                 order: order,
                 poolCount: sortableCount);
 
 
-            var ga = new Ga(
+            var ga = new SortingPhenotypes(
                 sorterPool:randomSorterPool, 
                 sortablePool: randomSortablePool);
 
@@ -44,7 +44,7 @@ namespace SpongeTester
             var sr = randomSortablePool.SelectMany(
                 sb => randomSorterPool.Select(st=>st.Sort(sb)));
 
-            var gar = new GaSortingResults(sr, false);
+            var gar = new SortingResults(sr, false);
 
             var best = gar.SorterResults.Values.OrderBy(r => r.AverageSortedness);
         }
@@ -64,24 +64,24 @@ namespace SpongeTester
 
             var randy = Rando.Standard(seed);
 
-            var randomSorterPool = randy.ToSorterPool(
+            var randomSorterPool = randy.ToRandomSorterPool(
                 order: order,
                 stageCount: stageCount,
                 sorterCount: sorterCount);
 
-            var randomSortablePool = randy.RandomSortablePool(
+            var randomSortablePool = randy.ToRandomSortablePool(
                 order: order,
                 poolCount: sortableCount);
 
-            var ga = new Ga(
+            var ga = new SortingPhenotypes(
                 sorterPool: randomSorterPool,
                 sortablePool: randomSortablePool);
 
 
             var curGa = ga;
 
-            var SorterGa = new List<Ga>();
-            var SortableGa = new List<Ga>();
+            var SorterGa = new List<SortingPhenotypes>();
+            var SortableGa = new List<SortingPhenotypes>();
 
 
             for (var j = 0; j < batchRounds; j++)
@@ -115,7 +115,7 @@ namespace SpongeTester
             {
                 for (var i = 0; i < batchRounds; i++)
                 {
-                    ga = new Ga(
+                    ga = new SortingPhenotypes(
                         sorterPool: SorterGa[j].SorterPool,
                         sortablePool: SortableGa[i].SortablePool);
 
@@ -145,16 +145,16 @@ namespace SpongeTester
 
             var randy = Rando.Standard(seed);
 
-            var randomSorterPool = randy.ToSorterPool(
+            var randomSorterPool = randy.ToRandomSorterPool(
                 order: order,
                 stageCount: stageCount,
                 sorterCount: sorterCount);
 
-            var randomSortablePool = randy.RandomSortablePool(
+            var randomSortablePool = randy.ToRandomSortablePool(
                 order: order,
                 poolCount: sortableCount);
 
-            var ga = new Ga(
+            var ga = new SortingPhenotypes(
                 sorterPool: randomSorterPool,
                 sortablePool: randomSortablePool);
 
@@ -189,16 +189,16 @@ namespace SpongeTester
 
             var randy = Rando.Standard(seed);
 
-            var randomSorterPool = randy.ToSorterPool(
+            var randomSorterPool = randy.ToRandomSorterPool(
                 order: order,
                 stageCount: stageCount,
                 sorterCount: sorterCount);
 
-            var randomSortablePool = randy.RandomSortablePool(
+            var randomSortablePool = randy.ToRandomSortablePool(
                 order: order,
                 poolCount: sortableCount);
 
-            var ga = new Ga(
+            var ga = new SortingPhenotypes(
                 sorterPool: randomSorterPool,
                 sortablePool: randomSortablePool);
 
@@ -293,16 +293,16 @@ namespace SpongeTester
 
             var randy = Rando.Standard(seed);
 
-            var randomSorterPool = randy.ToSorterPool(
+            var randomSorterPool = randy.ToRandomSorterPool(
                 order: order,
                 stageCount: stageCount,
                 sorterCount: sorterCount);
 
-            var randomSortablePool = randy.RandomSortablePool(
+            var randomSortablePool = randy.ToRandomSortablePool(
                 order: order,
                 poolCount: sortableCount);
 
-            var ga = new Ga(
+            var ga = new SortingPhenotypes(
                 sorterPool: randomSorterPool,
                 sortablePool: randomSortablePool);
 

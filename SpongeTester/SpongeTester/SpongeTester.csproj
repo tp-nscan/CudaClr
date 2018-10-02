@@ -54,12 +54,14 @@
     <Compile Include="BitsFixture.cs" />
     <Compile Include="DiscDistFixture.cs" />
     <Compile Include="GaFixture.cs" />
-    <Compile Include="SorterGenomeFixture.cs" />
+    <Compile Include="DualSorterGenomeFixture.cs" />
     <Compile Include="GaDualSorterFixture.cs" />
     <Compile Include="StageBitsFixture.cs" />
     <Compile Include="EnumerableFixture.cs" />
     <Compile Include="StringFuncsFixture.cs" />
     <Compile Include="GaSorterBitsFixture.cs" />
+    <Compile Include="DirectGaSortingFixture.cs" />
+    <Compile Include="RollingListFixture.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

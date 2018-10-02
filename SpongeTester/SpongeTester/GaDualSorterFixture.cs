@@ -24,7 +24,7 @@ namespace SpongeTester
             var randy = Rando.Standard(seed);
             var genomePoolDualSorter = randy.ToGenomePoolDualSorter(order, stageCount, genomeCount);
 
-            var randomSortablePool = randy.RandomSortablePool(
+            var randomSortablePool = randy.ToRandomSortablePool(
                 order: order,
                 poolCount: sortableCount);
 
@@ -52,7 +52,7 @@ namespace SpongeTester
             var randy = Rando.Standard(seed);
             var genomePoolDualSorter = randy.ToGenomePoolDualSorter(order, stageCount, genomeCount);
 
-            var randomSortablePool = randy.RandomSortablePool(
+            var randomSortablePool = randy.ToRandomSortablePool(
                 order: order,
                 poolCount: sortableCount);
 
@@ -71,8 +71,8 @@ namespace SpongeTester
 
             for (var i = 0; i < rounds; i++)
             {
-                GaSortingResults eval = null;
-                GaSortingResults evalR = null;
+                SortingResults eval = null;
+                SortingResults evalR = null;
                 for (var j = 0; j < srounds; j++)
                 {
                     eval = gaDualSorter.Eval(false);

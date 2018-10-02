@@ -9,7 +9,7 @@ namespace Utils.Ga
 {
     public class GaDualSorter
     {
-        public GaDualSorter(GenomePool<GenomeDualSorter> genomePoolDualSorter, 
+        public GaDualSorter(GenomePool<GenomeDualSorter> genomePoolDualSorter,
              SortablePool sortablePool,
              IRando randy)
         {
@@ -30,7 +30,7 @@ namespace Utils.Ga
 
     public static class GaDualSorterExt
     {
-        public static GaSortingResults Eval(this GaDualSorter gaDualSorter, 
+        public static SortingResults Eval(this GaDualSorter gaDualSorter, 
             bool saveSortResults)
         {
             var srs = gaDualSorter.SortablePool
@@ -38,7 +38,7 @@ namespace Utils.Ga
                 .SelectMany(
                     sb => gaDualSorter.SorterPool.Select(st => st.Sort(sb)));
 
-            return new GaSortingResults(
+            return new SortingResults(
                 sortResults:srs, 
                 saveSortResults: saveSortResults);
         }

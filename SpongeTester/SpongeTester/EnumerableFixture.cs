@@ -14,5 +14,19 @@ namespace SpongeTester
             var res = 4u.SquareArrayCoords().ToList();
 
         }
+
+        [TestMethod]
+        public void TestRoundRobin()
+        {
+            var wrappy = new[] {0, 1, 2, 4}.ToRoundRobin().Take(17).ToList();
+        }
+
+
+        [TestMethod]
+        public void TestRecurse()
+        {
+            Func<int, int> tf = i => i + 1;
+            var res = tf.Recurse(0, 10).ToList();
+        }
     }
 }

@@ -77,7 +77,6 @@ namespace SpongeTester
         {
             const uint order = 24;
             const uint stageCount = 5;
-            const uint beforeIndex = 4;
             var randy = Rando.Standard(1444);
             var oldSorter = randy.ToSorter(order, stageCount);
             var newSorter = oldSorter.Mutate(randy, StageReplacementMode.RandomConjugate);
@@ -92,7 +91,7 @@ namespace SpongeTester
             const int sorterCount = 100000;
 
             var randy = Rando.Standard(1444);
-            var p1 = randy.ToSorterPool(order, stageCount, sorterCount);
+            var p1 = randy.ToRandomSorterPool(order, stageCount, sorterCount);
 
             var distr = p1.ToSorterDistr();
 

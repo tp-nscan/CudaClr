@@ -71,10 +71,12 @@
     <Compile Include="EnumerableExt.cs" />
     <Compile Include="FloatArrayGen.cs" />
     <Compile Include="FloatFuncs.cs" />
-    <Compile Include="Ga\Ga.cs" />
+    <Compile Include="Ga\DirectSortingGa.cs" />
+    <Compile Include="Ga\SortingGaData.cs" />
+    <Compile Include="Ga\SortingPhenotypes.cs" />
     <Compile Include="Ga\GaDualSorter.cs" />
     <Compile Include="Ga\GaSorterBits.cs" />
-    <Compile Include="Ga\GaSortingResults.cs" />
+    <Compile Include="Ga\SortingResults.cs" />
     <Compile Include="Genome\GenomePool.cs" />
     <Compile Include="Genome\GenomeDimer.cs" />
     <Compile Include="Genome\GenomeSorterBits.cs" />
@@ -88,6 +90,7 @@
     <Compile Include="BitmapEx.cs" />
     <Compile Include="ColorSeq.cs" />
     <Compile Include="IntFuncs.cs" />
+    <Compile Include="RollingList.cs" />
     <Compile Include="Sortable\Sortable.cs" />
     <Compile Include="LegendExt.cs" />
     <Compile Include="Permutation.cs" />

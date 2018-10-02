@@ -34,7 +34,7 @@ namespace Utils.Ga
 
     public static class GaSorterBitsExt
     {
-        public static GaSortingResults Eval(this GaSorterBits gaSorterBits,
+        public static SortingResults Eval(this GaSorterBits gaSorterBits,
             bool saveSortResults)
         {
             var srs = gaSorterBits.SortablePool
@@ -42,12 +42,12 @@ namespace Utils.Ga
                 .SelectMany(
                     sb => gaSorterBits.SorterPool.Select(st => st.Sort(sb)));
 
-            return new GaSortingResults(
+            return new SortingResults(
                 sortResults: srs,
                 saveSortResults: saveSortResults);
         }
 
-        public static GaSorterBits EvolveSorters(this GaSorterBits gaSorterBits, GaSortingResults res, 
+        public static GaSorterBits EvolveSorters(this GaSorterBits gaSorterBits, SortingResults res, 
             IRando randy, int selectionFactor, double mutationRate)
         {
             var winSortersCount = gaSorterBits.SorterPool.Count() / selectionFactor;
@@ -94,7 +94,7 @@ namespace Utils.Ga
         //}
 
 
-        public static GaSorterBits EvolveSortables(this GaSorterBits gaSorterBits, GaSortingResults res, 
+        public static GaSorterBits EvolveSortables(this GaSorterBits gaSorterBits, SortingResults res, 
             IRando randy, double replacementRate)
         {
             var winSortablesCount = (int)(gaSorterBits.SortablePool.Count() * (1.0 - replacementRate));

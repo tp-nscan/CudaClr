@@ -6,9 +6,9 @@ using Utils.Sorter;
 
 namespace Utils.Ga
 {
-    public class GaSortingResults
+    public class SortingResults
     {
-        public GaSortingResults(
+        public SortingResults(
             IEnumerable<SortResult> sortResults, bool saveSortResults)
         {
             var srl = sortResults.ToList();

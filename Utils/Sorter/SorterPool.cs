@@ -11,7 +11,7 @@ namespace Utils.Sorter
         {
             Id = id;
             Sorters = sorters.ToDictionary(r => r.Id);
-            Order = sorters.First().SorterStages.First().Order;
+            Order = Sorters.Values.First().SorterStages.First().Order;
         }
 
         public Dictionary<Guid, ISorter> Sorters { get; }
@@ -36,12 +36,12 @@ namespace Utils.Sorter
 
     public static class SorterPoolExt
     {
-        public static SorterPool ToSorterPool(this IRando rando, uint order, 
-                                                  uint stageCount, int sorterCount)
+        public static SorterPool ToRandomSorterPool(this IRando rando, uint order, 
+                                                  uint stageCount, uint sorterCount)
         {
             return new SorterPool(
                 Guid.NewGuid(),
-                Enumerable.Range(0,sorterCount)
+                0u.CountUp(sorterCount)
                           .Select(i=>rando.ToSorter(order, stageCount))
                 );
         }

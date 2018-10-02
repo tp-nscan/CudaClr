@@ -12,6 +12,7 @@ namespace Utils.Sortable
         {
             Id = id;
             Sortables = sortables.ToDictionary(r => r.Id);
+            Order = Sortables.Values.First() .Order;
         }
 
         public Dictionary<Guid, ISortable> Sortables { get; }
@@ -28,13 +29,15 @@ namespace Utils.Sortable
             return GetEnumerator();
         }
 
+        public uint Order { get; }
+
         public ISortable this[int index] => Sortables.Values.ElementAt(index);
 
     }
 
     public static class SortablePoolExt
     {
-        public static SortablePool RandomSortablePool(this IRando rando, uint order, uint poolCount)
+        public static SortablePool ToRandomSortablePool(this IRando rando, uint order, uint poolCount)
         {
             return new SortablePool(Guid.NewGuid(),
                 0u.CountUp(poolCount).Select(i=>

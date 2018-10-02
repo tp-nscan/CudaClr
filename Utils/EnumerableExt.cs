@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices;
 
 namespace Utils
 {
@@ -15,6 +16,18 @@ namespace Utils
                 yield return item;
         }
 
+        public static IEnumerable<T> ToRoundRobin<T>(this IEnumerable<T> source)
+        {
+            var l = source.ToList();
+            while (true)
+            {
+                for (int i = 0; i < l.Count; i++)
+                {
+                    yield return l[i];
+                }
+            }
+        }
+
         public static IEnumerable<T> AsEnumerable<T>(this T item)
         {
                 yield return item;
@@ -23,6 +36,16 @@ namespace Utils
         public static int KeyOverlap<K, V>(this Dictionary<K, V> dict, Dictionary<K, V> comp)
         {
             return comp.Keys.Sum(k => (dict.ContainsKey(k) ? 1 : 0));
+        }
+
+        public static Dictionary<K,V> Copy<K,V>(this Dictionary<K, V> dictionary)
+        {
+            var dRet = new Dictionary<K, V>();
+            foreach (var k in dictionary.Keys)
+            {
+                dRet[k] = dictionary[k];
+            }
+            return dRet;
         }
 
         public static IEnumerable<T> ReplaceAtIndex<T>(this IEnumerable<T> source, uint index,
@@ -118,6 +141,17 @@ namespace Utils
         public static IEnumerable<uint> Repeat(this uint item, uint count)
         {
             for (var i = 0; i < count; i++) yield return item;
+        }
+
+        public static IEnumerable<T> Recurse<T>(this Func<T, T> func, T seed, int power)
+        {
+            var retVal = seed;
+            yield return retVal;
+            for (var i = 0; i < power -1; i++)
+            {
+                retVal = func(retVal);
+                yield return retVal;
+            }
         }
     }
 }
