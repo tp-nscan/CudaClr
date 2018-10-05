@@ -2,38 +2,26 @@
 using Utils.Sortable;
 using Utils.Sorter;
 
-namespace Utils.Ga
+namespace Utils.Ga.Parts
 {
-    public class SortingGaData
-    {
-        public SortingGaData(SorterGaResultType sorterGaResultType,
-            Dictionary<string, object> data)
-        {
-            SorterGaResultType = sorterGaResultType;
-            Data = data;
-        }
 
-        public SorterGaResultType SorterGaResultType { get; }
-
-        public Dictionary<string, object> Data { get; }
-    }
-    
-    public static class SortingGaDataExt
+    public static class SortingGaDataCore
     {
         public static SortingGaData Copy(SortingGaData sortingGaData)
         {
             return new SortingGaData(
-                sorterGaResultType:sortingGaData.SorterGaResultType,
-                data: sortingGaData.Data );
+                sorterGaResultType: sortingGaData.SorterGaResultType,
+                data: sortingGaData.Data);
         }
 
 
         #region SorterWinRate
 
         public static string kSorterWinRate = "kSorterWinRate";
+
         public static double GetSorterWinRate(this Dictionary<string, object> dictionary)
         {
-            return (double)dictionary[kSorterWinRate];
+            return (double) dictionary[kSorterWinRate];
         }
 
         public static void SetSorterWinRate(this Dictionary<string, object> dictionary, double sorterWinRate)
@@ -47,9 +35,10 @@ namespace Utils.Ga
         #region SortableWinRate
 
         public static string kSortableWinRate = "kSortableWinRate";
+
         public static double GetSortableWinRate(this Dictionary<string, object> dictionary)
         {
-            return (double)dictionary[kSortableWinRate];
+            return (double) dictionary[kSortableWinRate];
         }
 
         public static void SetSortableWinRate(this Dictionary<string, object> dictionary, double sortableWinRate)
@@ -63,9 +52,10 @@ namespace Utils.Ga
         #region SorterPool
 
         public static string kSorterPool = "kSorterPool";
+
         public static SorterPool GetSorterPool(this Dictionary<string, object> dictionary)
         {
-            return (SorterPool)dictionary[kSorterPool];
+            return (SorterPool) dictionary[kSorterPool];
         }
 
         public static void SetSorterPool(this Dictionary<string, object> dictionary, SorterPool sorterPool)
@@ -79,9 +69,10 @@ namespace Utils.Ga
         #region SortablePool
 
         public static string kSortablePool = "kSortablePool";
+
         public static SortablePool GetSortablePool(this Dictionary<string, object> dictionary)
         {
-            return (SortablePool)dictionary[kSortablePool];
+            return (SortablePool) dictionary[kSortablePool];
         }
 
         public static void SetSortablePool(this Dictionary<string, object> dictionary, SortablePool sorterPool)
@@ -95,9 +86,10 @@ namespace Utils.Ga
         #region SortingResults
 
         public static string kSortingResults = "kSortingResults";
+
         public static SortingResults GetSortingResults(this Dictionary<string, object> dictionary)
         {
-            return (SortingResults)dictionary[kSortingResults];
+            return (SortingResults) dictionary[kSortingResults];
         }
 
         public static void SetSortingResults(this Dictionary<string, object> dictionary, SortingResults sorterPool)
@@ -111,9 +103,10 @@ namespace Utils.Ga
         #region BestSorterPool
 
         public static string kBestSorterPool = "kBestSorterPool";
+
         public static SorterPool GetBestSorterPool(this Dictionary<string, object> dictionary)
         {
-            return (SorterPool)dictionary[kBestSorterPool];
+            return (SorterPool) dictionary[kBestSorterPool];
         }
 
         public static void SetBestSorterPool(this Dictionary<string, object> dictionary, SorterPool bestSorterPool)
@@ -127,12 +120,14 @@ namespace Utils.Ga
         #region BestSortablePool
 
         public static string kBestSortablePool = "kBestSortablePool";
+
         public static SortablePool GetBestSortablePool(this Dictionary<string, object> dictionary)
         {
-            return (SortablePool)dictionary[kBestSortablePool];
+            return (SortablePool) dictionary[kBestSortablePool];
         }
 
-        public static void SetBestSortablePool(this Dictionary<string, object> dictionary, SortablePool bestSortablePool)
+        public static void SetBestSortablePool(this Dictionary<string, object> dictionary,
+            SortablePool bestSortablePool)
         {
             dictionary[kBestSortablePool] = bestSortablePool;
         }
@@ -143,9 +138,10 @@ namespace Utils.Ga
         #region CurrentStep
 
         public static string kCurrentStep = "kCurrentStep";
+
         public static int GetCurrentStep(this Dictionary<string, object> dictionary)
         {
-            return (int)dictionary[kCurrentStep];
+            return (int) dictionary[kCurrentStep];
         }
 
         public static void SetCurrentStep(this Dictionary<string, object> dictionary, int currentStep)
@@ -159,12 +155,13 @@ namespace Utils.Ga
         #region StageReplacementMode
 
         public static string kStageReplacementMode = "kStageReplacementMode";
+
         public static StageReplacementMode GetStageReplacementMode(this Dictionary<string, object> dictionary)
         {
-            return (StageReplacementMode)dictionary[kStageReplacementMode];
+            return (StageReplacementMode) dictionary[kStageReplacementMode];
         }
 
-        public static void SetStageReplacementMode(this Dictionary<string, object> dictionary, 
+        public static void SetStageReplacementMode(this Dictionary<string, object> dictionary,
             StageReplacementMode stageReplacementMode)
         {
             dictionary[kStageReplacementMode] = stageReplacementMode;
@@ -174,4 +171,5 @@ namespace Utils.Ga
 
 
     }
+
 }

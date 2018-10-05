@@ -14,9 +14,10 @@ namespace SpongeTester
         [TestMethod]
         public void TestSortliness()
         {
+            var seed = 1223;
             const int order = 24;
             const int trials = 5000;
-            var randy = Rando.Standard(1444);
+            var randy = Rando.Standard(seed);
 
             for (var i = 0; i < trials; i++)
             {
@@ -48,10 +49,11 @@ namespace SpongeTester
         [TestMethod]
         public void TestSorterSort()
         {
+            var seed = 1223;
             const uint order = 24;
             var permCount = 2000u;
             var sorterCount = 200u;
-            var randy = Rando.Standard(1444);
+            var randy = Rando.Standard(seed);
 
             var permies = 0u.CountUp(permCount)
                 .Select(i => randy.ToPermutation(order).ToSortable())
@@ -75,9 +77,10 @@ namespace SpongeTester
         [TestMethod]
         public void TestReplaceStage()
         {
+            var seed = 1223;
             const uint order = 24;
             const uint stageCount = 5;
-            var randy = Rando.Standard(1444);
+            var randy = Rando.Standard(seed);
             var oldSorter = randy.ToSorter(order, stageCount);
             var newSorter = oldSorter.Mutate(randy, StageReplacementMode.RandomConjugate);
         }
@@ -86,11 +89,12 @@ namespace SpongeTester
         [TestMethod]
         public void TestSorterDistr2()
         {
+            var seed = 1223;
             const int order = 5;
             const int stageCount = 2;
             const int sorterCount = 100000;
 
-            var randy = Rando.Standard(1444);
+            var randy = Rando.Standard(seed);
             var p1 = randy.ToRandomSorterPool(order, stageCount, sorterCount);
 
             var distr = p1.ToSorterDistr();

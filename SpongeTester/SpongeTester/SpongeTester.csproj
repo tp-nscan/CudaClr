@@ -48,6 +48,7 @@
     <Reference Include="System.Core" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="GenomeDimerFixture.cs" />
     <Compile Include="PermutationFixture.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SorterFixture.cs" />
@@ -60,8 +61,10 @@
     <Compile Include="EnumerableFixture.cs" />
     <Compile Include="StringFuncsFixture.cs" />
     <Compile Include="GaSorterBitsFixture.cs" />
-    <Compile Include="DirectGaSortingFixture.cs" />
+    <Compile Include="GaDirectSortingFixture.cs" />
     <Compile Include="RollingListFixture.cs" />
+    <Compile Include="GenomeStageDimerFixture.cs" />
+    <Compile Include="GaDimerFixture.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

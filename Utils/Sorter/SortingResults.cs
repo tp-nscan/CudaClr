@@ -2,9 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using Utils.Sortable;
-using Utils.Sorter;
 
-namespace Utils.Ga
+namespace Utils.Sorter
 {
     public class SortingResults
     {

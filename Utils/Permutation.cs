@@ -64,7 +64,7 @@ namespace Utils
             return perm.ToConjugate(randy.ToPermutation(perm.Order));
         }
 
-        public static IPermutation C2c(this IPermutation perm, IRando randy)
+        public static IPermutation CS2c(this IPermutation perm, IRando randy)
         {
             return perm.ToConjugate(randy.ToSingleTwoCyclePermutation(perm.Order));
            // return perm.ToConjugate(randy.ToFullTwoCyclePermutation(perm.Order));

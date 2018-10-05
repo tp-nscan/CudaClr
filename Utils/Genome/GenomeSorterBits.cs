@@ -12,7 +12,6 @@ namespace Utils.Genome
         {
             Id = id;
             StageBits = stageBits.ToArray();
-
         }
 
         public Guid Id { get; }
@@ -23,6 +22,7 @@ namespace Utils.Genome
 
         public uint StageBitsCount => (uint)StageBits.Length;
     }
+
 
     public static class GenomeSorterBitsExt
     {
@@ -47,9 +47,9 @@ namespace Utils.Genome
             return new GenomeSorterBits(id: id, stageBits: stageBits);
         }
 
-        //public static GenomeSorterBits ToGenomeSorterBits(this IEnumerable<StageBits> stageBits, Guid id)
+        //public static GenomeSorterBits ToGenomeSorterBits(this IEnumerable<StageBits> genomeStageDimers, Guid id)
         //{
-        //    return new GenomeSorterBits(id: id, stageBits: stageBits);
+        //    return new GenomeSorterBits(id: id, genomeStageDimers: genomeStageDimers);
         //}
 
         public static GenomeSorterBits Mutate(this GenomeSorterBits sorterBits, Guid id, IRando randy,
@@ -64,7 +64,8 @@ namespace Utils.Genome
         {
             return 0u.CountUp(genomeSorterBits.StageBitsCount)
                 .Select(i=> genomeSorterBits.StageBits[i].ToSorterStage(i))
-                .MakeSorter(id: Guid.NewGuid(), genomeId: genomeSorterBits.Id);
+                .ToSorter(id: Guid.NewGuid(), genomeId: genomeSorterBits.Id);
         }
     }
+
 }

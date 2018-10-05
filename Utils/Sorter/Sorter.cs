@@ -140,7 +140,7 @@ namespace Utils.Sorter
                 result: curPerm);
         }
 
-        public static ISorter MakeSorter(this IEnumerable<ISorterStage> stages, Guid id,
+        public static ISorter ToSorter(this IEnumerable<ISorterStage> stages, Guid id,
                                          Guid genomeId)
         {
             return new Sorter(
@@ -167,17 +167,14 @@ namespace Utils.Sorter
                     mutantStage = stageToReplace.Conjugate(rando).ToSorterStage(mutantIndex);
                     break;
                 case StageReplacementMode.RCTC:
-                    mutantStage = stageToReplace.C2c(rando).ToSorterStage(mutantIndex);
+                    mutantStage = stageToReplace.CS2c(rando).ToSorterStage(mutantIndex);
                     break;
                 default:
                     throw new Exception($"{stageReplacementMode.ToString()}");
             }
 
-            return MakeSorter(
-                stages: sorter.SorterStages.ReplaceAtIndex(mutantIndex, mutantStage),
-                id: Guid.NewGuid(), 
-                genomeId: Guid.Empty);
-
+            return sorter.SorterStages.ReplaceAtIndex(mutantIndex, mutantStage)
+                .ToSorter(id: Guid.NewGuid(), genomeId: Guid.Empty);
         }
 
         public static IEnumerable<ISorter> NextGen(this ISorter sorter,

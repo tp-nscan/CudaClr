@@ -4,6 +4,7 @@ using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Utils;
 using Utils.Ga;
+using Utils.Ga.Parts;
 using Utils.Genome;
 using Utils.Sortable;
 using Utils.Sorter;
@@ -60,7 +61,7 @@ namespace SpongeTester
                 order: order,
                 poolCount: sortableCount);
 
-            var ga = new SortingPhenotypes(
+            var ga = new SortingGaPools(
                 sorterPool: randomSorterPool,
                 sortablePool: randomSortablePool);
 
@@ -97,7 +98,7 @@ namespace SpongeTester
 
                     curGa = curGa.EvolveSorters(eval.SorterResults, randy, selectionFactor, StageReplacementMode.RCTC, true);
 
-                   // curGaB = evalB.UpdateSorters(randy, selectionFactor, Mutato( step++));
+                   // curGaB = evalB.UpdateSortersDirect(randy, selectionFactor, Mutato( step++));
                 }
 
                 for (var i = 0; i < batchSize; i++)
@@ -109,7 +110,7 @@ namespace SpongeTester
                     Console.WriteLine($"{avgStr}");
 
                     curGa = curGa.EvolveSortables(eval.SortableResults, randy, replacementRate, true);
-                   // curGaB = evalB.UpdateSortables(randy, replacementRate);
+                   // curGaB = evalB.UpdateSortablesDirect(randy, replacementRate);
                 }
             }
 
@@ -126,8 +127,8 @@ namespace SpongeTester
             //      //  var avgStrB = evalB.SorterResults.Average(sr => sr.Value.AverageSortedness);
             //        Console.WriteLine($"{avgStr}");
 
-            //        curGa = curGa.UpdateSorters(eval.SorterResults, randy, selectionFactor, StageReplacementMode.RCTC, true);
-            //        //curGaB = evalB.UpdateSorters(randy, selectionFactor, Mutato(step++));
+            //        curGa = curGa.UpdateSortersDirect(eval.SorterResults, randy, selectionFactor, StageReplacementMode.RCTC, true);
+            //        //curGaB = evalB.UpdateSortersDirect(randy, selectionFactor, Mutato(step++));
             //    }
             //}
 
@@ -163,21 +164,21 @@ namespace SpongeTester
                 order: order,
                 poolCount: sortableCount);
 
-            var ga = new SortingPhenotypes(
+            var ga = new SortingGaPools(
                 sorterPool: randomSorterPool,
                 sortablePool: randomSortablePool);
 
 
-            var gaB = new SortingPhenotypes(
+            var gaB = new SortingGaPools(
                 sorterPool: randomSorterPool,
                 sortablePool: randomSortablePool);
 
 
-            var gaC = new SortingPhenotypes(
+            var gaC = new SortingGaPools(
                 sorterPool: randomSorterPool,
                 sortablePool: randomSortablePool);
 
-            var gaD = new SortingPhenotypes(
+            var gaD = new SortingGaPools(
                 sorterPool: randomSorterPool,
                 sortablePool: randomSortablePool);
 
@@ -307,21 +308,21 @@ namespace SpongeTester
                 order: order,
                 poolCount: sortableCount);
 
-            var ga = new SortingPhenotypes(
+            var ga = new SortingGaPools(
                 sorterPool: randomSorterPoolA,
                 sortablePool: randomSortablePool);
 
 
-            var gaB = new SortingPhenotypes(
+            var gaB = new SortingGaPools(
                 sorterPool: randomSorterPoolB,
                 sortablePool: randomSortablePool);
 
 
-            var gaC = new SortingPhenotypes(
+            var gaC = new SortingGaPools(
                 sorterPool: randomSorterPoolC,
                 sortablePool: randomSortablePool);
 
-            var gaD = new SortingPhenotypes(
+            var gaD = new SortingGaPools(
                 sorterPool: randomSorterPoolD,
                 sortablePool: randomSortablePool);
 
@@ -372,10 +373,10 @@ namespace SpongeTester
                 //    var avgStrD = evalD.SorterResults.Average(sr => sr.Value.AverageSortedness);
                 //    Console.WriteLine($"{avgStr} {avgStrB} {avgStrC} {avgStrD}");
 
-                //    curGa = eval.UpdateSortables(randy, replacementRate);
-                //    curGaB = evalB.UpdateSortables(randy, replacementRate);
-                //    curGaC = evalC.UpdateSortables(randy, replacementRate);
-                //    curGaD = evalD.UpdateSortables(randy, replacementRate);
+                //    curGa = eval.UpdateSortablesDirect(randy, replacementRate);
+                //    curGaB = evalB.UpdateSortablesDirect(randy, replacementRate);
+                //    curGaC = evalC.UpdateSortablesDirect(randy, replacementRate);
+                //    curGaD = evalD.UpdateSortablesDirect(randy, replacementRate);
                 //}
 
             }
@@ -467,21 +468,21 @@ namespace SpongeTester
                 order: order,
                 poolCount: sortableCount);
 
-            var ga = new SortingPhenotypes(
+            var ga = new SortingGaPools(
                 sorterPool: randomSorterPoolA,
                 sortablePool: randomSortablePool);
 
 
-            var gaB = new SortingPhenotypes(
+            var gaB = new SortingGaPools(
                 sorterPool: randomSorterPoolB,
                 sortablePool: randomSortablePool);
 
 
-            var gaC = new SortingPhenotypes(
+            var gaC = new SortingGaPools(
                 sorterPool: randomSorterPoolC,
                 sortablePool: randomSortablePool);
 
-            var gaD = new SortingPhenotypes(
+            var gaD = new SortingGaPools(
                 sorterPool: randomSorterPoolD,
                 sortablePool: randomSortablePool);
 

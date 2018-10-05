@@ -5,7 +5,7 @@ using System.Linq;
 using Utils.Sortable;
 using Utils.Sorter;
 
-namespace Utils.Ga
+namespace Utils.Ga.Parts
 {
     public enum SorterGaResultType
     {
@@ -13,14 +13,9 @@ namespace Utils.Ga
         Error
     }
 
-    //public interface ISorterGa
-    //{
-    //    SorterGaResultType
-    //}
-
-    public class SortingPhenotypes
+    public class SortingGaPools
     {
-        public SortingPhenotypes(SorterPool sorterPool, SortablePool sortablePool)
+        public SortingGaPools(SorterPool sorterPool, SortablePool sortablePool)
         {
             SorterPool = sorterPool;
             SortablePool = sortablePool;
@@ -32,9 +27,9 @@ namespace Utils.Ga
     }
 
 
-    public static class GaExt
+    public static class SortingGaPoolsExt
     {
-        public static SortingResults Eval1(this SortingPhenotypes sortingPhenotypes, bool saveSortResults)
+        public static SortingResults Eval1(this SortingGaPools sortingPhenotypes, bool saveSortResults)
         {
             var cb = new ConcurrentBag<SortResult>();
 
@@ -47,7 +42,7 @@ namespace Utils.Ga
             return new SortingResults(cb, saveSortResults);
         }
 
-        public static SortingResults Eval(this SortingPhenotypes sortingPhenotypes, bool saveSortResults)
+        public static SortingResults Eval(this SortingGaPools sortingPhenotypes, bool saveSortResults)
         {
             var sr = sortingPhenotypes.SortablePool.AsParallel()
                 .SelectMany(
@@ -56,7 +51,7 @@ namespace Utils.Ga
             return new SortingResults(sr, saveSortResults);
         }
 
-        public static SortingResults Evalo(this SortingPhenotypes sortingPhenotypes, bool saveSortResults)
+        public static SortingResults Evalo(this SortingGaPools sortingPhenotypes, bool saveSortResults)
         {
             var sr = sortingPhenotypes.SortablePool.SelectMany(
                 sb => sortingPhenotypes.SorterPool.Select(st => st.Sort(sb)));
@@ -64,7 +59,7 @@ namespace Utils.Ga
             return new SortingResults(sr, saveSortResults);
         }
 
-        public static SortingPhenotypes EvolveSorters(this SortingPhenotypes sortingPhenotypes,
+        public static SortingGaPools EvolveSorters(this SortingGaPools sortingPhenotypes,
             Dictionary<Guid, SorterResult> sorterResults,
             IRando randy,
             int selectionFactor,
@@ -79,13 +74,13 @@ namespace Utils.Ga
             var newSorters = bestSorters.SelectMany(b =>
                 b.Sorter.NextGen(randy, selectionFactor, stageReplacementMode, cloneWinners)).ToList();
 
-            return new SortingPhenotypes(
+            return new SortingGaPools(
                 sorterPool: new SorterPool(Guid.NewGuid(), newSorters),
                 sortablePool: sortingPhenotypes.SortablePool);
         }
 
 
-        public static SortingPhenotypes EvolveSortables(this SortingPhenotypes sortingPhenotypes,
+        public static SortingGaPools EvolveSortables(this SortingGaPools sortingPhenotypes,
             Dictionary<Guid, SortableResult> sortableResults,
             IRando randy, 
             double replacementRate, 
@@ -97,7 +92,7 @@ namespace Utils.Ga
         }
 
 
-        static SortingPhenotypes EvolveSortablesAndCloneWinners(this SortingPhenotypes sortingPhenotypes,
+        static SortingGaPools EvolveSortablesAndCloneWinners(this SortingGaPools sortingPhenotypes,
                         Dictionary<Guid, SortableResult> sortableResults,
                         IRando randy, 
                         double replacementRate)
@@ -114,13 +109,13 @@ namespace Utils.Ga
 
             var newSortablePool = new SortablePool(Guid.NewGuid(), bestSortables.Concat(newSortables));
 
-            return new SortingPhenotypes(
+            return new SortingGaPools(
                 sorterPool: sortingPhenotypes.SorterPool,
                 sortablePool: newSortablePool);
         }
 
 
-        static SortingPhenotypes EvolveSortables(this SortingPhenotypes sortingPhenotypes,
+        static SortingGaPools EvolveSortables(this SortingGaPools sortingPhenotypes,
             Dictionary<Guid, SortableResult> sortableResults,
             IRando randy, double replacementRate)
         {
@@ -136,7 +131,7 @@ namespace Utils.Ga
 
             var newSortablePool = new SortablePool(Guid.NewGuid(), bestSortables.Concat(newSortables));
 
-            return new SortingPhenotypes(
+            return new SortingGaPools(
                 sorterPool: sortingPhenotypes.SorterPool,
                 sortablePool: newSortablePool);
         }

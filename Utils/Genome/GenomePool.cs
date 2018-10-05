@@ -62,5 +62,22 @@ namespace Utils.Genome
         {
             return new GenomePool<GenomeSorterBits>(id, genomeSorterBitses);
         }
+
+
+
+        public static GenomePool<GenomeDimer> ToSorterStageDimerGenomePool(
+            this IRando rando, uint order,
+            uint stageCount, uint poolCount)
+        {
+            return 0u.CountUp(poolCount)
+                .Select(i => rando.ToGenomeDimer(order, stageCount))
+                .ToGenomePoolStageDimer(Guid.NewGuid());
+        }
+
+        public static GenomePool<GenomeDimer> ToGenomePoolStageDimer(
+            this IEnumerable<GenomeDimer> genomeDimers, Guid id)
+        {
+            return new GenomePool<GenomeDimer>(id, genomeDimers);
+        }
     }
 }

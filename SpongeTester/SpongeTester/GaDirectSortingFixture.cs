@@ -2,14 +2,15 @@
 using System.Diagnostics;
 using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Utils;
+ using Utils;
 using Utils.Ga;
+using Utils.Ga.Parts;
 using Utils.Sorter;
 
 namespace SpongeTester
 {
     [TestClass]
-    public class DirectGaSortingFixture
+    public class GaDirectSortingFixture
     {
         [TestMethod]
         public void TestToRandomSortingGaData()
@@ -25,9 +26,9 @@ namespace SpongeTester
             const int batchSize = 10;
             const int batchRounds = 40;
 
-            var randy = Utils.Rando.Standard(seed);
+            var randy = Rando.Standard(seed);
 
-            var dsg = randy.ToDirectRandomSortingGaData(
+            var dsg = randy.ToRandomDirectSortingGaData(
                 order: order,
                 sorterCount: sorterCount,
                 sortableCount: sortableCount,
@@ -44,7 +45,7 @@ namespace SpongeTester
             {
                 for (var i = 0; i < batchSize * 2; i++)
                 {
-                    dsg = dsg.EvolveBoth(randy);
+                    dsg = dsg.EvolveBothDirect(randy);
                     Console.WriteLine(dsg.Report());
                 }
 
@@ -53,6 +54,7 @@ namespace SpongeTester
             sw.Stop();
             Console.WriteLine("\nElapsed={0}", sw.Elapsed);
         }
+
 
         [TestMethod]
         public void TestCompareSortingGaData()
@@ -70,7 +72,7 @@ namespace SpongeTester
 
             var randy = Utils.Rando.Standard(seed);
 
-            var dsgOld = randy.ToDirectRandomSortingGaData(
+            var dsgOld = randy.ToRandomDirectSortingGaData(
                 order: order,
                 sorterCount: sorterCount,
                 sortableCount: sortableCount,
@@ -84,7 +86,7 @@ namespace SpongeTester
 
             for (var i = 0; i < rollingListCap; i++)
             {
-                var dsgNew = dsgOld.EvolveJustSorters(randy);
+                var dsgNew = dsgOld.EvolveSortersDirect(randy);
                 rlSgd.Add(dsgNew);
                 dsgOld = dsgNew;
             }
@@ -96,7 +98,7 @@ namespace SpongeTester
 
             for (var i = 0; i < rounds; i++)
             {
-                var dsgNew = dsgOld.EvolveBoth(randy);
+                var dsgNew = dsgOld.EvolveBothDirect(randy);
                 var rl = rlSgd.Select(sgd => sgd.CompareReport(dsgNew)).ToList();
                 foreach (var r in rl)
                 {

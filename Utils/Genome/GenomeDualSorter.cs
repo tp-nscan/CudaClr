@@ -192,7 +192,7 @@ namespace Utils.Genome
                     .Select(d => genomeDualSorter.Choice(d)
                         ? genomeDualSorter.ChromoA(d)
                         : genomeDualSorter.ChromoB(d))
-                    .MakeSorter(id: Guid.NewGuid(), genomeId: genomeDualSorter.Id);
+                    .ToSorter(id: Guid.NewGuid(), genomeId: genomeDualSorter.Id);
             }
         }
 

@@ -6,6 +6,7 @@ using Utils;
 using Utils.Ga;
 using Utils.Genome;
 using Utils.Sortable;
+using Utils.Sorter;
 
 namespace SpongeTester
 {

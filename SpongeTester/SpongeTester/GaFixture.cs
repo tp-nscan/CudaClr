@@ -5,6 +5,7 @@ using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Utils;
 using Utils.Ga;
+using Utils.Ga.Parts;
 using Utils.Sortable;
 using Utils.Sorter;
 
@@ -35,7 +36,7 @@ namespace SpongeTester
                 poolCount: sortableCount);
 
 
-            var ga = new SortingPhenotypes(
+            var ga = new SortingGaPools(
                 sorterPool:randomSorterPool, 
                 sortablePool: randomSortablePool);
 
@@ -73,15 +74,15 @@ namespace SpongeTester
                 order: order,
                 poolCount: sortableCount);
 
-            var ga = new SortingPhenotypes(
+            var ga = new SortingGaPools(
                 sorterPool: randomSorterPool,
                 sortablePool: randomSortablePool);
 
 
             var curGa = ga;
 
-            var SorterGa = new List<SortingPhenotypes>();
-            var SortableGa = new List<SortingPhenotypes>();
+            var SorterGa = new List<SortingGaPools>();
+            var SortableGa = new List<SortingGaPools>();
 
 
             for (var j = 0; j < batchRounds; j++)
@@ -115,7 +116,7 @@ namespace SpongeTester
             {
                 for (var i = 0; i < batchRounds; i++)
                 {
-                    ga = new SortingPhenotypes(
+                    ga = new SortingGaPools(
                         sorterPool: SorterGa[j].SorterPool,
                         sortablePool: SortableGa[i].SortablePool);
 
@@ -154,7 +155,7 @@ namespace SpongeTester
                 order: order,
                 poolCount: sortableCount);
 
-            var ga = new SortingPhenotypes(
+            var ga = new SortingGaPools(
                 sorterPool: randomSorterPool,
                 sortablePool: randomSortablePool);
 
@@ -198,7 +199,7 @@ namespace SpongeTester
                 order: order,
                 poolCount: sortableCount);
 
-            var ga = new SortingPhenotypes(
+            var ga = new SortingGaPools(
                 sorterPool: randomSorterPool,
                 sortablePool: randomSortablePool);
 
@@ -302,7 +303,7 @@ namespace SpongeTester
                 order: order,
                 poolCount: sortableCount);
 
-            var ga = new SortingPhenotypes(
+            var ga = new SortingGaPools(
                 sorterPool: randomSorterPool,
                 sortablePool: randomSortablePool);
 
