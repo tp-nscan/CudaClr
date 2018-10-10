@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using Utils.Ga.Parts;
@@ -7,9 +8,18 @@ using Utils.Sorter;
 
 namespace Utils.Ga
 {
+    public class GaSortingData
+    {
+        public GaSortingData(Dictionary<string, object> data)
+        {
+            Data = data;
+        }
+        public Dictionary<string, object> Data { get; private set; }
+    }
+
     public static class SortingGaExt
     {
-        public static SortingGaData Eval(this SortingGaData sortingGaData)
+        public static GaSortingData Eval(this GaSortingData sortingGaData)
         {
             var data = sortingGaData.Data.Copy();
 
@@ -23,14 +33,11 @@ namespace Utils.Ga
             var sortingResults = new SortingResults(sr, false);
             data.SetSortingResults(sortingResults);
 
-            return new SortingGaData(
-                sorterGaResultType: SorterGaResultType.Normal,
-                data: data
-            );
+            return new GaSortingData(data: data);
         }
 
 
-        public static SortingGaData SelectWinningSortables(this SortingGaData sortingGaData)
+        public static GaSortingData SelectWinningSortables(this GaSortingData sortingGaData)
         {
             var data = sortingGaData.Data.Copy();
             var step = data.GetCurrentStep();
@@ -50,14 +57,11 @@ namespace Utils.Ga
                 .Take(sortableWinCount).Select(sr => sr.Sortable);
             data.SetBestSortablePool(new SortablePool(Guid.NewGuid(), bestSortables));
 
-            return new SortingGaData(
-                    sorterGaResultType: SorterGaResultType.Normal,
-                    data: data
-                );
+            return new GaSortingData(data: data);
         }
 
 
-        public static SortingGaData SelectWinningSorters(this SortingGaData sortingGaData)
+        public static GaSortingData SelectWinningSorters(this GaSortingData sortingGaData)
         {
             var data = sortingGaData.Data.Copy();
             var step = data.GetCurrentStep();
@@ -73,14 +77,11 @@ namespace Utils.Ga
 
             data.SetBestSorterPool(new SorterPool(Guid.NewGuid(), bestSorters));
 
-            return new SortingGaData(
-                sorterGaResultType: SorterGaResultType.Normal,
-                data: data
-            );
+            return new GaSortingData(data: data);
         }
 
 
-        public static string Report(this SortingGaData sortingGaData)
+        public static string Report(this GaSortingData sortingGaData)
         {
             var data = sortingGaData.Data;
             var bestSorterPool = data.GetBestSorterPool();
@@ -92,7 +93,7 @@ namespace Utils.Ga
         }
 
 
-        public static string ReportMore(this SortingGaData sortingGaData)
+        public static string ReportMore(this GaSortingData sortingGaData)
         {
             var data = sortingGaData.Data;
             var bestSorterPool = data.GetBestSorterPool();
@@ -111,7 +112,7 @@ namespace Utils.Ga
         }
 
 
-        public static string CompareReport(this SortingGaData sgdNew, SortingGaData sgdOld)
+        public static string CompareReport(this GaSortingData sgdNew, GaSortingData sgdOld)
         {
             var newData = sgdNew.Data;
             var oldData = sgdOld.Data;
@@ -134,7 +135,7 @@ namespace Utils.Ga
         }
 
 
-        public static string CompareReportLarge(this SortingGaData sgdNew, SortingGaData sgdOld)
+        public static string CompareReportLarge(this GaSortingData sgdNew, GaSortingData sgdOld)
         {
             var newData = sgdNew.Data;
             var oldData = sgdOld.Data;

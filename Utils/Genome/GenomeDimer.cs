@@ -37,6 +37,31 @@ namespace Utils.Genome
             return new GenomeDimer(id: id, genomeStageDimers: genomeStageDimers);
         }
 
+        public static Tuple<GenomeDimer, GenomeDimer> RecombineCoarse(this IRando randy, GenomeDimer gdA, GenomeDimer gdB)
+        {
+            var aList = gdA.GenomeStageDimers.ToList();
+            var bList = gdB.GenomeStageDimers.ToList();
+            //var combies = randy.Recombo(aList, bList);
+            var combies = aList.Recombo(bList, randy.NextUint((uint)bList.Count()));
+            return new Tuple<GenomeDimer, GenomeDimer>(
+                combies.Item1.ToGenomeDimer(Guid.NewGuid()),
+                combies.Item2.ToGenomeDimer(Guid.NewGuid()));
+        }
+
+        public static Tuple<GenomeDimer, GenomeDimer> RecombineFine(this IRando randy, GenomeDimer gdA, GenomeDimer gdB)
+        {
+            var al = gdA.GenomeStageDimers.SelectMany(sd => sd.ToPermutations()).ToList();
+            var aList = gdA.GenomeStageDimers.ToList();
+            var bList = gdB.GenomeStageDimers.ToList();
+           // var combies = aList.Recombo(bList, randy.NextUint((uint)bList.Count()));
+            var combies = aList.RecomboL2(bList, 
+                randy.NextUint((uint)bList.Count()), 
+                GenomeStageDimerExt.RecomboP(randy.NextUint(4u)));
+            return new Tuple<GenomeDimer, GenomeDimer>(
+                combies.Item1.ToGenomeDimer(Guid.NewGuid()),
+                combies.Item1.ToGenomeDimer(Guid.NewGuid()));
+        }
+
         public static ISorter ToSorter(this GenomeDimer genomeDimer)
         {
             var stages = genomeDimer.GenomeStageDimers

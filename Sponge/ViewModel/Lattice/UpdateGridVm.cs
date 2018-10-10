@@ -1,9 +1,11 @@
-﻿using System; 
+﻿using System;
 using FS;
 using Sponge.Model;
+using Sponge.Model.Lattice;
+using Sponge.ViewModel.Common;
 using Utils;
 
-namespace Sponge.ViewModel.Common
+namespace Sponge.ViewModel.Lattice
 {
     public class UpdateGridVm
     {

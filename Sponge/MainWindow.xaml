@@ -5,6 +5,8 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Sponge"
         xmlns:common="clr-namespace:Sponge.View.Common"
+        xmlns:lattice="clr-namespace:Sponge.View.Lattice"
+        xmlns:ga="clr-namespace:Sponge.View.Ga"
         mc:Ignorable="d"
         x:Name="ControlRoot"
         Title="MainWindow" Height="1200" Width="1200">
@@ -15,7 +17,8 @@
         </Grid.RowDefinitions>
         <!--<common:UpdateGridControl x:Name="UpdateGridControl" />-->
         <!--<common:UpdateGRControl x:Name="UpdateGRControl"/>-->
-        <common:UpdateGGGControl x:Name="UpdateGGGControl"/>
+        <!--<lattice:UpdateGGGControl x:Name="UpdateGGGControl"/>-->
+        <ga:UpdateGaControl x:Name="UpdateGaControl"/>
 
         <common:CameraControl
             Grid.Row="1"

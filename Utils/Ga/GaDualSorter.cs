@@ -43,6 +43,7 @@ namespace Utils.Ga
                 saveSortResults: saveSortResults);
         }
 
+
         public static GaDualSorter EvolveSorters(this GaDualSorter gaDualSorter,
             Dictionary<Guid, SorterResult> sorterResults,
             IRando randy, 
@@ -65,6 +66,7 @@ namespace Utils.Ga
                 sortablePool: gaDualSorter.SortablePool,
                 randy: randy);
         }
+
 
         public static GaDualSorter EvolveSortersRecomb(this GaDualSorter gaDualSorter,
             Dictionary<Guid, SorterResult> sorterResults,

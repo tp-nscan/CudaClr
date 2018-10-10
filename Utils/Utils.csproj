@@ -71,12 +71,11 @@
     <Compile Include="EnumerableExt.cs" />
     <Compile Include="FloatArrayGen.cs" />
     <Compile Include="FloatFuncs.cs" />
-    <Compile Include="Ga\SortingGa.cs" />
+    <Compile Include="Ga\GaSorting.cs" />
     <Compile Include="Ga\GaDirectSorting.cs" />
     <Compile Include="Ga\Parts\SortingGaDataCore.cs" />
     <Compile Include="Ga\Parts\SortingGaDataGenome.cs" />
     <Compile Include="Ga\GaStageDimer.cs" />
-    <Compile Include="Ga\Parts\SortingGaData.cs" />
     <Compile Include="Ga\Parts\SortingGaPools.cs" />
     <Compile Include="Ga\GaDualSorter.cs" />
     <Compile Include="Ga\GaSorterBits.cs" />

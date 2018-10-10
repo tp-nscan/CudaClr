@@ -4,6 +4,8 @@ using Utils;
 using System.Drawing;
 using System.Drawing.Imaging;
 using Accord.Video.FFMPEG;
+using Sponge.ViewModel.Ga;
+using Sponge.ViewModel.Lattice;
 
 ///     ///     ///     ///     ///     ///     ///     ///     ///     ///     ///     ///     ///     ///     /// 
 /// Install-Package Accord.Video.FFMPEG -Version 3.8.0
@@ -17,7 +19,7 @@ namespace Sponge
         private readonly UpdateGRVm _updateGGVm;
         private readonly UpdateGridVm _updateGridVm;
         private readonly UpdateGGRVm _updateGGRVm;
-
+        private readonly UpdateGaVm _updateGaVm;
 
         public MainWindow()
         {
@@ -43,7 +45,9 @@ namespace Sponge
             //}
             //writer.Close();
 
-            UpdateGGGControl.DataContext = _updateGGRVm = GGR_ThermoIsing_bp.Thermo();
+            // UpdateGGGControl.DataContext = _updateGGRVm = GGR_ThermoIsing_bp.Thermo();
+
+            UpdateGaControl.DataContext = _updateGaVm = UpdateGaVmExt.Direct();
         }
 
     }

@@ -89,8 +89,10 @@ namespace Utils.Genome
 
         public static GenomeDualSorter RecombineI(this GenomeDualSorter genomeDualSorter, IRando randy)
         {
-            var recombines = randy.Recombo(genomeDualSorter.ChromosomeA.ToList(), 
-                                          genomeDualSorter.ChromosomeB.ToList());
+            var kk = randy.NextUint(genomeDualSorter.StageCount);
+
+            var recombines = genomeDualSorter.ChromosomeA.ToList().Recombo(
+                genomeDualSorter.ChromosomeB.ToList(), kk);
 
             return new GenomeDualSorter(
                 id: Guid.NewGuid(), 
@@ -104,13 +106,10 @@ namespace Utils.Genome
             GenomeDualSorter genomeDualSorterB,
             IRando randy)
         {
-            var recombin1 = randy.Recombo(
-                genomeDualSorterA.ChromosomeA.ToList(),
-                genomeDualSorterB.ChromosomeA.ToList());
-
-            var recombin2 = randy.Recombo(
-                genomeDualSorterA.ChromosomeB.ToList(),
-                genomeDualSorterB.ChromosomeB.ToList());
+            var cA = genomeDualSorterA.ChromosomeA.ToList();
+            var cB = genomeDualSorterA.ChromosomeB.ToList();
+            var recombin1 = cA.Recombo(cB, randy.NextUint((uint)cA.Count()));
+            var recombin2 = cB.Recombo(cA, randy.NextUint((uint)cA.Count()));
 
             if (randy.NextBool(0.5))
             {

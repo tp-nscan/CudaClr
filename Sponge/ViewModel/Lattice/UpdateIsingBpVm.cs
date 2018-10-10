@@ -1,13 +1,13 @@
 ﻿using System;
-using System.Linq;
-using Sponge.Model;
-using FS;
-using Sponge.Common;
 using System.Collections.Generic;
 using System.Windows.Media;
+using FS;
+using Sponge.Common;
+using Sponge.Model.Lattice;
+using Sponge.ViewModel.Common;
 using Utils;
 
-namespace Sponge.ViewModel.Common
+namespace Sponge.ViewModel.Lattice
 {
     public class UpdateIsingBpVm : BindableBase
     {

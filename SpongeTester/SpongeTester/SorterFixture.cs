@@ -87,18 +87,17 @@ namespace SpongeTester
 
 
         [TestMethod]
-        public void TestSorterDistr2()
+        public void TestRecombo()
         {
             var seed = 1223;
-            const int order = 5;
-            const int stageCount = 2;
-            const int sorterCount = 100000;
-
+            const uint order = 24;
+            const uint stageCount = 5;
             var randy = Rando.Standard(seed);
-            var p1 = randy.ToRandomSorterPool(order, stageCount, sorterCount);
+            var sorterA = randy.ToSorter(order, stageCount);
+            var sorterB = randy.ToSorter(order, stageCount);
 
-            var distr = p1.ToSorterDistr();
 
         }
+
     }
 }

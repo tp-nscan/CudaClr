@@ -85,14 +85,23 @@
     <Reference Include="Accord.Video.FFMPEG, Version=3.8.0.0, Culture=neutral, PublicKeyToken=fa1a88e29555ccf7, processorArchitecture=x86">
       <HintPath>..\packages\Accord.Video.FFMPEG.3.8.0\lib\net46\Accord.Video.FFMPEG.dll</HintPath>
     </Reference>
-    <Reference Include="FSharp.Core, Version=4.4.3.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\packages\FSharp.Core.4.3.4\lib\net45\FSharp.Core.dll</HintPath>
+    <Reference Include="FSharp.Core, Version=4.5.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\FSharp.Core.4.5.2\lib\net45\FSharp.Core.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
-    <Reference Include="System.Reactive, Version=4.0.0.0, Culture=neutral, PublicKeyToken=94bc3704cddfc263, processorArchitecture=MSIL">
-      <HintPath>..\packages\System.Reactive.4.0.0\lib\net46\System.Reactive.dll</HintPath>
+    <Reference Include="System.Reactive, Version=4.1.0.0, Culture=neutral, PublicKeyToken=94bc3704cddfc263, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Reactive.4.1.1\lib\net46\System.Reactive.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Runtime.CompilerServices.Unsafe, Version=4.0.4.1, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Runtime.CompilerServices.Unsafe.4.5.2\lib\netstandard2.0\System.Runtime.CompilerServices.Unsafe.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Threading.Tasks.Extensions, Version=4.2.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Threading.Tasks.Extensions.4.5.1\lib\netstandard2.0\System.Threading.Tasks.Extensions.dll</HintPath>
+    </Reference>
+    <Reference Include="System.ValueTuple, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.ValueTuple.4.5.0\lib\net461\System.ValueTuple.dll</HintPath>
     </Reference>
     <Reference Include="System.Windows" />
     <Reference Include="System.Windows.Forms" />
@@ -120,13 +129,15 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="Model\BlockPick.cs" />
-    <Compile Include="Model\Gol2.cs" />
-    <Compile Include="Model\IsingIntBits.cs" />
-    <Compile Include="Model\SK_Ising2d.cs" />
-    <Compile Include="Model\Themal_dg.cs" />
-    <Compile Include="Model\ThermalIsing_bp.cs" />
-    <Compile Include="Model\Thermal_bp.cs" />
+    <Compile Include="Model\Ga\GaProc.cs" />
+    <Compile Include="Model\Ga\GaProcData.cs" />
+    <Compile Include="Model\Lattice\BlockPick.cs" />
+    <Compile Include="Model\Lattice\Gol2.cs" />
+    <Compile Include="Model\Lattice\IsingIntBits.cs" />
+    <Compile Include="Model\Lattice\SK_Ising2d.cs" />
+    <Compile Include="Model\Lattice\Themal_dg.cs" />
+    <Compile Include="Model\Lattice\ThermalIsing_bp.cs" />
+    <Compile Include="Model\Lattice\Thermal_bp.cs" />
     <Compile Include="ViewModel\Common\CameraVm.cs" />
     <Compile Include="ViewModel\Common\ColorSequenceVm.cs" />
     <Compile Include="ViewModel\Common\GraphLatticeVm.cs" />
@@ -136,12 +147,13 @@
     <Compile Include="ViewModel\Common\LegendVmCont.cs" />
     <Compile Include="ViewModel\Common\LegendVmClock.cs" />
     <Compile Include="ViewModel\Common\TileVm.cs" />
-    <Compile Include="ViewModel\Common\UpdateDualIsingVm.cs" />
-    <Compile Include="ViewModel\Common\UpdateGGRVm.cs" />
-    <Compile Include="ViewModel\Common\UpdateGridVm.cs" />
-    <Compile Include="ViewModel\Common\UpdateGRVm.cs" />
-    <Compile Include="ViewModel\Common\UpdateIsingBpVm.cs" />
-    <Compile Include="ViewModel\Common\UpdateIsingDualTempVm.cs" />
+    <Compile Include="ViewModel\Ga\UpdateGaVm.cs" />
+    <Compile Include="ViewModel\Lattice\UpdateDualIsingVm.cs" />
+    <Compile Include="ViewModel\Lattice\UpdateGGRVm.cs" />
+    <Compile Include="ViewModel\Lattice\UpdateGridVm.cs" />
+    <Compile Include="ViewModel\Lattice\UpdateGRVm.cs" />
+    <Compile Include="ViewModel\Lattice\UpdateIsingBpVm.cs" />
+    <Compile Include="ViewModel\Lattice\UpdateIsingDualTempVm.cs" />
     <Compile Include="ViewModel\Common\UpdateVm.cs" />
     <Compile Include="ViewModel\Design\Common\GraphLatticeVmD.cs" />
     <Compile Include="ViewModel\Design\Common\GraphTilesVmD.cs" />
@@ -170,13 +182,16 @@
     <Compile Include="View\Common\LegendControl.xaml.cs">
       <DependentUpon>LegendControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="View\Common\UpdateGGGControl.xaml.cs">
+    <Compile Include="View\Ga\UpdateGaControl.xaml.cs">
+      <DependentUpon>UpdateGaControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\Lattice\UpdateGGGControl.xaml.cs">
       <DependentUpon>UpdateGGGControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="View\Common\UpdateGRControl.xaml.cs">
+    <Compile Include="View\Lattice\UpdateGRControl.xaml.cs">
       <DependentUpon>UpdateGRControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="View\Common\UpdateGridControl.xaml.cs">
+    <Compile Include="View\Lattice\UpdateGridControl.xaml.cs">
       <DependentUpon>UpdateGridControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\Common\TilesControl.xaml.cs">
@@ -243,15 +258,19 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="View\Common\UpdateGGGControl.xaml">
+    <Page Include="View\Ga\UpdateGaControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="View\Common\UpdateGRControl.xaml">
+    <Page Include="View\Lattice\UpdateGGGControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="View\Common\UpdateGridControl.xaml">
+    <Page Include="View\Lattice\UpdateGRControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\Lattice\UpdateGridControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

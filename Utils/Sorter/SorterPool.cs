@@ -37,19 +37,32 @@ namespace Utils.Sorter
     public static class SorterPoolExt
     {
         public static SorterPool ToRandomSorterPool(this IRando rando, uint order, 
-                                                  uint stageCount, uint sorterCount)
+                                                    uint stageCount, uint sorterCount)
         {
-            return new SorterPool(
-                Guid.NewGuid(),
-                0u.CountUp(sorterCount)
-                          .Select(i=>rando.ToSorter(order, stageCount))
-                );
+            return 0u.CountUp(sorterCount)
+                     .Select(i=>rando.ToSorter(order, stageCount)).ToSorterPool();
         }
+
+
+        public static SorterPool ToSorterPool(this IEnumerable<ISorter> sorters)
+        {
+            return new SorterPool(Guid.NewGuid(), sorters);
+        }
+
+
+        public static SorterPool ToRecombo(this SorterPool sorterPool, IRando rando)
+        { 
+            return sorterPool.Sorters.Values.ToRandomPairs(rando)
+                .SelectMany(rp => rando.Recombine(rp.Item1, rp.Item2).Split())
+                .ToSorterPool();
+        }
+
 
         public static Dictionary<ISorter, int> MakeSorterDictionary()
         {
             return new Dictionary<ISorter, int>(new SorterEqualityComparer());
         }
+
 
         public static Dictionary<ISorter, int> ToSorterDistr(this SorterPool sorterPool)
         {
@@ -69,5 +82,7 @@ namespace Utils.Sorter
 
             return sd;
         }
+
+
     }
 }

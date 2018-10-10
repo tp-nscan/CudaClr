@@ -1,15 +1,16 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace Utils
 {
     public class ProcResult
     {
-        public ProcResult(Dictionary<string, object> data, string err, 
-            int steps, double time)
+        public ProcResult(Dictionary<string, object> data, string err = "", 
+            int stepsCompleted = 0, double time = 0.0)
         {
             Data = data;
             ErrorMsg = err;
-            StepsCompleted = steps;
+            StepsCompleted = stepsCompleted;
             TimeInMs = time;
         }
 

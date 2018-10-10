@@ -1,14 +1,14 @@
 ﻿using System;
-using System.Linq;
 using System.Reactive.Subjects;
-using Sponge.Model;
+using System.Windows.Media;
 using FS;
 using Sponge.Common;
-using System.Collections.Generic;
-using System.Windows.Media;
+using Sponge.Model;
+using Sponge.Model.Lattice;
+using Sponge.ViewModel.Common;
 using Utils;
 
-namespace Sponge.ViewModel.Common
+namespace Sponge.ViewModel.Lattice
 {
     public class UpdateGRVm : BindableBase
     {
@@ -398,8 +398,8 @@ namespace Sponge.ViewModel.Common
         {
             var initTemps = SimGridFloatSamples.HiLow(GridSpan, 0.99f, 0.01f);
             var initFlips = SimGridIntSamples.SquareRandBits(GridSpan, 5213);
-            var ggRet = new UpdateGRVm(GridSpan, GridSpan, BetaBoundsW, EnergyBoundsW, BetaDelta, ProcIsingIntBitsEnergy,
-                update_params: UpdateParams);
+            var ggRet = new UpdateGRVm(GridSpan, GridSpan, BetaBoundsW, EnergyBoundsW, BetaDelta, 
+                ProcIsingIntBitsEnergy, update_params: UpdateParams);
 
             ggRet.GraphLatticeVm.SetUpdater(GraphLatticeVmEx.DrawGridCell_int_BW_mod256, initFlips);
            // ggRet.GraphLatticeVm.SetUpdater(GraphLatticeVmEx.DrawGridCell_float_BW_mod256, initTemps);

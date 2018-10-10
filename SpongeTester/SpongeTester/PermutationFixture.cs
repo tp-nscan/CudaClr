@@ -176,17 +176,5 @@ namespace SpongeTester
 
         }
 
-        [TestMethod]
-        public void TestRecombine()
-        {
-            const int order = 24;
-            var randy = Rando.Standard(1444);
-            var lhs = Enumerable.Range(0, order).ToList();
-            var rhs = Enumerable.Range(order, order).ToList();
-
-            var src = randy.Recombo(lhs, rhs);
-
-        }
-
     }
 }

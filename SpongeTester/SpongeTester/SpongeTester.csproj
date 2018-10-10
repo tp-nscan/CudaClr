@@ -65,6 +65,7 @@
     <Compile Include="RollingListFixture.cs" />
     <Compile Include="GenomeStageDimerFixture.cs" />
     <Compile Include="GaDimerFixture.cs" />
+    <Compile Include="SorterPoolFixture.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

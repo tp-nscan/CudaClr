@@ -1,13 +1,13 @@
-﻿using CuArrayClr;
-using GridProcsClr;
-using RandoClr;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using CuArrayClr;
+using GridProcsClr;
+using RandoClr;
 using Utils;
 
-namespace Sponge.Model
+namespace Sponge.Model.Lattice
 {
     public class IsingIntBits
     {
@@ -80,7 +80,7 @@ namespace Sponge.Model
             dRet["Energy"] = tot;
             return new ProcResult(data: dRet,
                                   err: strRet,
-                                  steps: 0,
+                                  stepsCompleted: 0,
                                   time: _stopwatch.ElapsedMilliseconds);
         }
 
@@ -166,7 +166,7 @@ namespace Sponge.Model
             dRet["Energy"] = energyTot;
             return new ProcResult(data: dRet,
                                    err: strRet,
-                                   steps: steps,
+                                   stepsCompleted: steps,
                                    time: _stopwatch.ElapsedMilliseconds);
         }
 

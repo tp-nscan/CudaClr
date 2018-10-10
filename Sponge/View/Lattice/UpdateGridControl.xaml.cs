@@ -1,4 +1,4 @@
-﻿namespace Sponge.View.Common
+﻿namespace Sponge.View.Lattice
 {
 
     public partial class UpdateGridControl

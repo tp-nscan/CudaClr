@@ -1,13 +1,13 @@
 ﻿using System;
-using System.Linq;
-using RandoClr;
-using System.Diagnostics;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
 using CuArrayClr;
 using GridProcsClr;
+using RandoClr;
 using Utils;
 
-namespace Sponge.Model
+namespace Sponge.Model.Lattice
 {
     public static class BlockPick
     {
@@ -104,7 +104,7 @@ namespace Sponge.Model
  
             return new ProcResult(data: dRet,
                                    err: strRet,
-                                   steps: steps,
+                                   stepsCompleted: steps,
                                    time: _stopwatch.ElapsedMilliseconds);
         }
 
@@ -181,7 +181,7 @@ namespace Sponge.Model
 
             return new ProcResult(data: dRet,
                                    err: strRet,
-                                   steps: steps,
+                                   stepsCompleted: steps,
                                    time: _stopwatch.ElapsedMilliseconds);
         }
 

@@ -13,18 +13,18 @@ namespace SpongeTester
     public class GaDirectSortingFixture
     {
         [TestMethod]
-        public void TestToRandomSortingGaData()
+        public void TestRecomboSortingGaData()
         {
             const int seed = 23196;
-            const uint order = 48;
-            const int stageCount = 18;
-            const int sorterCount = 256;
-            const int sortableCount = 64;
-            const double sorterWinRate = 0.05;
+            const uint order = 256;
+            const int stageCount = 20;
+            const int sorterCount = 128;
+            const int sortableCount = 128;
+            const double sorterWinRate = 0.25;
             const double sortableWinRate = 0.25;
             const StageReplacementMode stageReplacementMode = StageReplacementMode.RandomRewire;
             const int batchSize = 10;
-            const int batchRounds = 40;
+            const int batchRounds = 10;
 
             var randy = Rando.Standard(seed);
 
@@ -38,15 +38,26 @@ namespace SpongeTester
                 stageReplacementMode:stageReplacementMode
             );
 
+            var dsg2 = randy.ToRandomDirectSortingGaData(
+                order: order,
+                sorterCount: sorterCount,
+                sortableCount: sortableCount,
+                stageCount: stageCount,
+                sorterWinRate: sorterWinRate,
+                sortableWinRate: sortableWinRate,
+                stageReplacementMode: stageReplacementMode
+            );
+
             Stopwatch sw = new Stopwatch();
             sw.Start();
 
             for (var j = 0; j < batchRounds; j++)
             {
-                for (var i = 0; i < batchSize * 2; i++)
+                for (var i = 0; i < batchSize; i++)
                 {
                     dsg = dsg.EvolveBothDirect(randy);
-                    Console.WriteLine(dsg.Report());
+                    //dsg2 = dsg2.EvolveBothAndRecombineDirect(randy);
+                    Console.WriteLine($"{dsg.Report()}"); // { dsg2.Report()}");
                 }
 
             }
@@ -70,7 +81,7 @@ namespace SpongeTester
             const int rounds = 200;
             const uint rollingListCap = 10;
 
-            var randy = Utils.Rando.Standard(seed);
+            var randy = Rando.Standard(seed);
 
             var dsgOld = randy.ToRandomDirectSortingGaData(
                 order: order,
@@ -82,7 +93,7 @@ namespace SpongeTester
                 stageReplacementMode: stageReplacementMode
             );
 
-            var rlSgd = new RollingList<SortingGaData>(rollingListCap);
+            var rlSgd = new RollingList<GaSortingData>(rollingListCap);
 
             for (var i = 0; i < rollingListCap; i++)
             {

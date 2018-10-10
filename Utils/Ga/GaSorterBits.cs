@@ -82,7 +82,7 @@ namespace Utils.Ga
 
         //    var bestPairs = bestGenomes.ToRandomPairs(randy);
 
-        //    var recombies = bestPairs.SelectMany(p => p.Item1.Recombine(p.Item2, randy).Split());
+        //    var recombies = bestPairs.SelectMany(p => p.Item1.RecombineCoarse(p.Item2, randy).Split());
 
         //    var newGenomes = recombies.SelectMany(g =>
         //        Enumerable.Range(0, selectionFactor).Select(i => g.Mutate(randy)));

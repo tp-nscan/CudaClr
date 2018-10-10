@@ -1,9 +1,8 @@
 ﻿using System;
 using CuArrayClr;
 using GridProcsClr;
-using RandoClr;
 
-namespace Sponge.Model
+namespace Sponge.Model.Lattice
 {
     public class Gol2
     {

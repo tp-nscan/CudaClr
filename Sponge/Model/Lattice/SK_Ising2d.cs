@@ -5,7 +5,7 @@ using GridProcsClr;
 using RandoClr;
 using Utils;
 
-namespace Sponge.Model
+namespace Sponge.Model.Lattice
 {
     public class SK_Ising2d
     {
@@ -84,7 +84,7 @@ namespace Sponge.Model
             //                                data: res);
             return new ProcResult(data: dRet,
                                    err: strRet,
-                                   steps: steps,
+                                   stepsCompleted: steps,
                                    time: 0);
         }
 

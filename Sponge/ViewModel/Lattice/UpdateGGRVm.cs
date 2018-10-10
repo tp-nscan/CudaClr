@@ -1,14 +1,13 @@
 ﻿using System;
-using System.Linq;
 using System.Reactive.Subjects;
-using Sponge.Model;
 using FS;
 using Sponge.Common;
-using System.Collections.Generic;
-using System.Windows.Media;
+using Sponge.Model;
+using Sponge.Model.Lattice;
+using Sponge.ViewModel.Common;
 using Utils;
 
-namespace Sponge.ViewModel.Common
+namespace Sponge.ViewModel.Lattice
 {
     public class UpdateGGRVm : BindableBase
     {

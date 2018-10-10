@@ -193,5 +193,16 @@ namespace Utils.Sorter
             }
         }
 
+        public static Tuple<ISorter, ISorter> Recombine(this IRando randy, ISorter sorterA, ISorter sorterB)
+        {
+            var aList = sorterA.SorterStages.ToList();
+            var bList = sorterB.SorterStages.ToList();
+
+            var combies = aList.Recombo(bList, crossPt:randy.NextUint(sorterA.StageCount));
+            return new Tuple<ISorter, ISorter>(
+                combies.Item1.ToSorter(Guid.NewGuid(), Guid.Empty),
+                combies.Item1.ToSorter(Guid.NewGuid(), Guid.Empty));
+        }
+
     }
 }

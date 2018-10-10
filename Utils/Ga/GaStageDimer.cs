@@ -11,7 +11,7 @@ namespace Utils.Ga
 {
     public static class GaStageDimerExt
     {
-        public static SortingGaData ToRandomStageDimerGaData(
+        public static GaSortingData ToRandomStageDimerGaData(
             this IRando randy, uint order,
             uint sorterCount, uint sortableCount, uint stageCount,
             double sorterWinRate, double sortableWinRate)
@@ -26,20 +26,67 @@ namespace Utils.Ga
             d.SetSortablePool(randomSortablePool);
             d.SetDimerGenomePool(dimerGenomePool);
 
-            return new SortingGaData(SorterGaResultType.Normal, d);
+            return new GaSortingData(d);
         }
 
-        public static SortingGaData EvolveStageDimerSorters(this SortingGaData sortingGaData,
+        public static GaSortingData EvolveStageDimerSorters(this GaSortingData sortingGaData,
             IRando randy)
         {
-            return sortingGaData.MakeSortersFromDimerGenomes()
+            return sortingGaData
+                    .MakeSortersFromStageDimerGenomes()
+                    .Eval()
+                    .SelectWinningSorters()
+                    .SelectSorterDimerGenomes()
+                    .EvolveSorterDimerGenomes(randy);
+        }
+
+
+        public static GaSortingData EvolveStageDimerSortersAndSortables(this GaSortingData sortingGaData,
+            IRando randy)
+        {
+            return sortingGaData
+                    .MakeSortersFromStageDimerGenomes()
+                    .Eval()
+                    .SelectWinningSorters()
+                    .SelectWinningSortables()
+                    .SelectSorterDimerGenomes()
+                    .SelectWinningSortables()
+                    .EvolveSortablesDirect(randy)
+                    .EvolveSorterDimerGenomes(randy);
+        }
+
+
+        public static GaSortingData EvolveRecombineCoarseStageDimerSortersAndSortables(this GaSortingData sortingGaData,
+            IRando randy)
+        {
+            return sortingGaData
+                    .MakeSortersFromStageDimerGenomes()
+                    .Eval()
+                    .SelectWinningSorters()
+                    .SelectWinningSortables()
+                    .SelectSorterDimerGenomes()
+                    .RecombineCoarseSelectedSorterDimerGenomes(randy)
+                    .SelectWinningSortables()
+                    .EvolveSortablesDirect(randy)
+                    .EvolveSorterDimerGenomes(randy);
+        }
+
+        public static GaSortingData EvolveRecombineFineStageDimerSortersAndSortables(this GaSortingData sortingGaData,
+            IRando randy)
+        {
+            return sortingGaData
+                .MakeSortersFromStageDimerGenomes()
                 .Eval()
                 .SelectWinningSorters()
+                .SelectWinningSortables()
                 .SelectSorterDimerGenomes()
+                .RecombineFineSelectedSorterDimerGenomes(randy)
+                .SelectWinningSortables()
+                .EvolveSortablesDirect(randy)
                 .EvolveSorterDimerGenomes(randy);
         }
 
-        public static SortingGaData MakeSortersFromDimerGenomes(this SortingGaData sortingGaData)
+        public static GaSortingData MakeSortersFromStageDimerGenomes(this GaSortingData sortingGaData)
         {
             var data = sortingGaData.Data.Copy();
 
@@ -47,13 +94,10 @@ namespace Utils.Ga
             var sorters = dimerGenomePool.SorterGenomes.Select(g=>g.Value.ToSorter());
 
             data.SetSorterPool(new SorterPool(Guid.NewGuid(), sorters));
-            return new SortingGaData(
-                sorterGaResultType: SorterGaResultType.Normal,
-                data: data
-            );
+            return new GaSortingData(data: data);
         }
 
-        public static SortingGaData SelectSorterDimerGenomes(this SortingGaData sortingGaData)
+        public static GaSortingData SelectSorterDimerGenomes(this GaSortingData sortingGaData)
         {
             var data = sortingGaData.Data.Copy();
 
@@ -65,13 +109,28 @@ namespace Utils.Ga
                 .ToGenomePoolStageDimer(Guid.NewGuid());
 
             data.SetBestDimerGenomePool(bestDimerGenomePool);
-            return new SortingGaData(
-                sorterGaResultType: SorterGaResultType.Normal,
-                data: data
-            );
+            return new GaSortingData(data: data);
         }
 
-        public static SortingGaData EvolveSorterDimerGenomes(this SortingGaData sortingGaData, IRando rando)
+        public static GaSortingData RecombineCoarseSelectedSorterDimerGenomes(this GaSortingData sortingGaData, IRando randy)
+        {
+            var data = sortingGaData.Data.Copy();
+
+            var bestDimerGenomePool = data.GetBestDimerGenomePool();
+            data.SetBestDimerGenomePool(bestDimerGenomePool.ToRecombCoarse(randy));
+            return new GaSortingData(data: data);
+        }
+
+        public static GaSortingData RecombineFineSelectedSorterDimerGenomes(this GaSortingData sortingGaData, IRando randy)
+        {
+            var data = sortingGaData.Data.Copy();
+
+            var bestDimerGenomePool = data.GetBestDimerGenomePool();
+            data.SetBestDimerGenomePool(bestDimerGenomePool.ToRecombFine(randy));
+            return new GaSortingData(data: data);
+        }
+
+        public static GaSortingData EvolveSorterDimerGenomes(this GaSortingData sortingGaData, IRando rando)
         {
             var data = sortingGaData.Data.Copy();
 
@@ -89,10 +148,7 @@ namespace Utils.Ga
                 .ToGenomePoolStageDimer(Guid.NewGuid());
 
             data.SetDimerGenomePool(newDimerGenomePool);
-            return new SortingGaData(
-                sorterGaResultType: SorterGaResultType.Normal,
-                data: data
-            );
+            return new GaSortingData(data: data);
         }
     }
 }

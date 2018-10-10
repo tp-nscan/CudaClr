@@ -1,14 +1,14 @@
 ﻿using System;
-using System.Linq;
+using System.Collections.Generic;
 using System.Reactive.Subjects;
-using Sponge.Model;
+using System.Windows.Media;
 using FS;
 using Sponge.Common;
-using System.Collections.Generic;
-using System.Windows.Media;
+using Sponge.Model.Lattice;
+using Sponge.ViewModel.Common;
 using Utils;
 
-namespace Sponge.ViewModel.Common
+namespace Sponge.ViewModel.Lattice
 {
     public class UpdateIsingDualTempVm : BindableBase
     {
@@ -43,7 +43,6 @@ namespace Sponge.ViewModel.Common
             BetaHigh = 2.08f;
 
             BetaDelta = 0.00001f;
-
 
             UpdateVm.OnUpdateUI.Subscribe(p => KeepUpdating(p));
             IsingIntBits.Init(data.Data, data.Width);

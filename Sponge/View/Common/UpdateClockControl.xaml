@@ -27,7 +27,7 @@
         <StackPanel Grid.Row="2">
             <common:UpdateControl DataContext="{Binding UpdateVm}"/>
 
-            <TextBlock Margin="0,5,0,0">Beta</TextBlock>
+            <TextBlock Margin="0,5,0,0">SorterWinRate</TextBlock>
             <Viewbox Stretch="Uniform" Height="22">
                 <TextBox Text="{Binding Beta, StringFormat=N5}" FontSize="16" FontWeight="Bold" Height="22"/>
             </Viewbox>

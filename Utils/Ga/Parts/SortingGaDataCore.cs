@@ -7,13 +7,6 @@ namespace Utils.Ga.Parts
 
     public static class SortingGaDataCore
     {
-        public static SortingGaData Copy(SortingGaData sortingGaData)
-        {
-            return new SortingGaData(
-                sorterGaResultType: sortingGaData.SorterGaResultType,
-                data: sortingGaData.Data);
-        }
-
 
         #region SorterWinRate
 

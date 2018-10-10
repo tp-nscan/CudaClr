@@ -34,8 +34,8 @@ namespace Utils.Genome
 
     public static class GenomePoolExt
     {
-        public static GenomePool<GenomeDualSorter> ToGenomePoolDualSorter(this IRando rando, uint order,
-            uint stageCount, uint poolCount)
+        public static GenomePool<GenomeDualSorter> ToGenomePoolDualSorter(
+            this IRando rando, uint order, uint stageCount, uint poolCount)
         {
             return new GenomePool<GenomeDualSorter>(Guid.NewGuid(),
                 0u.CountUp(poolCount).Select(i =>
@@ -78,6 +78,22 @@ namespace Utils.Genome
             this IEnumerable<GenomeDimer> genomeDimers, Guid id)
         {
             return new GenomePool<GenomeDimer>(id, genomeDimers);
+        }
+
+        public static GenomePool<GenomeDimer> ToRecombCoarse(
+            this IEnumerable<GenomeDimer> genomeDimers, IRando rando)
+        {
+            return genomeDimers.ToRandomPairs(rando)
+                    .SelectMany(rp => rando.RecombineCoarse(rp.Item1, rp.Item2).Split())
+                    .ToGenomePoolStageDimer(Guid.NewGuid());
+        }
+
+        public static GenomePool<GenomeDimer> ToRecombFine(
+            this IEnumerable<GenomeDimer> genomeDimers, IRando rando)
+        {
+            return genomeDimers.ToRandomPairs(rando)
+                .SelectMany(rp => rando.RecombineFine(rp.Item1, rp.Item2).Split())
+                .ToGenomePoolStageDimer(Guid.NewGuid());
         }
     }
 }

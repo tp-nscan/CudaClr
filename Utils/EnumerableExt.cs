@@ -70,14 +70,28 @@ namespace Utils
             }
         }
 
-        public static Tuple<List<T>, List<T>> Recombo<T>(this IRando randy, List<T> lhs, List<T> rhs)
+        public static Tuple<List<T>, List<T>> Recombo<T>(this List<T> lhs, List<T> rhs, uint crossPt)
         {
-            var bp = randy.NextInt(lhs.Count);
-            var rem = lhs.Count - bp;
+            var rem = lhs.Count - crossPt;
             return new Tuple<List<T>, List<T>>(
-                    item1: lhs.Take(bp).Concat(rhs.Skip(bp).Take(rem)).ToList(),
-                    item2: rhs.Take(bp).Concat(lhs.Skip(bp).Take(rem)).ToList()
-                );
+                item1: lhs.Take((int)crossPt).Concat(rhs.Skip((int)crossPt).Take((int)rem)).ToList(),
+                item2: rhs.Take((int)crossPt).Concat(lhs.Skip((int)crossPt).Take((int)rem)).ToList()
+            );
+        }
+
+        public static Tuple<List<T>, List<T>> RecomboL2<T>(this List<T> lhs, List<T> rhs, uint crossPt, 
+                                Func<T,T,Tuple<T,T>> crossPtFunc)
+        {
+            var cvtp = crossPtFunc(lhs[(int)crossPt], rhs[(int)crossPt]);
+            var rem = lhs.Count - crossPt - 1;
+            return new Tuple<List<T>, List<T>>(
+                item1: lhs.Take((int)crossPt)
+                          .Concat(cvtp.Item1.AsEnumerable())
+                          .Concat(rhs.Skip((int)crossPt + 1).Take((int)rem)).ToList(),
+                item2: rhs.Take((int)crossPt)
+                          .Concat(cvtp.Item2.AsEnumerable())
+                          .Concat(lhs.Skip((int)crossPt + 1).Take((int)rem)).ToList()
+            );
         }
 
         public static IEnumerable<T> Split<T>(this Tuple<T, T> pair)
