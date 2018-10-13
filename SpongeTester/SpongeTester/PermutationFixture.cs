@@ -21,7 +21,7 @@ namespace SpongeTester
 
         [TestMethod]
         public void TestFromLowerTriangularIndex()
-        {https://www.youtube.com/watch?v=YdYN3nCjiU0
+        {
             var r1 = EnumerableExt.FromLowerTriangularIndex(2);
             var r2 = EnumerableExt.FromLowerTriangularIndex(5);
             var r3 = EnumerableExt.FromLowerTriangularIndex(8);
@@ -79,7 +79,7 @@ namespace SpongeTester
             for (var i = 0; i < 1000; i++)
             {
                 var twoCycle = randy.ToFullTwoCyclePermutation(order);
-                var conjugate = twoCycle.Conjugate(randy);
+                var conjugate = twoCycle.ConjugateByRandomPermutation(randy);
                 var p2 = conjugate.Multiply(conjugate);
                 Assert.IsTrue(p2.IsEqualTo(PermutationEx.Identity(order)));
             }
@@ -97,6 +97,21 @@ namespace SpongeTester
                 Assert.IsTrue(twoCycleSq.IsEqualTo(PermutationEx.Identity(order)));
             }
         }
+
+
+        [TestMethod]
+        public void TestConjugateByRandomSingleTwoCycle()
+        {
+            const int order = 24;
+            var randy = Rando.Standard(5123);
+            var perm = randy.ToPermutation(order);
+
+            for (var i = 0; i < 1000; i++)
+            {
+                perm = perm.ConjugateByRandomSingleTwoCycle(randy);
+            }
+        }
+
 
         [TestMethod]
         public void TestHc()
@@ -128,18 +143,18 @@ namespace SpongeTester
 
 
         [TestMethod]
-        public void TestOrbs()
+        public void TestPermutationOrbs()
         {
-            const int order = 16;
-            const int trials = 500000;
+            const int order = 128;
+            const int trials = 50;
             List<int> res = new List<int>();
 
-            var randy = Rando.Standard(374);
+            var randy = Rando.Standard(3754);
 
             for (var i = 0; i < trials; i++)
             {
                 var perm = randy.ToPermutation(order);
-                res.Add(perm.OrbitLengthFor(1000000));
+                res.Add(perm.OrbitLengthFor(10000));
             }
 
             var grouped = res.GroupBy(i => i);
@@ -149,6 +164,32 @@ namespace SpongeTester
                 Console.WriteLine($"{g.Key} {g.Count()}");
             }
         }
+
+        [TestMethod]
+        public void TestTwoCycleConjPermutationOrbs()
+        {
+            const int order = 128;
+            const int trials = 50;
+            List<int> res = new List<int>();
+
+            var randy = Rando.Standard(7374);
+            var fullTwoCyclePermutation = randy.ToFullTwoCyclePermutation(order);
+
+            for (var i = 0; i < trials; i++)
+            {
+                var perm = randy.ToPermutation(order);
+
+                res.Add(fullTwoCyclePermutation.ConjOrbitLengthFor(perm, 10000));
+            }
+
+            var grouped = res.GroupBy(i => i);
+
+            foreach (var g in grouped.OrderBy(gg => gg.Key))
+            {
+                Console.WriteLine($"{g.Key} {g.Count()}");
+            }
+        }
+
 
 
         [TestMethod]
@@ -162,7 +203,7 @@ namespace SpongeTester
             for (var i = 0; i < trials; i++)
             {
                 var perm = randy.ToPermutation(order);
-                Console.WriteLine($"{perm.OrbitLengthFor()} {perm.Sortedness()}");
+                Console.WriteLine($"{perm.OrbitLengthFor()} {perm.SortednessSq()}");
             }
         }
 

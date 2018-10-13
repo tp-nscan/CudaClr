@@ -27,7 +27,7 @@ namespace SpongeTester
             const int seed = 75319;
             var randy = Rando.Standard(seed);
 
-            var dga1 = randy.ToRandomDirectSortingGaData(
+            var dga1 = randy.ToDirectGaSortingData(
                 order: order,
                 sorterCount: sorterCount,
                 sortableCount: sortableCount,
@@ -37,7 +37,7 @@ namespace SpongeTester
                 stageReplacementMode:stageReplacementMode
             );
 
-            var dga2 = randy.ToRandomDirectSortingGaData(
+            var dga2 = randy.ToDirectGaSortingData(
                 order: order,
                 sorterCount: sorterCount,
                 sortableCount: sortableCount,
@@ -46,7 +46,8 @@ namespace SpongeTester
                 sortableWinRate: sortableWinRate,
                 stageReplacementMode: stageReplacementMode
             );
-            var dga3 = randy.ToRandomDirectSortingGaData(
+
+            var dga3 = randy.ToDirectGaSortingData(
                 order: order,
                 sorterCount: sorterCount,
                 sortableCount: sortableCount,
@@ -55,7 +56,8 @@ namespace SpongeTester
                 sortableWinRate: sortableWinRate,
                 stageReplacementMode: stageReplacementMode
             );
-            var dga4 = randy.ToRandomDirectSortingGaData(
+
+            var dga4 = randy.ToDirectGaSortingData(
                 order: order,
                 sorterCount: sorterCount,
                 sortableCount: sortableCount,
@@ -110,14 +112,13 @@ namespace SpongeTester
             {
                 for (var i = 0; i < batchSize * 2; i++)
                 {
-                    dga1 = dga1.EvolveBothAndRecombineDirect(randy);
-                    dga2 = dga2.EvolveBothAndRecombineDirect(randy);
-                    dga3 = dga3.EvolveBothAndRecombineDirect(randy);
-                    dga4 = dga4.EvolveBothAndRecombineDirect(randy);
+                    dga1 = dga1.EvolveSortersConjSortablesReplace(randy);
+                    dga2 = dga2.EvolveSortersConjSortablesReplace(randy);
+                    dga3 = dga3.EvolveSortersConjSortablesReplace(randy);
+                    dga4 = dga4.EvolveSortersConjSortablesReplace(randy);
 
-
-                    sdgca1 = sdgca1.EvolveRecombineCoarseStageDimerSortersAndSortables(randy);
-                    sdgca2 = sdgca2.EvolveRecombineCoarseStageDimerSortersAndSortables(randy);
+                    sdgca1 = sdgca1.EvolveSorterStageDimerConjRecomb_SortableConj(randy);
+                    sdgca2 = sdgca2.EvolveSorterStageDimerConjRecomb_SortableConj(randy);
                     sdgca3 = sdgca3.EvolveRecombineFineStageDimerSortersAndSortables(randy);
                     sdgca4 = sdgca4.EvolveRecombineFineStageDimerSortersAndSortables(randy);
 
@@ -194,10 +195,10 @@ namespace SpongeTester
             {
                 for (var i = 0; i < batchSize * 2; i++)
                 {
-                    sdgca1 = sdgca1.EvolveRecombineCoarseStageDimerSortersAndSortables(randy);
-                    sdgca2 = sdgca2.EvolveRecombineCoarseStageDimerSortersAndSortables(randy);
-                    sdgca3 = sdgca3.EvolveRecombineCoarseStageDimerSortersAndSortables(randy);
-                    sdgca4 = sdgca4.EvolveRecombineCoarseStageDimerSortersAndSortables(randy);
+                    sdgca1 = sdgca1.EvolveSorterStageDimerConjRecomb_SortableConj(randy);
+                    sdgca2 = sdgca2.EvolveSorterStageDimerConjRecomb_SortableConj(randy);
+                    sdgca3 = sdgca3.EvolveSorterStageDimerConjRecomb_SortableConj(randy);
+                    sdgca4 = sdgca4.EvolveSorterStageDimerConjRecomb_SortableConj(randy);
 
                     Console.WriteLine(
                                       $"{sdgca1.Report()} {sdgca2.Report()} " +
@@ -229,7 +230,7 @@ namespace SpongeTester
             const int seed = 75319;
             var randy = Rando.Standard(seed);
 
-            var dga1 = randy.ToRandomDirectSortingGaData(
+            var dga1 = randy.ToDirectGaSortingData(
                 order: order,
                 sorterCount: sorterCount,
                 sortableCount: sortableCount,
@@ -239,7 +240,7 @@ namespace SpongeTester
                 stageReplacementMode: stageReplacementMode
             );
 
-            var dga2 = randy.ToRandomDirectSortingGaData(
+            var dga2 = randy.ToDirectGaSortingData(
                 order: order,
                 sorterCount: sorterCount,
                 sortableCount: sortableCount,
@@ -248,7 +249,7 @@ namespace SpongeTester
                 sortableWinRate: sortableWinRate,
                 stageReplacementMode: stageReplacementMode
             );
-            var dga3 = randy.ToRandomDirectSortingGaData(
+            var dga3 = randy.ToDirectGaSortingData(
                 order: order,
                 sorterCount: sorterCount,
                 sortableCount: sortableCount,
@@ -257,7 +258,7 @@ namespace SpongeTester
                 sortableWinRate: sortableWinRate,
                 stageReplacementMode: stageReplacementMode
             );
-            var dga4 = randy.ToRandomDirectSortingGaData(
+            var dga4 = randy.ToDirectGaSortingData(
                 order: order,
                 sorterCount: sorterCount,
                 sortableCount: sortableCount,
@@ -312,14 +313,14 @@ namespace SpongeTester
             {
                 for (var i = 0; i < batchSize * 2; i++)
                 {
-                    dga1 = dga1.EvolveBothAndRecombineDirect(randy);
-                    dga2 = dga2.EvolveBothAndRecombineDirect(randy);
-                    dga3 = dga3.EvolveBothAndRecombineDirect(randy);
-                    dga4 = dga4.EvolveBothAndRecombineDirect(randy);
+                    dga1 = dga1.EvolveSortersConjSortablesReplace(randy);
+                    dga2 = dga2.EvolveSortersConjSortablesReplace(randy);
+                    dga3 = dga3.EvolveSortersConjSortablesReplace(randy);
+                    dga4 = dga4.EvolveSortersConjSortablesReplace(randy);
 
 
-                    sdgca1 = sdgca1.EvolveRecombineCoarseStageDimerSortersAndSortables(randy);
-                    sdgca2 = sdgca2.EvolveRecombineCoarseStageDimerSortersAndSortables(randy);
+                    sdgca1 = sdgca1.EvolveSorterStageDimerConjRecomb_SortableConj(randy);
+                    sdgca2 = sdgca2.EvolveSorterStageDimerConjRecomb_SortableConj(randy);
                     sdgca3 = sdgca3.EvolveRecombineFineStageDimerSortersAndSortables(randy);
                     sdgca4 = sdgca4.EvolveRecombineFineStageDimerSortersAndSortables(randy);
 
@@ -352,7 +353,7 @@ namespace SpongeTester
             const int seed = 75319;
             var randy = Rando.Standard(seed);
 
-            var dga1 = randy.ToRandomDirectSortingGaData(
+            var dga1 = randy.ToDirectGaSortingData(
                 order: order,
                 sorterCount: sorterCount,
                 sortableCount: sortableCount,
@@ -362,7 +363,7 @@ namespace SpongeTester
                 stageReplacementMode: stageReplacementMode
             );
 
-            var dga2 = randy.ToRandomDirectSortingGaData(
+            var dga2 = randy.ToDirectGaSortingData(
                 order: order,
                 sorterCount: sorterCount,
                 sortableCount: sortableCount,
@@ -371,7 +372,7 @@ namespace SpongeTester
                 sortableWinRate: sortableWinRate,
                 stageReplacementMode: stageReplacementMode
             );
-            var dga3 = randy.ToRandomDirectSortingGaData(
+            var dga3 = randy.ToDirectGaSortingData(
                 order: order,
                 sorterCount: sorterCount,
                 sortableCount: sortableCount,
@@ -380,7 +381,7 @@ namespace SpongeTester
                 sortableWinRate: sortableWinRate,
                 stageReplacementMode: stageReplacementMode
             );
-            var dga4 = randy.ToRandomDirectSortingGaData(
+            var dga4 = randy.ToDirectGaSortingData(
                 order: order,
                 sorterCount: sorterCount,
                 sortableCount: sortableCount,
@@ -435,16 +436,16 @@ namespace SpongeTester
             {
                 for (var i = 0; i < batchSize; i++)
                 {
-                    dga1 = dga1.EvolveBothAndRecombineDirect(randy);
-                    dga2 = dga2.EvolveBothAndRecombineDirect(randy);
-                    dga3 = dga3.EvolveBothAndRecombineDirect(randy);
-                    dga4 = dga4.EvolveBothAndRecombineDirect(randy);
+                    dga1 = dga1.EvolveSortersConjSortablesReplace(randy);
+                    dga2 = dga2.EvolveSortersConjSortablesReplace(randy);
+                    dga3 = dga3.EvolveSortersConjSortablesReplace(randy);
+                    dga4 = dga4.EvolveSortersConjSortablesReplace(randy);
 
 
-                    sdgca1 = sdgca1.EvolveRecombineCoarseStageDimerSortersAndSortables(randy);
-                    sdgca2 = sdgca2.EvolveRecombineCoarseStageDimerSortersAndSortables(randy);
-                    sdgca3 = sdgca3.EvolveRecombineCoarseStageDimerSortersAndSortables(randy);
-                    sdgca4 = sdgca4.EvolveRecombineCoarseStageDimerSortersAndSortables(randy);
+                    sdgca1 = sdgca1.EvolveSorterStageDimerConjRecomb_SortableConj(randy);
+                    sdgca2 = sdgca2.EvolveSorterStageDimerConjRecomb_SortableConj(randy);
+                    sdgca3 = sdgca3.EvolveSorterStageDimerConjRecomb_SortableConj(randy);
+                    sdgca4 = sdgca4.EvolveSorterStageDimerConjRecomb_SortableConj(randy);
 
                     Console.WriteLine($"{dga1.Report()} {dga2.Report()} " +
                                       $"{dga3.Report()} {dga4.Report()} " +

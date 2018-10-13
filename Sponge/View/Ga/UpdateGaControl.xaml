@@ -41,10 +41,16 @@
         </StackPanel>
 
 
-        <ListBox Grid.Column="1" ItemsSource="{Binding Report}">
-
-        </ListBox>
-
+        <Grid Grid.Column="1">
+            <Grid.RowDefinitions>
+                <RowDefinition/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+            <ListBox ItemsSource="{Binding Report}"/>
+            <TextBlock Grid.Row="1" Text="{Binding Message}" FontSize="16" FontWeight="Bold"/>
+            <Button Grid.Row="2" Command="{Binding CopyReportCommand}">Copy</Button>
+        </Grid>
     </Grid>
 
 </UserControl>

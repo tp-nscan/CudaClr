@@ -3,6 +3,7 @@ using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Utils;
 using Utils.Genome;
+using Utils.Genome.Utils;
 
 namespace SpongeTester
 {

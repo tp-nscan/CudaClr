@@ -37,9 +37,9 @@ namespace SpongeTester
                 var strey7 = stagey3.Sort(strey6.Item2);
                 var strey8 = stagey4.Sort(strey7.Item2);
 
-                var pr = permy.Sortedness();
-                var psr0 = strey0.Item2.Sortedness();
-                var psr2 = strey8.Item2.Sortedness();
+                var pr = permy.SortednessSq();
+                var psr0 = strey0.Item2.SortednessSq();
+                var psr2 = strey8.Item2.SortednessSq();
 
                 Console.WriteLine($"{pr} {psr0} {psr2}");
             }

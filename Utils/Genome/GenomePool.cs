@@ -65,7 +65,7 @@ namespace Utils.Genome
 
 
 
-        public static GenomePool<GenomeDimer> ToSorterStageDimerGenomePool(
+        public static GenomePool<GenomeStageDimer> ToSorterStageDimerGenomePool(
             this IRando rando, uint order,
             uint stageCount, uint poolCount)
         {
@@ -74,22 +74,22 @@ namespace Utils.Genome
                 .ToGenomePoolStageDimer(Guid.NewGuid());
         }
 
-        public static GenomePool<GenomeDimer> ToGenomePoolStageDimer(
-            this IEnumerable<GenomeDimer> genomeDimers, Guid id)
+        public static GenomePool<GenomeStageDimer> ToGenomePoolStageDimer(
+            this IEnumerable<GenomeStageDimer> genomeDimers, Guid id)
         {
-            return new GenomePool<GenomeDimer>(id, genomeDimers);
+            return new GenomePool<GenomeStageDimer>(id, genomeDimers);
         }
 
-        public static GenomePool<GenomeDimer> ToRecombCoarse(
-            this IEnumerable<GenomeDimer> genomeDimers, IRando rando)
+        public static GenomePool<GenomeStageDimer> ToRecombCoarse(
+            this IEnumerable<GenomeStageDimer> genomeDimers, IRando rando)
         {
             return genomeDimers.ToRandomPairs(rando)
                     .SelectMany(rp => rando.RecombineCoarse(rp.Item1, rp.Item2).Split())
                     .ToGenomePoolStageDimer(Guid.NewGuid());
         }
 
-        public static GenomePool<GenomeDimer> ToRecombFine(
-            this IEnumerable<GenomeDimer> genomeDimers, IRando rando)
+        public static GenomePool<GenomeStageDimer> ToRecombFine(
+            this IEnumerable<GenomeStageDimer> genomeDimers, IRando rando)
         {
             return genomeDimers.ToRandomPairs(rando)
                 .SelectMany(rp => rando.RecombineFine(rp.Item1, rp.Item2).Split())

@@ -44,7 +44,7 @@ namespace Utils.Sortable
                 rando.ToPermutation(order).ToSortable()));
         }
 
-        public static SortablePool OrbitSortablePool(IPermutation seed, int maxSize)
+        public static SortablePool OrbitSortablePool(IPermutation seed, uint maxSize)
         {
             return new SortablePool(Guid.NewGuid(),
                 seed.GetOrbit(maxSize).Keys.Select(p => p.ToSortable()));

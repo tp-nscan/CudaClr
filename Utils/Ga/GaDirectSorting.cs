@@ -8,16 +8,16 @@ using Utils.Sorter;
 
 namespace Utils.Ga
 {
-    public class GaDirectSortingData : GaSortingData
-    {
-        public GaDirectSortingData(Dictionary<string, object> data) : base(data)
-        {
-        }
-    }
+    //public class GaDirectSortingData : GaSortingData
+    //{
+    //    public GaDirectSortingData(Dictionary<string, object> data) : base(data)
+    //    {
+    //    }
+    //}
 
     public static class GaDirectSortingExt
     {
-        public static GaSortingData ToRandomDirectSortingGaData(
+        public static GaSortingData ToDirectGaSortingData(
             this IRando randy, uint order, 
             uint sorterCount, uint sortableCount, uint stageCount, 
             double sorterWinRate, double sortableWinRate, 
@@ -27,7 +27,8 @@ namespace Utils.Ga
             var randomSorterPool = randy.ToRandomSorterPool(order, stageCount, sorterCount);
 
             var d = new Dictionary<string, object>();
-            d.SetCurrentStep(1);
+            d.SetCurrentStep(0);
+            d.SetSeed(randy.NextInt());
             d.SetSorterWinRate(sorterWinRate);
             d.SetSortableWinRate(sortableWinRate);
             d.SetSortablePool(randomSortablePool);
@@ -38,8 +39,8 @@ namespace Utils.Ga
         }
 
 
-        public static GaSortingData EvolveBothDirect(this GaSortingData sortingGaData,
-            IRando randy)
+        public static GaSortingData EvolveSortersConjSortablesReplace(
+            this GaSortingData sortingGaData, IRando randy)
         {
             return sortingGaData.Eval()
                                 .SelectWinningSortables()
@@ -48,19 +49,29 @@ namespace Utils.Ga
                                 .UpdateSortersDirect(randy);
         }
 
-        public static GaSortingData EvolveBothAndRecombineDirect(this GaSortingData sortingGaData,
-            IRando randy)
+        public static GaSortingData EvolveSortablesConjSortersConj(
+            this GaSortingData sortingGaData, IRando randy)
+        {
+            return sortingGaData.Eval()
+                .SelectWinningSortables()
+                .SelectWinningSorters()
+                .EvolveSortablesConj(randy)
+                .UpdateSortersDirect(randy);
+        }
+
+        public static GaSortingData EvolveSortersConjRecombSortablesConj(
+            this GaSortingData sortingGaData, IRando randy)
         {
             return sortingGaData.Eval()
                 .SelectWinningSortables()
                 .SelectWinningSorters()
                 .RecombineSelectedSorters(randy)
-                .UpdateSortablesDirect(randy)
+                .EvolveSortablesConj(randy)
                 .UpdateSortersDirect(randy);
         }
 
-        public static GaSortingData EvolveSortablesDirect(this GaSortingData sortingGaData,
-            IRando randy)
+        public static GaSortingData EvolveSortablesDirect(
+            this GaSortingData sortingGaData, IRando randy)
         {
             return sortingGaData.Eval()
                                 .SelectWinningSortables()
@@ -68,8 +79,8 @@ namespace Utils.Ga
         }
 
 
-        public static GaSortingData EvolveSortersDirect(this GaSortingData sortingGaData,
-            IRando randy)
+        public static GaSortingData EvolveSortersDirect(
+            this GaSortingData sortingGaData, IRando randy)
         {
             return sortingGaData.Eval()
                                 .SelectWinningSorters()
@@ -77,10 +88,10 @@ namespace Utils.Ga
         }
 
 
-        public static GaSortingData UpdateSortersDirect(this GaSortingData sortingGaData, IRando randy)
+        public static GaSortingData UpdateSortersDirect(
+            this GaSortingData sortingGaData, IRando randy)
         {
             var data = sortingGaData.Data.Copy();
-            data.SetCurrentStep(data.GetCurrentStep() + 1);
 
             var sorterWinRate = data.GetSorterWinRate();
             var wholeSorterPool = data.GetSorterPool();
@@ -97,7 +108,8 @@ namespace Utils.Ga
             return new GaSortingData(data: data);
         }
 
-        public static GaSortingData RecombineSelectedSorters(this GaSortingData sortingGaData, IRando randy)
+        public static GaSortingData RecombineSelectedSorters(
+            this GaSortingData sortingGaData, IRando randy)
         {
             var data = sortingGaData.Data.Copy();
 
@@ -106,7 +118,8 @@ namespace Utils.Ga
             return new GaSortingData(data: data);
         }
 
-        public static GaSortingData UpdateSortablesDirect(this GaSortingData sortingGaData, IRando randy)
+        public static GaSortingData UpdateSortablesDirect(
+            this GaSortingData sortingGaData, IRando randy)
         {
             var data = sortingGaData.Data.Copy();
             var sortableWinRate = data.GetSortableWinRate();
@@ -122,6 +135,23 @@ namespace Utils.Ga
             data.SetSortablePool(new SortablePool(Guid.NewGuid(), sortableNextGen));
             return new GaSortingData(data: data);
         }
+
+        public static GaSortingData EvolveSortablesConj(this GaSortingData sortingGaData, IRando randy)
+        {
+            var data = sortingGaData.Data.Copy();
+            var sortableWinRate = data.GetSortableWinRate();
+            var bestSortablePool = data.GetBestSortablePool();
+            var wholeSortablePool = data.GetSortablePool();
+            var sortableMutantCount = (uint)(wholeSortablePool.Sortables.Count * (1.0 - sortableWinRate));
+
+            var sortableNextGen = bestSortablePool.Sortables.Values.Concat(
+                    bestSortablePool.Sortables.Values.ToRoundRobin().Take((int)sortableMutantCount)
+                        .Select(p=>p.ConjugateByRandomSingleTwoCycle(randy).ToSortable()));
+
+            data.SetSortablePool(new SortablePool(Guid.NewGuid(), sortableNextGen));
+            return new GaSortingData(data: data);
+        }
+
 
     }
 

@@ -94,7 +94,6 @@ namespace Utils.Sorter
 
     public static class SorterEx
     {
-
         public static ISorter ToSorter(this IRando randy, uint order, uint stageCount)
         {
             return new Sorter(
@@ -134,7 +133,7 @@ namespace Utils.Sorter
 
             return new SortResult(
                 sorter: sorter,
-                sortedness: curPerm.Sortedness(), 
+                sortedness: Math.Sqrt(curPerm.SortednessSq()), 
                 stageUse: stageUse, 
                 sortable: sortable, 
                 result: curPerm);
@@ -164,10 +163,10 @@ namespace Utils.Sorter
                     mutantStage = rando.RewireSorterStage(stageToReplace);
                     break;
                 case StageReplacementMode.RandomConjugate:
-                    mutantStage = stageToReplace.Conjugate(rando).ToSorterStage(mutantIndex);
+                    mutantStage = stageToReplace.ConjugateByRandomPermutation(rando).ToSorterStage(mutantIndex);
                     break;
                 case StageReplacementMode.RCTC:
-                    mutantStage = stageToReplace.CS2c(rando).ToSorterStage(mutantIndex);
+                    mutantStage = stageToReplace.ConjugateByRandomSingleTwoCycle(rando).ToSorterStage(mutantIndex);
                     break;
                 default:
                     throw new Exception($"{stageReplacementMode.ToString()}");

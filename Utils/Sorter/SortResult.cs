@@ -4,7 +4,7 @@ namespace Utils.Sorter
 {
     public class SortResult
     {
-        public SortResult(ISorter sorter, uint sortedness, bool[] stageUse,
+        public SortResult(ISorter sorter, double sortedness, bool[] stageUse,
             ISortable sortable, IPermutation result)
         {
             Sortedness = sortedness;
@@ -14,7 +14,7 @@ namespace Utils.Sorter
             Sorter = sorter;
         }
 
-        public uint Sortedness { get; }
+        public double Sortedness { get; }
 
         public bool[] StageUse { get; }
 

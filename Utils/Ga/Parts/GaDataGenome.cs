@@ -3,19 +3,19 @@ using Utils.Genome;
 
 namespace Utils.Ga.Parts
 {
-    public static class SortingGaDataGenome
+    public static class GaDataGenome
     {
         #region DimerGenomePool
 
         public static string kDimerGenomePool = "kDimerGenomePool";
 
-        public static GenomePool<GenomeDimer> GetDimerGenomePool(this Dictionary<string, object> dictionary)
+        public static GenomePool<GenomeStageDimer> GetDimerGenomePool(this Dictionary<string, object> dictionary)
         {
-            return (GenomePool<GenomeDimer>) dictionary[kDimerGenomePool];
+            return (GenomePool<GenomeStageDimer>) dictionary[kDimerGenomePool];
         }
 
         public static void SetDimerGenomePool(this Dictionary<string, object> dictionary, 
-            GenomePool<GenomeDimer> sorterGenomeDimerPool)
+            GenomePool<GenomeStageDimer> sorterGenomeDimerPool)
         {
             dictionary[kDimerGenomePool] = sorterGenomeDimerPool;
         }
@@ -27,13 +27,13 @@ namespace Utils.Ga.Parts
 
         public static string kBestDimerGenomePool = "kBestDimerGenomePool";
 
-        public static GenomePool<GenomeDimer> GetBestDimerGenomePool(this Dictionary<string, object> dictionary)
+        public static GenomePool<GenomeStageDimer> GetBestDimerGenomePool(this Dictionary<string, object> dictionary)
         {
-            return (GenomePool<GenomeDimer>)dictionary[kBestDimerGenomePool];
+            return (GenomePool<GenomeStageDimer>)dictionary[kBestDimerGenomePool];
         }
 
         public static void SetBestDimerGenomePool(this Dictionary<string, object> dictionary,
-            GenomePool<GenomeDimer> bestDimerGenomePool)
+            GenomePool<GenomeStageDimer> bestDimerGenomePool)
         {
             dictionary[kBestDimerGenomePool] = bestDimerGenomePool;
         }

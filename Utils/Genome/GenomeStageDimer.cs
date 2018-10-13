@@ -1,116 +1,84 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Utils.Genome.Utils;
+using Utils.Sorter;
 
 namespace Utils.Genome
 {
-    public class GenomeStageDimer
+    public class GenomeStageDimer : IGuid
     {
-        public GenomeStageDimer(IPermutation stage1, IPermutation stage2, IPermutation modifier)
+        public GenomeStageDimer(Guid id, IEnumerable<StageDimer> genomeStageDimers)
         {
-            Stage1 = stage1;
-            Stage2 = stage2;
-            Modifier = modifier;
+            Id = id;
+            GenomeStageDimers = genomeStageDimers.ToArray();
         }
 
-        public IPermutation Stage1 { get; }
+        public Guid Id { get; }
 
-        public IPermutation Stage2 { get; }
+        public StageDimer[] GenomeStageDimers { get; }
 
-        public IPermutation Modifier { get; }
     }
+
 
     public static class GenomeStageDimerExt
     {
-        public static GenomeStageDimer ToGenomeStageDimer(this IRando randy, uint order)
+        public static GenomeStageDimer ToGenomeDimer(this IRando randy, uint order, uint stageCount)
         {
-            return new GenomeStageDimer(
-                    stage1: randy.ToFullTwoCyclePermutation(order), 
-                    stage2: randy.ToFullTwoCyclePermutation(order), 
-                    modifier: randy.ToPermutation(order)
-                );
+            return 0u.CountUp(stageCount / 2)
+                .Select(i => randy.ToGenomeStageDimer(order: order))
+                .ToGenomeDimer(Guid.NewGuid());
         }
 
-        public static GenomeStageDimer ToGenomeStageDimer(this IPermutation[] perms)
+        public static GenomeStageDimer ToGenomeDimer(this IEnumerable<StageDimer> genomeStageDimers, 
+            Guid id)
         {
-            return new GenomeStageDimer(
-                stage1: perms[0],
-                stage2: perms[1],
-                modifier: perms[2]
-            );
+            return new GenomeStageDimer(id: id, genomeStageDimers: genomeStageDimers);
         }
 
-        public static IEnumerable<IPermutation> ToPermutations(this GenomeStageDimer genomeStageDimer)
+        public static Tuple<GenomeStageDimer, GenomeStageDimer> RecombineCoarse(this IRando randy, GenomeStageDimer gdA, GenomeStageDimer gdB)
         {
-            yield return genomeStageDimer.Stage1;
-            yield return genomeStageDimer.Stage2;
-            yield return genomeStageDimer.Modifier;
+            var aList = gdA.GenomeStageDimers.ToList();
+            var bList = gdB.GenomeStageDimers.ToList();
+            //var combies = randy.Recombo(aList, bList);
+            var combies = aList.Recombo(bList, randy.NextUint((uint)bList.Count()));
+            return new Tuple<GenomeStageDimer, GenomeStageDimer>(
+                combies.Item1.ToGenomeDimer(Guid.NewGuid()),
+                combies.Item2.ToGenomeDimer(Guid.NewGuid()));
         }
 
-        public static GenomeStageDimer Mutate(this GenomeStageDimer genomeStageDimer, IRando randy)
+        public static Tuple<GenomeStageDimer, GenomeStageDimer> RecombineFine(this IRando randy, GenomeStageDimer gdA, GenomeStageDimer gdB)
         {
-            var newStage1 = genomeStageDimer.Stage1;
-            var newStage2 = genomeStageDimer.Stage2;
-            var newModifier = genomeStageDimer.Modifier;
-
-            var spot = randy.NextUint(3);
-            switch (spot)
-            {
-                case 0:
-                    newStage1 = newStage1.ToConjugate(randy.ToSingleTwoCyclePermutation(newStage1.Order));
-                    break;
-                case 1:
-                    newStage2 = newStage2.ToConjugate(randy.ToSingleTwoCyclePermutation(newStage2.Order));
-                    break;
-                case 2:
-                    newModifier = newModifier.ToConjugate(randy.ToSingleTwoCyclePermutation(newModifier.Order));
-                    break;
-                default:
-                    throw new Exception($"spot {spot} not handled in GenomeStageDimerExt.Mutate");
-            }
-
-            return new GenomeStageDimer(
-                stage1: newStage1,
-                stage2: newStage2,
-                modifier: newModifier
-            );
+            var al = gdA.GenomeStageDimers.SelectMany(sd => sd.ToPermutations()).ToList();
+            var aList = gdA.GenomeStageDimers.ToList();
+            var bList = gdB.GenomeStageDimers.ToList();
+           // var combies = aList.Recombo(bList, randy.NextUint((uint)bList.Count()));
+            var combies = aList.RecomboL2(bList, 
+                randy.NextUint((uint)bList.Count()), 
+                StageDimerExt.RecomboP(randy.NextUint(4u)));
+            return new Tuple<GenomeStageDimer, GenomeStageDimer>(
+                combies.Item1.ToGenomeDimer(Guid.NewGuid()),
+                combies.Item1.ToGenomeDimer(Guid.NewGuid()));
         }
 
-        public static IEnumerable<IPermutation> ToPhenotype(this GenomeStageDimer genomeStageDimer)
+        public static ISorter ToSorter(this GenomeStageDimer genomeDimer)
         {
-            //yield return genomeStageDimer.Stage1;
-            //yield return genomeStageDimer.Stage2;
+            var stages = genomeDimer.GenomeStageDimers
+                .SelectMany(gsd => gsd.ToPhenotype())
+                .Select(p => p.ToSorterStage(0));
 
-            yield return genomeStageDimer.Stage1.ToConjugate(genomeStageDimer.Modifier);
-            yield return genomeStageDimer.Stage2.ToConjugate(genomeStageDimer.Modifier);
+            return stages.ToSorter(Guid.NewGuid(), genomeDimer.Id);
         }
 
-        public static Tuple<GenomeStageDimer, GenomeStageDimer> Recombo(this GenomeStageDimer gsdA, 
-            GenomeStageDimer gsdB, uint pos)
+        public static GenomeStageDimer Mutate(this GenomeStageDimer genomeDimer, IRando rando)
         {
-            switch (pos)
-            {
-                case 0:
-                    return new Tuple<GenomeStageDimer, GenomeStageDimer>(gsdA, gsdB);
-                case 1:
-                    return new Tuple<GenomeStageDimer, GenomeStageDimer>(
-                        new GenomeStageDimer(stage1:gsdA.Stage1, stage2:gsdB.Stage2, modifier:gsdB.Modifier),
-                        new GenomeStageDimer(stage1: gsdB.Stage1, stage2: gsdA.Stage2, modifier: gsdA.Modifier));
-                case 2:
-                    return new Tuple<GenomeStageDimer, GenomeStageDimer>(
-                        new GenomeStageDimer(stage1: gsdA.Stage1, stage2: gsdA.Stage2, modifier: gsdB.Modifier),
-                        new GenomeStageDimer(stage1: gsdB.Stage1, stage2: gsdB.Stage2, modifier: gsdA.Modifier));
-                case 3:
-                    return new Tuple<GenomeStageDimer, GenomeStageDimer>(gsdB, gsdA);
-                default:
-                    throw new Exception($"pos {pos} is out of bounds in Recombo");
-            }
-        }
-
-        public static Func<GenomeStageDimer, GenomeStageDimer, Tuple<GenomeStageDimer, GenomeStageDimer>>
-            RecomboP(uint pos)
-        {
-            return (gsdA, gsdB) => gsdA.Recombo(gsdB, pos);
+            var mutantIndex = rando.NextInt(genomeDimer.GenomeStageDimers.Length);
+            var gsdToReplace = genomeDimer.GenomeStageDimers[mutantIndex];
+            StageDimer gsdMutant = gsdToReplace.Mutate(rando);
+            return genomeDimer.GenomeStageDimers
+                              .ReplaceAtIndex((uint)mutantIndex, gsdMutant)
+                              .ToGenomeDimer(Guid.NewGuid());
         }
     }
+
 }

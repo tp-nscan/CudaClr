@@ -36,7 +36,7 @@ namespace Utils.Genome.Utils
         {
             return 0u.CountUp(order * (order + 1) / 2)
                      .Select(i => randy.NextUint())
-                     .ToStageBits(order:order, mask: randy.NextUint());
+                     .ToStageBits(order: order, mask: randy.NextUint());
         }
 
 
@@ -52,7 +52,7 @@ namespace Utils.Genome.Utils
         public static StageBits Mutate(this StageBits stageBits, IRando randy, double mutationRate)
         {
             return new StageBits(
-                    order:stageBits.Order,
+                    order: stageBits.Order,
                     mask: stageBits.Mask.AsEnumerable().Mutate(randy, mutationRate).First(),
                     bits: stageBits.Bits.Mutate(randy, mutationRate)
                 );
@@ -80,7 +80,7 @@ namespace Utils.Genome.Utils
                 permArray[bSpSp.Row] = bSpSp.Col;
                 sbScratchPad.Mark(bSpSp, stageBits.Order);
 
-              //  System.Diagnostics.Debug.WriteLine(sbScratchPad.PrintUsed());
+                //  System.Diagnostics.Debug.WriteLine(sbScratchPad.PrintUsed());
             }
 
             return PermutationEx.MakePermutation(permArray);

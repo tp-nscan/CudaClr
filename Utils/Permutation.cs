@@ -54,20 +54,20 @@ namespace Utils
             return new Permutation(order:perm.Order, terms: invs);
         }
 
-        public static IPermutation ToConjugate(this IPermutation perm, IPermutation conj)
+        public static IPermutation ConjugateBy(this IPermutation perm, IPermutation conj)
         {
             return conj.ToInverse().Multiply(perm.Multiply(conj));
         }
 
-        public static IPermutation Conjugate(this IPermutation perm, IRando randy)
+        public static IPermutation ConjugateByRandomPermutation(this IPermutation perm, IRando randy)
         {
-            return perm.ToConjugate(randy.ToPermutation(perm.Order));
+            return perm.ConjugateBy(randy.ToPermutation(perm.Order));
         }
 
-        public static IPermutation CS2c(this IPermutation perm, IRando randy)
+        public static IPermutation ConjugateByRandomSingleTwoCycle(this IPermutation perm, IRando randy)
         {
-            return perm.ToConjugate(randy.ToSingleTwoCyclePermutation(perm.Order));
-           // return perm.ToConjugate(randy.ToFullTwoCyclePermutation(perm.Order));
+            return perm.ConjugateBy(randy.ToSingleTwoCyclePermutation(perm.Order));
+           // return perm.ConjugateBy(randy.ToFullTwoCyclePermutation(perm.Order));
         }
 
         public static IPermutation ToFullTwoCyclePermutation(this IRando randy, uint order)
@@ -129,7 +129,8 @@ namespace Utils
             return true;
         }
 
-        public static CompositeDictionary<IPermutation, int> GetOrbit(this IPermutation perm, int maxSize = 1000)
+        public static CompositeDictionary<IPermutation, int> GetOrbit(
+                            this IPermutation perm, uint maxSize = 1000)
         {
             var pd = PermutationEx.PermutationDictionary(perm.Order);
             var cume = perm;
@@ -144,7 +145,39 @@ namespace Utils
             return pd;
         }
 
-        public static CompositeDictionary<IPermutation, int> ToDistr(this IEnumerable<IPermutation> perms)
+        public static int OrbitLengthFor(this IPermutation perm, uint maxSize = 1000)
+        {
+            return GetOrbit(perm, maxSize).Count;
+        }
+
+
+        public static CompositeDictionary<IPermutation, int> GetConjOrbit(
+                        this IPermutation perm, IPermutation conj, uint maxSize = 1000)
+        {
+            var pd = PermutationEx.PermutationDictionary(perm.Order);
+            var curConj = conj;
+            var curRes = perm;
+            for (var i = 0; i < maxSize; i++)
+            {
+                if (pd.ContainsKey(curRes)) { return pd; }
+                pd.Add(curRes, 1);
+
+                curRes = perm.ConjugateBy(curConj);
+                curConj = curConj.Multiply(conj);
+            }
+
+            return pd;
+        }
+
+        public static int ConjOrbitLengthFor(this IPermutation perm, 
+            IPermutation conj, uint maxSize = 1000)
+        {
+            return GetConjOrbit(perm, conj, maxSize).Count;
+        }
+
+
+
+        public static CompositeDictionary<IPermutation, int> ToPermCountDict(this IEnumerable<IPermutation> perms)
         {
             CompositeDictionary<IPermutation, int> pd = null;
             foreach (var perm in perms)
@@ -162,11 +195,6 @@ namespace Utils
             return pd;
         }
 
-        public static int OrbitLengthFor(this IPermutation perm, int maxSize = 1000)
-        {
-            return GetOrbit(perm, maxSize).Count;
-        }
-
 
         public static IPermutation ToPermutation(this IRando rando, uint order)
         {
@@ -177,7 +205,7 @@ namespace Utils
         }
 
 
-        public static uint Sortedness(this IPermutation perm)
+        public static uint SortednessSq(this IPermutation perm)
         {
             var tot = 0u;
             for (uint i = 0; i < perm.Order; i++)
@@ -256,6 +284,17 @@ namespace Utils
 
         public static uint[] ToSingleTwoCycleArray(this IRando rando, uint order)
         {
+            var pair = new uint[2];
+            var id = 0u.CountUp(order).ToArray();
+            rando.SelectWithoutReplacement(id, pair);
+            id[pair[0]] = pair[1];
+            id[pair[1]] = pair[0];
+
+            return id;
+        }
+
+        public static uint[] ToSingleThreeCycleArray(this IRando rando, uint order)
+        {
             var pair = new uint[3];
             var id = 0u.CountUp(order).ToArray();
             rando.SelectWithoutReplacement(id, pair);
@@ -265,6 +304,7 @@ namespace Utils
 
             return id;
         }
+
     }
 
 }

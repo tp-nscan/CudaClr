@@ -2,7 +2,7 @@
 using System.Diagnostics;
 using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
- using Utils;
+using Utils;
 using Utils.Ga;
 using Utils.Ga.Parts;
 using Utils.Sorter;
@@ -28,7 +28,7 @@ namespace SpongeTester
 
             var randy = Rando.Standard(seed);
 
-            var dsg = randy.ToRandomDirectSortingGaData(
+            var dsg = randy.ToDirectGaSortingData(
                 order: order,
                 sorterCount: sorterCount,
                 sortableCount: sortableCount,
@@ -38,7 +38,7 @@ namespace SpongeTester
                 stageReplacementMode:stageReplacementMode
             );
 
-            var dsg2 = randy.ToRandomDirectSortingGaData(
+            var dsg2 = randy.ToDirectGaSortingData(
                 order: order,
                 sorterCount: sorterCount,
                 sortableCount: sortableCount,
@@ -55,7 +55,7 @@ namespace SpongeTester
             {
                 for (var i = 0; i < batchSize; i++)
                 {
-                    dsg = dsg.EvolveBothDirect(randy);
+                    dsg = dsg.EvolveSortersConjSortablesReplace(randy);
                     //dsg2 = dsg2.EvolveBothAndRecombineDirect(randy);
                     Console.WriteLine($"{dsg.Report()}"); // { dsg2.Report()}");
                 }
@@ -83,7 +83,7 @@ namespace SpongeTester
 
             var randy = Rando.Standard(seed);
 
-            var dsgOld = randy.ToRandomDirectSortingGaData(
+            var dsgOld = randy.ToDirectGaSortingData(
                 order: order,
                 sorterCount: sorterCount,
                 sortableCount: sortableCount,
@@ -109,7 +109,7 @@ namespace SpongeTester
 
             for (var i = 0; i < rounds; i++)
             {
-                var dsgNew = dsgOld.EvolveBothDirect(randy);
+                var dsgNew = dsgOld.EvolveSortersConjSortablesReplace(randy);
                 var rl = rlSgd.Select(sgd => sgd.CompareReport(dsgNew)).ToList();
                 foreach (var r in rl)
                 {

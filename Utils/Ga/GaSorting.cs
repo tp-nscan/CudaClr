@@ -41,7 +41,6 @@ namespace Utils.Ga
         {
             var data = sortingGaData.Data.Copy();
             var step = data.GetCurrentStep();
-            data.SetCurrentStep(1);
             
             var sortablePool = data.GetSortablePool();
 
@@ -64,8 +63,6 @@ namespace Utils.Ga
         public static GaSortingData SelectWinningSorters(this GaSortingData sortingGaData)
         {
             var data = sortingGaData.Data.Copy();
-            var step = data.GetCurrentStep();
-            data.SetCurrentStep(1);
 
             var sorterPool = data.GetSorterPool();
             var sorterWinRate = data.GetSorterWinRate();

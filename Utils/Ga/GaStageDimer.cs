@@ -20,7 +20,8 @@ namespace Utils.Ga
             var dimerGenomePool = randy.ToSorterStageDimerGenomePool(order, stageCount, sorterCount);
 
             var d = new Dictionary<string, object>();
-            d.SetCurrentStep(1);
+            d.SetCurrentStep(0);
+            d.SetSeed(randy.NextInt());
             d.SetSorterWinRate(sorterWinRate);
             d.SetSortableWinRate(sortableWinRate);
             d.SetSortablePool(randomSortablePool);
@@ -51,12 +52,12 @@ namespace Utils.Ga
                     .SelectWinningSortables()
                     .SelectSorterDimerGenomes()
                     .SelectWinningSortables()
-                    .EvolveSortablesDirect(randy)
+                    .EvolveSortablesConj(randy)
                     .EvolveSorterDimerGenomes(randy);
         }
 
 
-        public static GaSortingData EvolveRecombineCoarseStageDimerSortersAndSortables(this GaSortingData sortingGaData,
+        public static GaSortingData EvolveSorterStageDimerConjRecomb_SortableConj(this GaSortingData sortingGaData,
             IRando randy)
         {
             return sortingGaData
@@ -65,9 +66,9 @@ namespace Utils.Ga
                     .SelectWinningSorters()
                     .SelectWinningSortables()
                     .SelectSorterDimerGenomes()
-                    .RecombineCoarseSelectedSorterDimerGenomes(randy)
+                    .RecombineSelectedSorterDimerGenomes(randy)
                     .SelectWinningSortables()
-                    .EvolveSortablesDirect(randy)
+                    .EvolveSortablesConj(randy)
                     .EvolveSorterDimerGenomes(randy);
         }
 
@@ -82,7 +83,7 @@ namespace Utils.Ga
                 .SelectSorterDimerGenomes()
                 .RecombineFineSelectedSorterDimerGenomes(randy)
                 .SelectWinningSortables()
-                .EvolveSortablesDirect(randy)
+                .EvolveSortablesConj(randy)
                 .EvolveSorterDimerGenomes(randy);
         }
 
@@ -112,7 +113,7 @@ namespace Utils.Ga
             return new GaSortingData(data: data);
         }
 
-        public static GaSortingData RecombineCoarseSelectedSorterDimerGenomes(this GaSortingData sortingGaData, IRando randy)
+        public static GaSortingData RecombineSelectedSorterDimerGenomes(this GaSortingData sortingGaData, IRando randy)
         {
             var data = sortingGaData.Data.Copy();
 

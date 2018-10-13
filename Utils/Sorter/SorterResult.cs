@@ -11,7 +11,7 @@ namespace Utils.Sorter
         {
             var _sortResults = sortResults.ToList();
             Sorter = _sortResults[0].Sorter;
-            float totNess = _sortResults.Sum(r => r.Sortedness);
+            double totNess = _sortResults.Sum(r => r.Sortedness);
             AverageSortedness = totNess / _sortResults.Count;
             StageUse = new int[Sorter.StageCount];
             foreach (var result in _sortResults)

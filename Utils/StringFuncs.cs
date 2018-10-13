@@ -24,5 +24,18 @@ namespace Utils
             }
             return sb.ToString();
         }
+
+        public static string LineFormat(uint[] data)
+        {
+            var sb = new StringBuilder();
+
+            for (uint i = 0; i < data.Length; i++)
+            {
+                    sb.Append(data[i]);
+                    sb.Append(" ");
+            }
+            return sb.ToString();
+        }
+
     }
 }
