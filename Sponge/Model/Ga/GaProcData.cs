@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Utils.Ga;
+﻿using System.Collections.Generic;
+using Utils.Ga.Parts;
 
 namespace Sponge.Model.Ga
 {

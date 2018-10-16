@@ -47,7 +47,7 @@ namespace Sponge
 
             // UpdateGGGControl.DataContext = _updateGGRVm = GGR_ThermoIsing_bp.Thermo();
 
-            UpdateGaControl.DataContext = _updateGaVm = UpdateGaVmExt.Direct();
+            UpdateGaControl.DataContext = _updateGaVm = UpdateGaVmExt.GaConjOrbitVm();
         }
 
     }

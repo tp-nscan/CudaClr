@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Utils.Sorter;
 
-namespace Utils.Genome
+namespace Utils.Genome.Sorter
 {
     public interface IGenomeDualSorter : IGuid
     {

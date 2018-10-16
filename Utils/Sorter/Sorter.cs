@@ -131,9 +131,11 @@ namespace Utils.Sorter
                 curPerm = res.Item2;
             }
 
+            var ssq = Math.Sqrt(curPerm.SortednessSq());
+
             return new SortResult(
                 sorter: sorter,
-                sortedness: Math.Sqrt(curPerm.SortednessSq()), 
+                sortedness: ssq, 
                 stageUse: stageUse, 
                 sortable: sortable, 
                 result: curPerm);

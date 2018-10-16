@@ -74,17 +74,16 @@
     <Compile Include="Ga\GaConjOrbit.cs" />
     <Compile Include="Ga\GaSorting.cs" />
     <Compile Include="Ga\GaDirectSorting.cs" />
-    <Compile Include="Ga\Parts\GaDataCore.cs" />
-    <Compile Include="Ga\Parts\GaDataGenome.cs" />
+    <Compile Include="Ga\Parts\GaSortingData.cs" />
+    <Compile Include="Ga\Parts\GaSortingDataCore.cs" />
+    <Compile Include="Ga\Parts\GaSortingDataGenome.cs" />
     <Compile Include="Ga\GaStageDimer.cs" />
-    <Compile Include="Ga\Parts\SortingGaPools.cs" />
     <Compile Include="Ga\GaDualSorter.cs" />
-    <Compile Include="Ga\GaSorterBits.cs" />
-    <Compile Include="Genome\GenomeConjOrbit.cs" />
+    <Compile Include="Genome\Sorter\GenomeConjOrbit.cs" />
     <Compile Include="Sorter\SortingResults.cs" />
     <Compile Include="Genome\GenomePool.cs" />
-    <Compile Include="Genome\GenomeStageDimer.cs" />
-    <Compile Include="Genome\GenomeSorterBits.cs" />
+    <Compile Include="Genome\Sorter\GenomeStageDimer.cs" />
+    <Compile Include="Genome\Sorter\GenomeSorterBits.cs" />
     <Compile Include="Genome\Utils\StageDimer.cs" />
     <Compile Include="Genome\Utils\SbScratchPad.cs" />
     <Compile Include="Genome\Utils\StageBits.cs" />
@@ -105,7 +104,7 @@
     <Compile Include="SimGrid.cs" />
     <Compile Include="Sortable\SortablePool.cs" />
     <Compile Include="Sortable\SortableResult.cs" />
-    <Compile Include="Genome\GenomeDualSorter.cs" />
+    <Compile Include="Genome\Sorter\GenomeDualSorter.cs" />
     <Compile Include="Sorter\SortResult.cs" />
     <Compile Include="Sorter\Sorter.cs" />
     <Compile Include="Sorter\SorterPool.cs" />
@@ -113,7 +112,9 @@
     <Compile Include="Sorter\SorterStage.cs" />
     <Compile Include="StringFuncs.cs" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="Genome\Sortable\" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

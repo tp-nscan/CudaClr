@@ -1,6 +1,7 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Utils;
 using Utils.Genome;
+using Utils.Genome.Sorter;
 
 namespace SpongeTester
 {

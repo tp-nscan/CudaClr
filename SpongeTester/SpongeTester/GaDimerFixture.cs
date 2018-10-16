@@ -69,7 +69,7 @@ namespace SpongeTester
 
 
 
-            var sdgca1 = randy.ToRandomStageDimerGaData(
+            var sdgca1 = randy.ToStageDimerGaData(
                     order: order,
                     sorterCount: sorterCount,
                     sortableCount: sortableCount,
@@ -78,7 +78,7 @@ namespace SpongeTester
                     sortableWinRate: sortableWinRate
                 );
 
-            var sdgca2 = randy.ToRandomStageDimerGaData(
+            var sdgca2 = randy.ToStageDimerGaData(
                 order: order,
                 sorterCount: sorterCount,
                 sortableCount: sortableCount,
@@ -87,7 +87,7 @@ namespace SpongeTester
                 sortableWinRate: sortableWinRate
             );
 
-            var sdgca3 = randy.ToRandomStageDimerGaData(
+            var sdgca3 = randy.ToStageDimerGaData(
                 order: order,
                 sorterCount: sorterCount,
                 sortableCount: sortableCount,
@@ -96,7 +96,7 @@ namespace SpongeTester
                 sortableWinRate: sortableWinRate
             );
 
-            var sdgca4 = randy.ToRandomStageDimerGaData(
+            var sdgca4 = randy.ToStageDimerGaData(
                 order: order,
                 sorterCount: sorterCount,
                 sortableCount: sortableCount,
@@ -152,7 +152,7 @@ namespace SpongeTester
             var randy = Rando.Standard(seed);
 
 
-            var sdgca1 = randy.ToRandomStageDimerGaData(
+            var sdgca1 = randy.ToStageDimerGaData(
                     order: order,
                     sorterCount: sorterCount,
                     sortableCount: sortableCount,
@@ -161,7 +161,7 @@ namespace SpongeTester
                     sortableWinRate: sortableWinRate
                 );
 
-            var sdgca2 = randy.ToRandomStageDimerGaData(
+            var sdgca2 = randy.ToStageDimerGaData(
                 order: order,
                 sorterCount: sorterCount,
                 sortableCount: sortableCount * 2,
@@ -170,7 +170,7 @@ namespace SpongeTester
                 sortableWinRate: sortableWinRate
             );
 
-            var sdgca3 = randy.ToRandomStageDimerGaData(
+            var sdgca3 = randy.ToStageDimerGaData(
                 order: order,
                 sorterCount: sorterCount,
                 sortableCount: sortableCount * 4,
@@ -179,7 +179,7 @@ namespace SpongeTester
                 sortableWinRate: sortableWinRate
             );
 
-            var sdgca4 = randy.ToRandomStageDimerGaData(
+            var sdgca4 = randy.ToStageDimerGaData(
                 order: order,
                 sorterCount: sorterCount / 2,
                 sortableCount: sortableCount * 4,
@@ -270,7 +270,7 @@ namespace SpongeTester
 
 
 
-            var sdgca1 = randy.ToRandomStageDimerGaData(
+            var sdgca1 = randy.ToStageDimerGaData(
                     order: order,
                     sorterCount: sorterCount,
                     sortableCount: sortableCount,
@@ -279,7 +279,7 @@ namespace SpongeTester
                     sortableWinRate: sortableWinRate
                 );
 
-            var sdgca2 = randy.ToRandomStageDimerGaData(
+            var sdgca2 = randy.ToStageDimerGaData(
                 order: order,
                 sorterCount: sorterCount,
                 sortableCount: sortableCount,
@@ -288,7 +288,7 @@ namespace SpongeTester
                 sortableWinRate: sortableWinRate
             );
 
-            var sdgca3 = randy.ToRandomStageDimerGaData(
+            var sdgca3 = randy.ToStageDimerGaData(
                 order: order,
                 sorterCount: sorterCount,
                 sortableCount: sortableCount,
@@ -297,7 +297,7 @@ namespace SpongeTester
                 sortableWinRate: sortableWinRate
             );
 
-            var sdgca4 = randy.ToRandomStageDimerGaData(
+            var sdgca4 = randy.ToStageDimerGaData(
                 order: order,
                 sorterCount: sorterCount,
                 sortableCount: sortableCount,
@@ -393,7 +393,7 @@ namespace SpongeTester
 
 
 
-            var sdgca1 = randy.ToRandomStageDimerGaData(
+            var sdgca1 = randy.ToStageDimerGaData(
                     order: order,
                     sorterCount: sorterCount,
                     sortableCount: sortableCount,
@@ -402,7 +402,7 @@ namespace SpongeTester
                     sortableWinRate: sortableWinRate
                 );
 
-            var sdgca2 = randy.ToRandomStageDimerGaData(
+            var sdgca2 = randy.ToStageDimerGaData(
                 order: order,
                 sorterCount: sorterCount,
                 sortableCount: sortableCount,
@@ -411,7 +411,7 @@ namespace SpongeTester
                 sortableWinRate: sortableWinRate
             );
 
-            var sdgca3 = randy.ToRandomStageDimerGaData(
+            var sdgca3 = randy.ToStageDimerGaData(
                 order: order,
                 sorterCount: sorterCount,
                 sortableCount: sortableCount,
@@ -420,7 +420,7 @@ namespace SpongeTester
                 sortableWinRate: sortableWinRate
             );
 
-            var sdgca4 = randy.ToRandomStageDimerGaData(
+            var sdgca4 = randy.ToStageDimerGaData(
                 order: order,
                 sorterCount: sorterCount,
                 sortableCount: sortableCount,

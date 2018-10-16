@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using Utils.Ga.Parts;
@@ -8,16 +7,8 @@ using Utils.Sorter;
 
 namespace Utils.Ga
 {
-    public class GaSortingData
-    {
-        public GaSortingData(Dictionary<string, object> data)
-        {
-            Data = data;
-        }
-        public Dictionary<string, object> Data { get; private set; }
-    }
 
-    public static class SortingGaExt
+    public static class GaSortingExt
     {
         public static GaSortingData Eval(this GaSortingData sortingGaData)
         {

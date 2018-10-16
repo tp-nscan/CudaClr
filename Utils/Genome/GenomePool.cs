@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using Utils.Genome.Sorter;
 
 namespace Utils.Genome
 {
@@ -63,11 +64,8 @@ namespace Utils.Genome
             return new GenomePool<GenomeSorterBits>(id, genomeSorterBitses);
         }
 
-
-
-        public static GenomePool<GenomeStageDimer> ToSorterStageDimerGenomePool(
-            this IRando rando, uint order,
-            uint stageCount, uint poolCount)
+        public static GenomePool<GenomeStageDimer> ToGenomePoolStageDimer(
+            this IRando rando, uint order, uint stageCount, uint poolCount)
         {
             return 0u.CountUp(poolCount)
                 .Select(i => rando.ToGenomeDimer(order, stageCount))
@@ -94,6 +92,20 @@ namespace Utils.Genome
             return genomeDimers.ToRandomPairs(rando)
                 .SelectMany(rp => rando.RecombineFine(rp.Item1, rp.Item2).Split())
                 .ToGenomePoolStageDimer(Guid.NewGuid());
+        }
+
+        public static GenomePool<GenomeConjOrbit> ToGenomePoolConjOrbits(
+            this IRando rando, uint order, uint stageCount, uint poolCount)
+        {
+            return 0u.CountUp(poolCount)
+                .Select(i => rando.ToGenomeConjOrbit(order, stageCount))
+                .ToGenomePoolConjOrbits(Guid.NewGuid());
+        }
+
+        public static GenomePool<GenomeConjOrbit> ToGenomePoolConjOrbits(
+            this IEnumerable<GenomeConjOrbit> genomeConjOrbits, Guid id)
+        {
+            return new GenomePool<GenomeConjOrbit>(id, genomeConjOrbits);
         }
     }
 }

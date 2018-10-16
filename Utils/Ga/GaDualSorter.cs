@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Utils.Genome;
+using Utils.Genome.Sorter;
 using Utils.Sortable;
 using Utils.Sorter;
 

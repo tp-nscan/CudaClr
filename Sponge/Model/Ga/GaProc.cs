@@ -10,46 +10,6 @@ namespace Sponge.Model.Ga
 {
     public static class GaProc
     {
-        public static GaSortingData InitRandomDirectSortingGaData(
-            int seed, uint order, uint sorterCount, 
-            uint sortableCount, uint stageCount, double sortableWinRate,
-            double sorterWinRate, StageReplacementMode stageReplacementMode)
-        {
-            var randy = Rando.Standard(seed);
-
-            var sgad = randy.ToDirectGaSortingData(
-                order: order,
-                sorterCount: sorterCount,
-                sortableCount: sortableCount,
-                stageCount: stageCount,
-                sorterWinRate: sorterWinRate,
-                sortableWinRate: sortableWinRate,
-                stageReplacementMode: stageReplacementMode
-            );
-
-            return sgad;
-        }
-
-
-        public static GaSortingData InitRandomStageDimerGaData(
-            int seed, uint order, uint sorterCount,
-            uint sortableCount, uint stageCount, double sortableWinRate,
-            double sorterWinRate, StageReplacementMode stageReplacementMode)
-        {
-            var randy = Rando.Standard(seed);
-
-            var sgad = randy.ToRandomStageDimerGaData(
-                order: order,
-                sorterCount: sorterCount,
-                sortableCount: sortableCount,
-                stageCount: stageCount,
-                sorterWinRate: sorterWinRate,
-                sortableWinRate: sortableWinRate
-            );
-
-            return sgad;
-        }
-
         // GaStageDimerVm, both conj, no recomb
         public static ProcResult Scheme1(int steps, GaSortingData gasd)
         {
@@ -140,6 +100,31 @@ namespace Sponge.Model.Ga
             for (var i = 0; i < steps; i++)
             {
                 gasd = gasd.EvolveStageDimerSortersAndSortables(randy);
+                gasd.Data.SetCurrentStep(gasd.Data.GetCurrentStep() + 1);
+            }
+
+            _stopwatch.Stop();
+            gasd.Data.SetSeed(randy.NextInt());
+
+            var dRet = new Dictionary<string, object>();
+            dRet.SetGaSortingData(gasd);
+            return new ProcResult(data: dRet,
+                err: strRet,
+                stepsCompleted: steps,
+                time: _stopwatch.ElapsedMilliseconds);
+        }
+
+        public static ProcResult Scheme5(int steps, GaSortingData gasd)
+        {
+            var randy = Rando.Standard(gasd.Data.GetSeed());
+            var strRet = String.Empty;
+            var _stopwatch = new Stopwatch();
+            _stopwatch.Reset();
+            _stopwatch.Start();
+
+            for (var i = 0; i < steps; i++)
+            {
+                gasd = gasd.EvolveConjOrbitSortersAndSortables(randy);
                 gasd.Data.SetCurrentStep(gasd.Data.GetCurrentStep() + 1);
             }
 

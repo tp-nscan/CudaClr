@@ -2,7 +2,7 @@
 using System.Linq;
 using Utils.Sorter;
 
-namespace Utils.Genome
+namespace Utils.Genome.Sorter
 {
     public class GenomeConjOrbit : IGuid
     {
@@ -42,7 +42,7 @@ namespace Utils.Genome
         public static GenomeConjOrbit Mutate(this GenomeConjOrbit genomeConjOrbit, IRando randy)
         {
             var newTs = genomeConjOrbit.TwoCycle;
-            var newPerm = genomeConjOrbit.TwoCycle;
+            var newPerm = genomeConjOrbit.Conj;
 
             if (randy.NextBool(0.5))
             {
@@ -68,7 +68,7 @@ namespace Utils.Genome
                                      .Keys.ToRoundRobin().Take((int)maxOrbitSize)
                                      .Select(p=>p.ToSorterStage(0u));
 
-            return new Sorter.Sorter(
+            return new global::Utils.Sorter.Sorter(
                 id: Guid.NewGuid(),
                 genomeId: genomeConjOrbit.Id,
                 stages: orbs);

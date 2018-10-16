@@ -4,7 +4,7 @@ using System.Linq;
 using Utils.Genome.Utils;
 using Utils.Sorter;
 
-namespace Utils.Genome
+namespace Utils.Genome.Sorter
 {
     public class GenomeStageDimer : IGuid
     {

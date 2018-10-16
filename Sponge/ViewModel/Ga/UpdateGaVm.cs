@@ -171,9 +171,9 @@ namespace Sponge.ViewModel.Ga
         //uint sorterCount, uint stageCount, uint sortableCount,
 
         public static uint GridSpan = 1024;
-        public static uint SorterCount = 32;
-        public static uint SortableCount = 128;
-        public static uint StageCount = 120;
+        public static uint SorterCount = 128;
+        public static uint SortableCount = 32;
+        public static uint StageCount = 60;
         public static uint Order = 128;
         public static double SorterWinRate = 0.25;
         public static double SortableWinRate = 0.25;
@@ -184,15 +184,14 @@ namespace Sponge.ViewModel.Ga
 
         public static UpdateGaVm GaStageDimerVm()
         {
-            var gasd = GaProc.InitRandomStageDimerGaData(
-                seed: Seed,
+            var randy = Rando.Standard(Seed);
+            var gasd = randy.ToStageDimerGaData(
                 order: Order,
                 sorterCount: SorterCount,
                 sortableCount: SortableCount,
                 stageCount: StageCount,
                 sortableWinRate: SortableWinRate,
-                sorterWinRate: SorterWinRate,
-                stageReplacementMode: StageReplacementMode);
+                sorterWinRate: SorterWinRate);
 
             var gaRet = new UpdateGaVm(
                 gaSortingData: gasd,
@@ -210,10 +209,37 @@ namespace Sponge.ViewModel.Ga
             return gaRet;
         }
 
+        public static UpdateGaVm GaConjOrbitVm()
+        {
+            var randy = Rando.Standard(Seed);
+            var gasd = randy.ToGaConjOrbitData(
+                order: Order,
+                sorterCount: SorterCount,
+                sortableCount: SortableCount,
+                stageCount: StageCount,
+                sortableWinRate: SortableWinRate,
+                sorterWinRate: SorterWinRate);
+
+            var gaRet = new UpdateGaVm(
+                gaSortingData: gasd,
+                order: Order,
+                width: GridSpan,
+                height: GridSpan,
+                sorterWinRate: SorterWinRate,
+                sortableWinRate: SortableWinRate,
+                sorterCount: SorterCount,
+                stageCount: StageCount,
+                sortableCount: SortableCount,
+                proc: ProcScheme5,
+                update_params: UpdateParams);
+
+            return gaRet;
+        }
+
         public static UpdateGaVm Direct()
         {
-            var gasd = GaProc.InitRandomDirectSortingGaData(
-                seed: Seed,
+            var randy = Rando.Standard(Seed);
+            var gasd = randy.ToDirectGaSortingData(
                 order: Order,
                 sorterCount: SorterCount,
                 sortableCount: SortableCount,
@@ -268,7 +294,12 @@ namespace Sponge.ViewModel.Ga
             return GaProc.Scheme4(ggvm.UpdateVm.StepsPerUpdate, ggvm.GaSortingData);
         }
 
-
+        // for ConjOrbit
+        public static ProcResult ProcScheme5(object vm)
+        {
+            var ggvm = (UpdateGaVm)vm;
+            return GaProc.Scheme5(ggvm.UpdateVm.StepsPerUpdate, ggvm.GaSortingData);
+        }
 
 
 
