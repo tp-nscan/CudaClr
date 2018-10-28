@@ -10,7 +10,7 @@ namespace Utils.Ga
 {
     public class GaDualSorter
     {
-        public GaDualSorter(GenomePool<GenomeDualSorter> genomePoolDualSorter,
+        public GaDualSorter(GenomePool<GenomeSorterDual> genomePoolDualSorter,
              SortablePool sortablePool,
              IRando randy)
         {
@@ -25,7 +25,7 @@ namespace Utils.Ga
 
         public SortablePool SortablePool { get; }
 
-        public GenomePool<GenomeDualSorter> GenomePoolDualSorter { get; }
+        public GenomePool<GenomeSorterDual> GenomePoolDualSorter { get; }
     }
 
 

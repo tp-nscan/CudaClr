@@ -10,7 +10,7 @@ namespace Utils.Ga
 
     public static class GaSortingExt
     {
-        public static GaSortingData Eval(this GaSortingData sortingGaData)
+        public static GaData Eval(this GaData sortingGaData)
         {
             var data = sortingGaData.Data.Copy();
 
@@ -24,11 +24,11 @@ namespace Utils.Ga
             var sortingResults = new SortingResults(sr, false);
             data.SetSortingResults(sortingResults);
 
-            return new GaSortingData(data: data);
+            return new GaData(data: data);
         }
 
 
-        public static GaSortingData SelectWinningSortables(this GaSortingData sortingGaData)
+        public static GaData SelectWinningSortables(this GaData sortingGaData)
         {
             var data = sortingGaData.Data.Copy();
             var step = data.GetCurrentStep();
@@ -47,11 +47,11 @@ namespace Utils.Ga
                 .Take(sortableWinCount).Select(sr => sr.Sortable);
             data.SetBestSortablePool(new SortablePool(Guid.NewGuid(), bestSortables));
 
-            return new GaSortingData(data: data);
+            return new GaData(data: data);
         }
 
 
-        public static GaSortingData SelectWinningSorters(this GaSortingData sortingGaData)
+        public static GaData SelectWinningSorters(this GaData sortingGaData)
         {
             var data = sortingGaData.Data.Copy();
 
@@ -65,11 +65,11 @@ namespace Utils.Ga
 
             data.SetBestSorterPool(new SorterPool(Guid.NewGuid(), bestSorters));
 
-            return new GaSortingData(data: data);
+            return new GaData(data: data);
         }
 
 
-        public static string Report(this GaSortingData sortingGaData)
+        public static string Report(this GaData sortingGaData)
         {
             var data = sortingGaData.Data;
             var bestSorterPool = data.GetBestSorterPool();
@@ -81,7 +81,7 @@ namespace Utils.Ga
         }
 
 
-        public static string ReportMore(this GaSortingData sortingGaData)
+        public static string ReportMore(this GaData sortingGaData)
         {
             var data = sortingGaData.Data;
             var bestSorterPool = data.GetBestSorterPool();
@@ -100,7 +100,7 @@ namespace Utils.Ga
         }
 
 
-        public static string CompareReport(this GaSortingData sgdNew, GaSortingData sgdOld)
+        public static string CompareReport(this GaData sgdNew, GaData sgdOld)
         {
             var newData = sgdNew.Data;
             var oldData = sgdOld.Data;
@@ -123,7 +123,7 @@ namespace Utils.Ga
         }
 
 
-        public static string CompareReportLarge(this GaSortingData sgdNew, GaSortingData sgdOld)
+        public static string CompareReportLarge(this GaData sgdNew, GaData sgdOld)
         {
             var newData = sgdNew.Data;
             var oldData = sgdOld.Data;

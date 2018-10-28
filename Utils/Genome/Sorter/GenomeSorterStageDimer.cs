@@ -6,9 +6,9 @@ using Utils.Sorter;
 
 namespace Utils.Genome.Sorter
 {
-    public class GenomeStageDimer : IGuid
+    public class GenomeSorterStageDimer : IGuid
     {
-        public GenomeStageDimer(Guid id, IEnumerable<StageDimer> genomeStageDimers)
+        public GenomeSorterStageDimer(Guid id, IEnumerable<StageDimer> genomeStageDimers)
         {
             Id = id;
             GenomeStageDimers = genomeStageDimers.ToArray();
@@ -21,33 +21,33 @@ namespace Utils.Genome.Sorter
     }
 
 
-    public static class GenomeStageDimerExt
+    public static class GenomeSorterStageDimerExt
     {
-        public static GenomeStageDimer ToGenomeDimer(this IRando randy, uint order, uint stageCount)
+        public static GenomeSorterStageDimer ToGenomeDimer(this IRando randy, uint order, uint stageCount)
         {
             return 0u.CountUp(stageCount / 2)
                 .Select(i => randy.ToGenomeStageDimer(order: order))
                 .ToGenomeDimer(Guid.NewGuid());
         }
 
-        public static GenomeStageDimer ToGenomeDimer(this IEnumerable<StageDimer> genomeStageDimers, 
+        public static GenomeSorterStageDimer ToGenomeDimer(this IEnumerable<StageDimer> genomeStageDimers, 
             Guid id)
         {
-            return new GenomeStageDimer(id: id, genomeStageDimers: genomeStageDimers);
+            return new GenomeSorterStageDimer(id: id, genomeStageDimers: genomeStageDimers);
         }
 
-        public static Tuple<GenomeStageDimer, GenomeStageDimer> RecombineCoarse(this IRando randy, GenomeStageDimer gdA, GenomeStageDimer gdB)
+        public static Tuple<GenomeSorterStageDimer, GenomeSorterStageDimer> RecombineCoarse(this IRando randy, GenomeSorterStageDimer gdA, GenomeSorterStageDimer gdB)
         {
             var aList = gdA.GenomeStageDimers.ToList();
             var bList = gdB.GenomeStageDimers.ToList();
             //var combies = randy.Recombo(aList, bList);
             var combies = aList.Recombo(bList, randy.NextUint((uint)bList.Count()));
-            return new Tuple<GenomeStageDimer, GenomeStageDimer>(
+            return new Tuple<GenomeSorterStageDimer, GenomeSorterStageDimer>(
                 combies.Item1.ToGenomeDimer(Guid.NewGuid()),
                 combies.Item2.ToGenomeDimer(Guid.NewGuid()));
         }
 
-        public static Tuple<GenomeStageDimer, GenomeStageDimer> RecombineFine(this IRando randy, GenomeStageDimer gdA, GenomeStageDimer gdB)
+        public static Tuple<GenomeSorterStageDimer, GenomeSorterStageDimer> RecombineFine(this IRando randy, GenomeSorterStageDimer gdA, GenomeSorterStageDimer gdB)
         {
             var al = gdA.GenomeStageDimers.SelectMany(sd => sd.ToPermutations()).ToList();
             var aList = gdA.GenomeStageDimers.ToList();
@@ -56,12 +56,12 @@ namespace Utils.Genome.Sorter
             var combies = aList.RecomboL2(bList, 
                 randy.NextUint((uint)bList.Count()), 
                 StageDimerExt.RecomboP(randy.NextUint(4u)));
-            return new Tuple<GenomeStageDimer, GenomeStageDimer>(
+            return new Tuple<GenomeSorterStageDimer, GenomeSorterStageDimer>(
                 combies.Item1.ToGenomeDimer(Guid.NewGuid()),
                 combies.Item1.ToGenomeDimer(Guid.NewGuid()));
         }
 
-        public static ISorter ToSorter(this GenomeStageDimer genomeDimer)
+        public static ISorter ToSorter(this GenomeSorterStageDimer genomeDimer)
         {
             var stages = genomeDimer.GenomeStageDimers
                 .SelectMany(gsd => gsd.ToPhenotype())
@@ -70,7 +70,7 @@ namespace Utils.Genome.Sorter
             return stages.ToSorter(Guid.NewGuid(), genomeDimer.Id);
         }
 
-        public static GenomeStageDimer Mutate(this GenomeStageDimer genomeDimer, IRando rando)
+        public static GenomeSorterStageDimer Mutate(this GenomeSorterStageDimer genomeDimer, IRando rando)
         {
             var mutantIndex = rando.NextInt(genomeDimer.GenomeStageDimers.Length);
             var gsdToReplace = genomeDimer.GenomeStageDimers[mutantIndex];

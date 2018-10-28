@@ -2,9 +2,9 @@
 
 namespace Utils.Ga.Parts
 {
-    public class GaSortingData
+    public class GaData
     {
-        public GaSortingData(Dictionary<string, object> data)
+        public GaData(Dictionary<string, object> data)
         {
             Data = data;
         }

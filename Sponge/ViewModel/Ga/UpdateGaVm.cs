@@ -21,7 +21,7 @@ namespace Sponge.ViewModel.Ga
             = new Subject<ProcResult>();
         public IObservable<ProcResult> OnUpdateUI => _updateUI;
 
-        public UpdateGaVm(GaSortingData gaSortingData,
+        public UpdateGaVm(GaData gaSortingData,
                           uint width, uint height, uint order,
                           double sorterWinRate, double sortableWinRate, 
                           uint sorterCount, uint stageCount, uint sortableCount,
@@ -43,7 +43,7 @@ namespace Sponge.ViewModel.Ga
             StageCount = stageCount;
         }
 
-        public GaSortingData GaSortingData { get; private set; }
+        public GaData GaSortingData { get; private set; }
 
         public UpdateVm UpdateVm { get; private set; }
 

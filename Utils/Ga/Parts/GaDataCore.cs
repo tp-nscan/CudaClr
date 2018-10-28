@@ -5,7 +5,7 @@ using Utils.Sorter;
 namespace Utils.Ga.Parts
 {
 
-    public static class GaSortingDataCore
+    public static class GaDataCore
     {
 
         #region BestSorterPool

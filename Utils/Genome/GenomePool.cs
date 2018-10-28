@@ -35,18 +35,18 @@ namespace Utils.Genome
 
     public static class GenomePoolExt
     {
-        public static GenomePool<GenomeDualSorter> ToGenomePoolDualSorter(
+        public static GenomePool<GenomeSorterDual> ToGenomePoolDualSorter(
             this IRando rando, uint order, uint stageCount, uint poolCount)
         {
-            return new GenomePool<GenomeDualSorter>(Guid.NewGuid(),
+            return new GenomePool<GenomeSorterDual>(Guid.NewGuid(),
                 0u.CountUp(poolCount).Select(i =>
                     rando.ToDualSorterGenome(order, stageCount)));
         }
 
-        public static GenomePool<GenomeDualSorter> ToGenomePoolDualSorter(this 
-            IEnumerable<GenomeDualSorter> genomeDualSorters, Guid id)
+        public static GenomePool<GenomeSorterDual> ToGenomePoolDualSorter(this 
+            IEnumerable<GenomeSorterDual> genomeDualSorters, Guid id)
         {
-            return new GenomePool<GenomeDualSorter>(id, genomeDualSorters);
+            return new GenomePool<GenomeSorterDual>(id, genomeDualSorters);
         }
 
         public static GenomePool<GenomeSorterBits> ToGenomePoolSorterBits(
@@ -64,7 +64,7 @@ namespace Utils.Genome
             return new GenomePool<GenomeSorterBits>(id, genomeSorterBitses);
         }
 
-        public static GenomePool<GenomeStageDimer> ToGenomePoolStageDimer(
+        public static GenomePool<GenomeSorterStageDimer> ToGenomePoolStageDimer(
             this IRando rando, uint order, uint stageCount, uint poolCount)
         {
             return 0u.CountUp(poolCount)
@@ -72,29 +72,29 @@ namespace Utils.Genome
                 .ToGenomePoolStageDimer(Guid.NewGuid());
         }
 
-        public static GenomePool<GenomeStageDimer> ToGenomePoolStageDimer(
-            this IEnumerable<GenomeStageDimer> genomeDimers, Guid id)
+        public static GenomePool<GenomeSorterStageDimer> ToGenomePoolStageDimer(
+            this IEnumerable<GenomeSorterStageDimer> genomeDimers, Guid id)
         {
-            return new GenomePool<GenomeStageDimer>(id, genomeDimers);
+            return new GenomePool<GenomeSorterStageDimer>(id, genomeDimers);
         }
 
-        public static GenomePool<GenomeStageDimer> ToRecombCoarse(
-            this IEnumerable<GenomeStageDimer> genomeDimers, IRando rando)
+        public static GenomePool<GenomeSorterStageDimer> ToRecombCoarse(
+            this IEnumerable<GenomeSorterStageDimer> genomeDimers, IRando rando)
         {
             return genomeDimers.ToRandomPairs(rando)
                     .SelectMany(rp => rando.RecombineCoarse(rp.Item1, rp.Item2).Split())
                     .ToGenomePoolStageDimer(Guid.NewGuid());
         }
 
-        public static GenomePool<GenomeStageDimer> ToRecombFine(
-            this IEnumerable<GenomeStageDimer> genomeDimers, IRando rando)
+        public static GenomePool<GenomeSorterStageDimer> ToRecombFine(
+            this IEnumerable<GenomeSorterStageDimer> genomeDimers, IRando rando)
         {
             return genomeDimers.ToRandomPairs(rando)
                 .SelectMany(rp => rando.RecombineFine(rp.Item1, rp.Item2).Split())
                 .ToGenomePoolStageDimer(Guid.NewGuid());
         }
 
-        public static GenomePool<GenomeConjOrbit> ToGenomePoolConjOrbits(
+        public static GenomePool<GenomeSorterConjOrbit> ToGenomePoolConjOrbits(
             this IRando rando, uint order, uint stageCount, uint poolCount)
         {
             return 0u.CountUp(poolCount)
@@ -102,10 +102,10 @@ namespace Utils.Genome
                 .ToGenomePoolConjOrbits(Guid.NewGuid());
         }
 
-        public static GenomePool<GenomeConjOrbit> ToGenomePoolConjOrbits(
-            this IEnumerable<GenomeConjOrbit> genomeConjOrbits, Guid id)
+        public static GenomePool<GenomeSorterConjOrbit> ToGenomePoolConjOrbits(
+            this IEnumerable<GenomeSorterConjOrbit> genomeConjOrbits, Guid id)
         {
-            return new GenomePool<GenomeConjOrbit>(id, genomeConjOrbits);
+            return new GenomePool<GenomeSorterConjOrbit>(id, genomeConjOrbits);
         }
     }
 }

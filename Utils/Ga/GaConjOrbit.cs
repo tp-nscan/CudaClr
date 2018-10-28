@@ -9,7 +9,7 @@ using Utils.Sorter;
 
 namespace Utils.Ga
 {
-    public class GaConjOrbit : GaSortingData
+    public class GaConjOrbit : GaData
     {
         public GaConjOrbit(Dictionary<string, object> data) : base(data)
         {
@@ -19,7 +19,7 @@ namespace Utils.Ga
     public static class GaConjOrbitExt
     {
 
-        public static GaSortingData ToGaConjOrbitData(
+        public static GaData ToGaConjOrbitData(
             this IRando randy, uint order,
             uint sorterCount, uint sortableCount, uint stageCount,
             double sorterWinRate, double sortableWinRate)
@@ -35,11 +35,11 @@ namespace Utils.Ga
             d.SetSortableWinRate(sortableWinRate);
             d.SetConjOrbitGenomePool(conjOrbitGenomePool);
 
-            return new GaSortingData(d);
+            return new GaData(d);
         }
 
 
-        public static GaSortingData EvolveConjOrbitSortersAndSortables(this GaSortingData sortingGaData,
+        public static GaData EvolveConjOrbitSortersAndSortables(this GaData sortingGaData,
             IRando randy)
         {
             //return sortingGaData
@@ -61,8 +61,8 @@ namespace Utils.Ga
                 .EvolveConjOrbitGenomes(randy);
         }
 
-        public static GaSortingData MakeSortersFromConjOrbitGenomes(
-            this GaSortingData sortingGaData)
+        public static GaData MakeSortersFromConjOrbitGenomes(
+            this GaData sortingGaData)
         {
             var data = sortingGaData.Data.Copy();
 
@@ -72,12 +72,12 @@ namespace Utils.Ga
                 .Select(g => g.Value.ToSorter(g.Value.Stagecount));
 
             data.SetSorterPool(new SorterPool(Guid.NewGuid(), sorters));
-            return new GaSortingData(data: data);
+            return new GaData(data: data);
         }
 
 
-        public static GaSortingData SelectConjOrbitGenomes(
-            this GaSortingData sortingGaData)
+        public static GaData SelectConjOrbitGenomes(
+            this GaData sortingGaData)
         {
             var data = sortingGaData.Data.Copy();
 
@@ -89,10 +89,10 @@ namespace Utils.Ga
                 .ToGenomePoolConjOrbits(Guid.NewGuid());
 
             data.SetBestConjOrbitGenomePool(bestConjOrbitGenomePool);
-            return new GaSortingData(data: data);
+            return new GaData(data: data);
         }
 
-        public static GaSortingData EvolveConjOrbitGenomes(this GaSortingData sortingGaData, IRando rando)
+        public static GaData EvolveConjOrbitGenomes(this GaData sortingGaData, IRando rando)
         {
             var data = sortingGaData.Data.Copy();
 
@@ -110,7 +110,7 @@ namespace Utils.Ga
                 .ToGenomePoolConjOrbits(Guid.NewGuid());
 
             data.SetConjOrbitGenomePool(newDimerGenomePool);
-            return new GaSortingData(data: data);
+            return new GaData(data: data);
         }
 
     }

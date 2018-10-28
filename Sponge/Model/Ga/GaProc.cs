@@ -11,7 +11,7 @@ namespace Sponge.Model.Ga
     public static class GaProc
     {
         // GaStageDimerVm, both conj, no recomb
-        public static ProcResult Scheme1(int steps, GaSortingData gasd)
+        public static ProcResult Scheme1(int steps, GaData gasd)
         {
             var randy = Rando.Standard(gasd.Data.GetSeed());
             var strRet = String.Empty;
@@ -39,7 +39,7 @@ namespace Sponge.Model.Ga
 
 
         // GaStageDimerVm, both conj, recomb
-        public static ProcResult Scheme2(int steps, GaSortingData gasd)
+        public static ProcResult Scheme2(int steps, GaData gasd)
         {
             var randy = Rando.Standard(gasd.Data.GetSeed());
             var strRet = String.Empty;
@@ -64,7 +64,7 @@ namespace Sponge.Model.Ga
                 time: _stopwatch.ElapsedMilliseconds);
         }
 
-        public static ProcResult Scheme3(int steps, GaSortingData gasd)
+        public static ProcResult Scheme3(int steps, GaData gasd)
         {
             var randy = Rando.Standard(gasd.Data.GetSeed());
             var strRet = String.Empty;
@@ -89,7 +89,7 @@ namespace Sponge.Model.Ga
                 time: _stopwatch.ElapsedMilliseconds);
         }
 
-        public static ProcResult Scheme4(int steps, GaSortingData gasd)
+        public static ProcResult Scheme4(int steps, GaData gasd)
         {
             var randy = Rando.Standard(gasd.Data.GetSeed());
             var strRet = String.Empty;
@@ -114,7 +114,7 @@ namespace Sponge.Model.Ga
                 time: _stopwatch.ElapsedMilliseconds);
         }
 
-        public static ProcResult Scheme5(int steps, GaSortingData gasd)
+        public static ProcResult Scheme5(int steps, GaData gasd)
         {
             var randy = Rando.Standard(gasd.Data.GetSeed());
             var strRet = String.Empty;

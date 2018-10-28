@@ -9,12 +9,12 @@ namespace Sponge.Model.Ga
 
         public static string kSorterWinRate = "kGaSortingData";
 
-        public static GaSortingData GetGaSortingData(this Dictionary<string, object> dictionary)
+        public static GaData GetGaSortingData(this Dictionary<string, object> dictionary)
         {
-            return (GaSortingData)dictionary[kSorterWinRate];
+            return (GaData)dictionary[kSorterWinRate];
         }
 
-        public static void SetGaSortingData(this Dictionary<string, object> dictionary, GaSortingData sorterWinRate)
+        public static void SetGaSortingData(this Dictionary<string, object> dictionary, GaData sorterWinRate)
         {
             dictionary[kSorterWinRate] = sorterWinRate;
         }

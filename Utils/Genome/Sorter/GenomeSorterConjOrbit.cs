@@ -4,9 +4,9 @@ using Utils.Sorter;
 
 namespace Utils.Genome.Sorter
 {
-    public class GenomeConjOrbit : IGuid
+    public class GenomeSorterConjOrbit : IGuid
     {
-        public GenomeConjOrbit(Guid id, IPermutation twoCycle, IPermutation conj, uint order, uint stageCount)
+        public GenomeSorterConjOrbit(Guid id, IPermutation twoCycle, IPermutation conj, uint order, uint stageCount)
         {
             Id = id;
             TwoCycle = twoCycle;
@@ -27,11 +27,11 @@ namespace Utils.Genome.Sorter
         
     }
 
-    public static class GenomeConjOrbitExt
+    public static class GenomeSorterConjOrbitExt
     {
-        public static GenomeConjOrbit ToGenomeConjOrbit(this IRando randy, uint order, uint stageCount)
+        public static GenomeSorterConjOrbit ToGenomeConjOrbit(this IRando randy, uint order, uint stageCount)
         {
-            return new GenomeConjOrbit(
+            return new GenomeSorterConjOrbit(
                 id: Guid.NewGuid(),
                 twoCycle: randy.ToFullTwoCyclePermutation(order),
                 conj: randy.ToPermutation(order),
@@ -39,7 +39,7 @@ namespace Utils.Genome.Sorter
                 stageCount: stageCount);
         }
 
-        public static GenomeConjOrbit Mutate(this GenomeConjOrbit genomeConjOrbit, IRando randy)
+        public static GenomeSorterConjOrbit Mutate(this GenomeSorterConjOrbit genomeConjOrbit, IRando randy)
         {
             var newTs = genomeConjOrbit.TwoCycle;
             var newPerm = genomeConjOrbit.Conj;
@@ -53,7 +53,7 @@ namespace Utils.Genome.Sorter
                 newPerm = newPerm.ConjugateByRandomPermutation(randy);
             }
 
-            return new GenomeConjOrbit(
+            return new GenomeSorterConjOrbit(
                 id: Guid.NewGuid(),
                 twoCycle: newTs,
                 conj: newPerm,
@@ -61,7 +61,7 @@ namespace Utils.Genome.Sorter
                 stageCount: genomeConjOrbit.Stagecount);
         }
 
-        public static ISorter ToSorter(this GenomeConjOrbit genomeConjOrbit, uint maxOrbitSize)
+        public static ISorter ToSorter(this GenomeSorterConjOrbit genomeConjOrbit, uint maxOrbitSize)
         {
             var orbs = genomeConjOrbit.TwoCycle
                                      .GetConjOrbit(genomeConjOrbit.Conj, maxOrbitSize)
